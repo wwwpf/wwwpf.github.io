@@ -1,0 +1,761 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Libnids,网络," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="参考/翻译自官方的doc/API.html 简介 各种结构体与函数的声明定义在nids.h，要使用libnids的程序必须包含该头文件并链接libnids.a（或者libnids.so.xx）。 main函数通常是这样子： 123456789main()&amp;#123;    application private processing, not related to libnids    op">
+<meta name="keywords" content="Libnids,网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Libnids-1.24 API">
+<meta property="og:url" content="http://yoursite.com/2017/03/02/Libnids-API文档/index.html">
+<meta property="og:site_name" content="Memory">
+<meta property="og:description" content="参考/翻译自官方的doc/API.html 简介 各种结构体与函数的声明定义在nids.h，要使用libnids的程序必须包含该头文件并链接libnids.a（或者libnids.so.xx）。 main函数通常是这样子： 123456789main()&amp;#123;    application private processing, not related to libnids    op">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-03-04T11:47:56.064Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Libnids-1.24 API">
+<meta name="twitter:description" content="参考/翻译自官方的doc/API.html 简介 各种结构体与函数的声明定义在nids.h，要使用libnids的程序必须包含该头文件并链接libnids.a（或者libnids.so.xx）。 main函数通常是这样子： 123456789main()&amp;#123;    application private processing, not related to libnids    op">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/02/Libnids-API文档/"/>
+
+  <title> Libnids-1.24 API | Memory </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Memory</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Libnids-1.24 API
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-02T14:23:33+08:00" content="2017-03-02">
+              2017-03-02
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/cs/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv">本文阅读量
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>参考/翻译自官方的<code>doc/API.html</code></p>
+<h1 id="简介">简介</h1>
+<p>各种结构体与函数的声明定义在<code>nids.h</code>，要使用libnids的程序必须包含该头文件并链接<code>libnids.a</code>（或者<code>libnids.so.xx</code>）。 <code>main</code>函数通常是这样子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">    application private processing, not related to libnids</span><br><span class="line">    optional modification of libnids parameters</span><br><span class="line">    if (!nids_init() ) something&apos;s wrong, terminate;</span><br><span class="line">    registration of callback functions</span><br><span class="line">    nids_run();</span><br><span class="line">    // not reached in normal situation</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h1 id="ip分片重组">IP分片重组</h1>
+<p>首先定义函数</p>
+<p><code>void ip_frag_func(struct ip * a_packet, int len)</code></p>
+<p>在调用<code>nids_init</code>之后，需要调用</p>
+<p><code>nids_register_ip_frag(ip_frag_func);</code>或者<code>nids_register_ip(ip_func);</code></p>
+<p>注册之前定义的函数。前者用于处理libnids看到的所有IP包，后者处理没有分片或者已被重组的包。<code>a_packet</code>指向一个接收到的数据包，<code>len</code>是包的长度。</p>
+<h1 id="tcp流重组">TCP流重组</h1>
+<p>定义回调函数</p>
+<p><code>void tcp_callback(struct tcp_stream * ns, void ** param)</code></p>
+<p><code>tcp_stream</code>结构提供了一个TCP连接的所有信息，包括两个<code>half_stream</code>结构体字段（<code>client</code>和<code>server</code>）。</p>
+<p><code>tcp_stream</code>有个<code>nids_state</code>字段，<code>tcp_callback</code>的行为依赖于它。</p>
+<ul>
+<li>ns-&gt;nids_state==NIDS_JUST_EST <code>ns</code>描述了一个刚刚建立的连接，<code>tcp_callback</code>必须决定在之后该连接有新数据到达时是否被通知。如果需要考虑该连接，<code>tcp_callback</code>将通知libnids期望接收的数据（包括data to client, to server, urgent data to client, urgent data to server），然后函数返回。</li>
+<li>ns-&gt;nids_state==NIDS_DATA 新数据到达，<code>half_stream</code>结构包含了数据所在的缓冲区。</li>
+<li><code>nids_state</code>等于以下值时，
+<ul>
+<li>NIDS_CLOSE</li>
+<li>NIDS_RESET</li>
+<li>NIDS_TIMED_OUT</li>
+</ul>
+<p>表明连接已关闭。<code>tcp_callback</code>应该释放分配的资源（如果有）。</p></li>
+<li><p><code>ns-&gt;nids_state==NIDS_EXITING</code> libnids正在退出。这是程序最后一次机会可以使用任何存储在<code>half_stream</code>缓冲区中的数据。当从一个捕获文件而不是网络中读取流量，libnids可能看不到到close, reset, timeout这些状态。如果程序有未处理的数据（比如来自<code>nids_discard()</code>的数据），这种情况下就允许程序处理这些数据。</p></li>
+</ul>
+<h1 id="一个简单的应用">一个简单的应用</h1>
+<p>下面是一个简单的程序，它把libnids看到的所有TCP连接中交换的数据输出到<code>stderr</code>。 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;sys/types.h&gt;</span><br><span class="line">#include &lt;sys/socket.h&gt;</span><br><span class="line">#include &lt;netinet/in.h&gt;</span><br><span class="line">#include &lt;netinet/in_systm.h&gt;</span><br><span class="line">#include &lt;arpa/inet.h&gt;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &quot;nids.h&quot;</span><br><span class="line"></span><br><span class="line">#define int_ntoa(x) inet_ntoa(*((struct in_addr *)&amp;x))</span><br><span class="line"></span><br><span class="line">// struct tuple4 contains addresses and port numbers of the TCP connections</span><br><span class="line">// the following auxiliary function produces a string looking like</span><br><span class="line">// 10.0.0.1,1024,10.0.0.2,23</span><br><span class="line">char *</span><br><span class="line">adres (struct tuple4 addr)</span><br><span class="line">&#123;</span><br><span class="line">  static char buf[256];</span><br><span class="line">  strcpy (buf, int_ntoa (addr.saddr));</span><br><span class="line">  sprintf (buf + strlen (buf), &quot;,%i,&quot;, addr.source);</span><br><span class="line">  strcat (buf, int_ntoa (addr.daddr));</span><br><span class="line">  sprintf (buf + strlen (buf), &quot;,%i&quot;, addr.dest);</span><br><span class="line">  return buf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void</span><br><span class="line">tcp_callback (struct tcp_stream *a_tcp, void ** this_time_not_needed)</span><br><span class="line">&#123;</span><br><span class="line">  char buf[1024];</span><br><span class="line">  strcpy (buf, adres (a_tcp-&gt;addr)); // we put conn params into buf</span><br><span class="line">  if (a_tcp-&gt;nids_state == NIDS_JUST_EST)</span><br><span class="line">    &#123;</span><br><span class="line">    // connection described by a_tcp is established</span><br><span class="line">    // here we decide, if we wish to follow this stream</span><br><span class="line">    // sample condition: if (a_tcp-&gt;addr.dest!=23) return;</span><br><span class="line">    // in this simple app we follow each stream, so..</span><br><span class="line">      a_tcp-&gt;client.collect++; // we want data received by a client</span><br><span class="line">      a_tcp-&gt;server.collect++; // and by a server, too</span><br><span class="line">      a_tcp-&gt;server.collect_urg++; // we want urgent data received by a</span><br><span class="line">                                   // server</span><br><span class="line">#ifdef WE_WANT_URGENT_DATA_RECEIVED_BY_A_CLIENT</span><br><span class="line">      a_tcp-&gt;client.collect_urg++; // if we don&apos;t increase this value,</span><br><span class="line">                                   // we won&apos;t be notified of urgent data</span><br><span class="line">                                   // arrival</span><br><span class="line">#endif</span><br><span class="line">      fprintf (stderr, &quot;%s established\n&quot;, buf);</span><br><span class="line">      return;</span><br><span class="line">    &#125;</span><br><span class="line">  if (a_tcp-&gt;nids_state == NIDS_CLOSE)</span><br><span class="line">    &#123;</span><br><span class="line">      // connection has been closed normally</span><br><span class="line">      fprintf (stderr, &quot;%s closing\n&quot;, buf);</span><br><span class="line">      return;</span><br><span class="line">    &#125;</span><br><span class="line">  if (a_tcp-&gt;nids_state == NIDS_RESET)</span><br><span class="line">    &#123;</span><br><span class="line">      // connection has been closed by RST</span><br><span class="line">      fprintf (stderr, &quot;%s reset\n&quot;, buf);</span><br><span class="line">      return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  if (a_tcp-&gt;nids_state == NIDS_DATA)</span><br><span class="line">    &#123;</span><br><span class="line">      // new data has arrived; gotta determine in what direction</span><br><span class="line">      // and if it&apos;s urgent or not</span><br><span class="line"></span><br><span class="line">      struct half_stream *hlf;</span><br><span class="line"></span><br><span class="line">      if (a_tcp-&gt;server.count_new_urg)</span><br><span class="line">      &#123;</span><br><span class="line">        // new byte of urgent data has arrived </span><br><span class="line">        strcat(buf,&quot;(urgent-&gt;)&quot;);</span><br><span class="line">        buf[strlen(buf)+1]=0;</span><br><span class="line">        buf[strlen(buf)]=a_tcp-&gt;server.urgdata;</span><br><span class="line">        write(1,buf,strlen(buf));</span><br><span class="line">        return;</span><br><span class="line">      &#125;</span><br><span class="line">      // We don&apos;t have to check if urgent data to client has arrived,</span><br><span class="line">      // because we haven&apos;t increased a_tcp-&gt;client.collect_urg variable.</span><br><span class="line">      // So, we have some normal data to take care of.</span><br><span class="line">      if (a_tcp-&gt;client.count_new)</span><br><span class="line">    &#123;</span><br><span class="line">          // new data for the client</span><br><span class="line">      hlf = &amp;a_tcp-&gt;client; // from now on, we will deal with hlf var,</span><br><span class="line">                                // which will point to client side of conn</span><br><span class="line">      strcat (buf, &quot;(&lt;-)&quot;); // symbolic direction of data</span><br><span class="line">    &#125;</span><br><span class="line">      else</span><br><span class="line">    &#123;</span><br><span class="line">      hlf = &amp;a_tcp-&gt;server; // analogical</span><br><span class="line">      strcat (buf, &quot;(-&gt;)&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    fprintf(stderr,&quot;%s&quot;,buf); // we print the connection parameters</span><br><span class="line">                              // (saddr, daddr, sport, dport) accompanied</span><br><span class="line">                              // by data flow direction (-&gt; or &lt;-)</span><br><span class="line"></span><br><span class="line">   write(2,hlf-&gt;data,hlf-&gt;count_new); // we print the newly arrived data</span><br><span class="line">      </span><br><span class="line">    &#125;</span><br><span class="line">  return ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int </span><br><span class="line">main ()</span><br><span class="line">&#123;</span><br><span class="line">  // here we can alter libnids params, for instance:</span><br><span class="line">  // nids_params.n_hosts=256;</span><br><span class="line">  if (!nids_init ())</span><br><span class="line">  &#123;</span><br><span class="line">    fprintf(stderr,&quot;%s\n&quot;,nids_errbuf);</span><br><span class="line">    exit(1);</span><br><span class="line">  &#125;</span><br><span class="line">  nids_register_tcp (tcp_callback);</span><br><span class="line">  nids_run ();</span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="libnids中基本的结构体与函数">libnids中基本的结构体与函数</h1>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct tuple4 // TCP connection parameters</span><br><span class="line">&#123;</span><br><span class="line">unsigned short source,dest; // client and server port numbers</span><br><span class="line">unsigned long saddr,daddr;  // client and server IP addresses</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">struct half_stream // structure describing one side of a TCP connection</span><br><span class="line">&#123;</span><br><span class="line">char state;            // socket state (ie TCP_ESTABLISHED )</span><br><span class="line">char collect;          // 如果&gt;0，数据将被存在&quot;data&quot;缓冲区中，</span><br><span class="line">                       // 否则这个方向的数据流会被忽略。</span><br><span class="line">                       // samples/sniff.c中有一个使用该字段的例子</span><br><span class="line">char collect_urg;      // analogically, determines if to collect urgent </span><br><span class="line">                       // data</span><br><span class="line">char * data;           // 正常数据的缓冲区</span><br><span class="line">unsigned char urgdata; // 用于紧急数据的一字节缓冲区</span><br><span class="line">int count;             // 连接建立以来，添加到&quot;data&quot;缓冲区的字节数</span><br><span class="line">int offset;            // &quot;data&quot;缓冲区第一个字节在数据流中的偏移</span><br><span class="line">int count_new;         // 最近一次（这一次）添加到&quot;data&quot;缓冲区中的字节数</span><br><span class="line">                       // 如果为0，没有新数据到达  </span><br><span class="line">char count_new_urg;    // 如果不为0，新的紧急数据到达</span><br><span class="line"></span><br><span class="line">... // other fields are auxiliary for libnids</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">struct tcp_stream</span><br><span class="line">&#123;</span><br><span class="line">struct tuple4 addr;   // connections params (saddr, daddr, sport, dport)</span><br><span class="line">char nids_state;                  // logical state of the connection</span><br><span class="line">struct half_stream client,server; // structures describing client and</span><br><span class="line">                                  // server side of the connection </span><br><span class="line">...                               // other fields are auxiliary for libnids</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在上面的示例中，<code>tcp_callback</code>输出<code>hlf-data</code>的数据到<code>stderr</code>，后续不再需要此数据。在<code>tcp_callback</code>返回后，libnids默认释放这次数据占用的空间。<code>hlf-&gt;offset</code>增加丢弃的字节数，新数据将存储到<code>data</code>缓冲区的起始处。如果以上不是需要的行为（比如，需要至少<code>N</code>字节，但libnids接收的<code>count_new</code>&lt;<code>N</code>，可以在<code>tcp_callback</code>返回前调用</p>
+<p><code>void nids_discard(struct tcp_stream * a_tcp, int num_bytes)</code></p>
+<p>于是，<code>tcp_callback</code>返回后，libnids将从<code>data</code>中丢弃起始的至多<code>num_bytes</code>字节，同时会更新<code>offset</code>字段，移动剩余的字节到缓冲区起始处。如果<code>nids_discard</code>从未调用，则<code>hlf-&gt;data</code>缓冲区恰好包含<code>hlf-&gt;count_new</code>字节。通常情况下，<code>hlf-&gt;data</code>中的字节数等于<code>hlf-&gt;count</code>减去<code>hlf-&gt;offset</code>。</p>
+<p>由于<code>nids_discard</code>函数，我们不需要将接收的字节复制到另外的缓冲区，<code>hlf-&gt;data</code>总是包含尽可能多的字节。经常需要为每对<code>(libnids_callback, tcp stream)</code>维护辅助的数据结构，如果希望检测针对wu-ftpd的攻击（涉及到在服务器上创建深层目录），需要将ftpd守护进程的当前目录存到某处，ftp客户端发送的“CWD”指定将改变当前目录，这是<code>tcp_callback</code>第二个参数的用途，它是指向每个<code>(libnids_callback, tcp stream)</code>对私有数据指针的指针，用法如下： <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">void</span><br><span class="line">tcp_callback_2 (struct tcp_stream * a_tcp, struct conn_param **ptr)</span><br><span class="line">&#123;</span><br><span class="line">if (a_tcp-&gt;nids_state==NIDS_JUST_EST)</span><br><span class="line">&#123;</span><br><span class="line">     struct conn_param * a_conn;</span><br><span class="line"> if the connection is uninteresting, return;</span><br><span class="line">     a_conn=malloc of some data structure</span><br><span class="line">     init of a_conn</span><br><span class="line">     *ptr=a_conn // this value will be passed to tcp_callback_2 in future</span><br><span class="line">                 // calls</span><br><span class="line">     increase some of &quot;collect&quot; fields</span><br><span class="line">     return;</span><br><span class="line">&#125;</span><br><span class="line">if (a_tcp-&gt;nids_state==NIDS_DATA)</span><br><span class="line">&#123;</span><br><span class="line"> struct conn_param *current_conn_param=*ptr;</span><br><span class="line">     using current_conn_param and the newly received data from the net</span><br><span class="line">     we search for attack signatures, possibly modyfying</span><br><span class="line">     current_conn_param  </span><br><span class="line">     return ;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>nids_register_tcp</code>和<code>nids_register_ip*</code>可被调用任意次，允许两个不同的类似于<code>tcp_callback</code>的函数跟踪同一个TCP流，这会带来一个非默认的异常。</p>
+<p>通过修改全部变量<code>nids_params</code>来修改libnids的参数： <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">struct nids_prm</span><br><span class="line">&#123;</span><br><span class="line">int n_tcp_streams; // 用于存储tcp_stream结构体的哈希表大小 </span><br><span class="line">                   // libnids同时跟踪不超过3 / 4 * n_tcp_streams个连接</span><br><span class="line">                   // 默认值：1040，如果为0，不重组TCP流。</span><br><span class="line">int n_hosts;       // 用于存储IP分片重组信息的哈希表的大小，默认值：256</span><br><span class="line">char * filename;   // 从该文件中捕获数据包</span><br><span class="line">                   // 文件必须是libpcap格式，device必须为NULL</span><br><span class="line">                   // 默认值：NULL</span><br><span class="line">char * device;     // libnids将要监听数据包的接口</span><br><span class="line">                   // 默认值为NULL，表明通过调用pcap_lookupdev决定device</span><br><span class="line">                   // &quot;all&quot;使libnids尝试捕获所有接口的数据包</span><br><span class="line">                   // &quot;all&quot;要求Linux内核&gt;2.2.0，libpcap&gt;=0.6.0</span><br><span class="line">int sk_buff_size;  // Linux内核定义的sk_buff结构体大小</span><br><span class="line">                   // 如果该参数与sizeof(struct sk_buff)不同，libnids会被</span><br><span class="line">                   // 绕过，通过攻击libnis的资源管理。</span><br><span class="line">                   // 如果不放心，可以检查sizeof(sk_buff)并校正这个参数。</span><br><span class="line">                   // 默认值：168</span><br><span class="line">int dev_addon;     // sk_buff结构为网络接口信息保留的字节数</span><br><span class="line">                   // 如果dev_addon==-1，在nids_init()中会根据</span><br><span class="line">                   // 监听的接口类型自动校正。</span><br><span class="line">                   // 默认值：-1</span><br><span class="line">void (*syslog)();  // see description below the nids_params definition</span><br><span class="line">int syslog_level;  // 如果nids_params.syslog==nids_syslog，</span><br><span class="line">                   // 该字段决定syslogd使用的syslogd</span><br><span class="line">                   // 默认值：LOG_ALERT</span><br><span class="line">int scan_num_hosts;// 存储端口扫描信息的哈希表大小</span><br><span class="line">                   // 如果为0，关闭端口扫描检测</span><br><span class="line">                   // 默认值：256</span><br><span class="line">int scan_num_ports;// 同一个源需要扫描的TCP端口数目</span><br><span class="line">                   // 默认值：10</span><br><span class="line">int scan_delay;    // 两个端口间暂停不超过scan_delay毫秒</span><br><span class="line">                   // 便于使libnids报告端口扫描尝试</span><br><span class="line">                   // 默认值：3000</span><br><span class="line">void (*no_mem)();  // 当libndis耗尽内存时调用，它应该终止当前进程。</span><br><span class="line">                   // terminate the current process</span><br><span class="line">int (*ip_filter)(struct ip*);  // 当一个IP包到达时调用该函数</span><br><span class="line">                   // 如果ip_filter返回非零值，继续处理数据包，否则丢弃</span><br><span class="line">                   // 这样可以监控定向至指定主机的流量，而不是整个子网。</span><br><span class="line">                   // 默认函数(nids_ip_filter)总返回1</span><br><span class="line">char *pcap_filter; // 用于pcap(3)的字符串过滤，默认值为NULL。</span><br><span class="line">                   // 这会应用到链路层，因此像&quot;tcp dst port 23&quot;的过滤器</span><br><span class="line">                   // 不会正确地处理分片流量，应该加上</span><br><span class="line">                   // &quot;or (ip[6:2] &amp; 0x1fff != 0)&quot;处理所有分片的数据包</span><br><span class="line">int promisc;       // 如果非0，libnids读取数据包的device(s)为混杂模式</span><br><span class="line">                   // 默认值：1</span><br><span class="line">int one_loop_less; // 默认禁用</span><br><span class="line">int pcap_timeout;  // pcap_open_live的&quot;timeout&quot;参数，默认1024ms</span><br><span class="line">                   // 如果需要更快的响应可以降低该值</span><br><span class="line">                   // libnids-1.20开始出现</span><br><span class="line">int multiproc;     // 如果非零，那么IP分片重组和TCP流重组在不同线程进行</span><br><span class="line">                   // 需要使用glib-2.0编译libndis ，使libnids使用两个线程</span><br><span class="line">                   // 一个接收来自libpcap的IP分片</span><br><span class="line">                   // 另外一个优先级较低的，用于处理分片，流并通知回调函数</span><br><span class="line">                   // 最好使用nids_run()，这个行为对用户是不可见的。</span><br><span class="line">                   // nids_next()使用这个功能没用，因为</span><br><span class="line">                   // 必须为每个数据包启动并结束线程。</span><br><span class="line">                   // 启用该选项，全局变量(nids_last_pcap_header</span><br><span class="line">                   // 和nids_last_pcap_data)可能</span><br><span class="line">                   // 不会正确地指向回调函数中处理的数据包</span><br><span class="line">int queue_limit;   // 限制排队的数据包的数目，当multiproc=true时使用</span><br><span class="line">                   // 默认值：20000</span><br><span class="line">int tcp_workarounds; // 为非RFC兼容的TCP/IP栈启用解决方法，不保证无害。</span><br><span class="line">pcap_t *pcap_desc; // pcap描述符 </span><br><span class="line">&#125; nids_params;</span><br></pre></td></tr></table></figure></p>
+<p><code>nids_params</code>的<code>syslog</code>字段默认为函数<code>nids_syslog</code>的地址：</p>
+<p><code>void nids_syslog (int type, int errnum, struct ip *iph, void *data);</code></p>
+<p><code>nids_params.syslog</code>函数用于报告异常条件，比如端口扫描企图，不可用的TCP首部标志或者其他。该字段应该是某个自定义事件记录函数的地址。定义在<code>libnids.c</code>中的<code>nids_syslog</code>函数是一个如何解码传给<code>nids_params.syslog</code>参数的例子。<code>nids_syslog</code>记录信息到系统守护进程<code>syslogd</code>。</p>
+<p>如果需要处理UDP数据包，应该定义</p>
+<p><code>void udp_callback(struct tuple4 * addr, char * buf, int len, struct ip * iph);</code></p>
+<p>并注册：<code>nids_register_udp(udp_callback)</code>，<code>addr</code>参数包含地址信息，<code>buf</code>指向UDP包携带的数据，<code>len</code>是数据长度，<code>iph</code>指向包含该UP包的IP包。校验和已验证。</p>
+<h1 id="其他有用的技巧">其他有用的技巧</h1>
+<p><code>void nids_killtcp(struct tcp_stream * a_tcp)</code>通过发送RST报文段终止<code>a_tcp</code>描述的连接，并不保证可靠。</p>
+<hr>
+<p>使用<code>nids_run()</code>有一个缺点——应用完全为数据包驱动。有时候需要在没有数据包到达时执行某些任务，可以使用</p>
+<p><code>int nids_next()</code></p>
+<p>它调用<code>pcap_next()</code>而不是<code>pcap_loop</code>，它只处理一个数据包，如果没有可用数据包，进程会休眠。<code>nids_next()</code>成功返回1，失败返回0，此时<code>nids_errbuf</code>包含相应的错误消息。</p>
+<p>通常，使用<code>nids_next()</code>时，应用会在<code>select()</code>中休眠，并测试包含<code>fd</code>的<code>read fd_set</code>的可读性，<code>fd</code>通过调用</p>
+<p><code>int nids_getfd()</code></p>
+<p>获得，该函数成功时返回文件描述符，失败返回-1，<code>nids_errbuf</code>存储错误信息。</p>
+<p>类似地，</p>
+<p><code>int nids_dispatch(int cnt)</code></p>
+<p>包装了<code>pcap_dispatch</code>，当想区分返回值（比如EOF和error）时，使用它代替<code>nids_next()</code>更有利。</p>
+<hr>
+<p>有几个原因需要跳过对某些数据包的校验和处理：</p>
+<ol type="1">
+<li>许多网卡驱动有能力计算外出数据包的校验和，这种情况下传给libpcap的数据包可以有未计算的校验和。</li>
+<li>为了提升性能。</li>
+</ol>
+<p>为通知libnids哪些数据包不需要被校验，应该分配一个<code>nids_chksum_ctl</code>（定义在<code>nids.h</code>中）数组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct nids_chksum_ctl</span><br><span class="line">&#123;       u_int netaddr;</span><br><span class="line">        u_int mask;</span><br><span class="line">        u_int action;</span><br><span class="line">    /* reserved fields */</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>并在</p>
+<p><code>nids_register_chksum_ctl(struct nids_chksum_ctl *, int);</code></p>
+<p>中注册，第二个参数是数组元素个数。</p>
+<p>校验和函数首先依次检查该数组每个元素，如果当前数据包的源IP<code>SRCIP</code>满足条件</p>
+<p><code>(SRCIP&amp;chksum_ctl_array[i].mask)==chksum_ctl_array[i].netaddr</code></p>
+<p>那么如果<code>action</code>字段是<code>NIDS_DO_CHKSUM</code>，计算校验和，如果<code>action</code>字段是<code>NIDS_DONT_CHKSUM</code>，不计算校验和。如果数据包不匹配数组中任何一个元素，默认动作是执行校验和计算。</p>
+<p><code>samples/chksum_ctl.c</code>中有一个例子。</p>
+<hr>
+<p>头文件<code>nids.h</code>定义了常数<code>NIDS_MAJOR (1)</code>和<code>NIDS_MINOR (21)</code>，可以运行时决定libnids的版本，<code>nids.h</code>也曾定义过<code>HAVE_NEW_PCAP</code>，但在1.19版本后已经废弃。</p>
+<hr>
+<p>通常，TCP流携带的数据可以分为协议依赖的记录，TCP的回调函数能接收一定量数据，其中包含多个记录，因此，回调函数应该在接收的整个数据中迭代执行协议解析程序，这增加了代码的复杂性。</p>
+<p>如果<code>nids_params.one_loop_less</code>非零，libnids的行为略有变化。如果回调函数使用了一些（不是所有）新到达的数据，libnids立即再次调用它。缓冲区中只有未处理的数据，<code>rcv-&gt;count_new</code>也会恰当地减少。这样，此时回调函数只需要处理一条记录——libnids将会再次调用它，直到不再剩下新数据或者没有数据可被处理。不幸地是这个行为在2+个回调函数读取同一半TCP连接时会导致比较大的语义问题，因此，如果<code>nids_params.one_loop_less</code>非零，禁止将2个或更多的回调函数附加到同一半的TCP流上。又不幸地，现有的接口不能将这个错误传给回调函数。</p>
+<hr>
+<p>上一次观察到的数据包的pcap头部导出如下：</p>
+<p><code>extern struct pcap_pkthdr *nids_last_pcap_header;</code></p>
+<p>可以使用它获取时间戳，得到更高的准确性并保存系统调用。</p>
+<h1 id="的新特性">1.21的新特性</h1>
+<p><code>nids_last_pcap_data</code>是一个新的外部变量，用于获取最后一个PCAP帧的数据，就像用<code>nids_last_pcap_header</code>获取最后一个PCAP帧的头部。</p>
+<p><code>nids_linkoffset</code>是一个新的外部变量，用于获取当前PCAP设备在链路层和网络层计算的偏移，可以用从在<code>ip_func</code>中获得的经过IP分片重组的数据包重构PCAP帧，通过从<code>nids_last_pcap_data</code>起始处复制同样多的字节，像这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">void ip_callback(struct ip *pkt, int len)</span><br><span class="line">&#123;</span><br><span class="line">  u_char                        *frame;</span><br><span class="line">  struct pcap_pkthdr            ph;</span><br><span class="line"></span><br><span class="line">  frame = malloc(len + nids_linkoffset);</span><br><span class="line">  memcpy(frame, nids_last_pcap_data, nids_linkoffset);</span><br><span class="line">  memcpy(frame + nids_linkoffset, pkt, len);</span><br><span class="line">  ph.ts = nids_last_pcap_header-&gt;ts;</span><br><span class="line">  ph.caplen = ph.len = len + nids_linkoffset;</span><br><span class="line">  pcap_dump(nids_params.pcap_desc, &amp;ph, frame);</span><br><span class="line">  free(frame);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>nids_params.pcap_desc</code>可能在libnids之外使用<code>pcap_handler</code>，所需要做的是复制<code>pcap_t</code>指针（通过<code>pcap_open_live(), pcap_open_dead()</code>或<code>pcap_open_offline()</code>返回）到<code>nids_params.pcap_desc</code>并调用<code>nids_pcap_handler()</code>。注意：libnids不知道当传递数据包给<code>nids_pcap_handler()</code>时何时完成，所以必须调用<code>nids_exit()</code>告诉libnids释放资源。</p>
+<p><code>nids_params.tcp_workarounds</code>是一个新的运行时选项，为错误的TCP实现提供额外检查。如果该选项非零，libnids会将一个强行关闭的TCP连接设为<code>NIDS_TIMED_OUT</code>状态。</p>
+<p><code>nids_free_tcp_stream()</code>是一个新的外部函数，可以强迫libnids不再跟踪一个TCP流。需要注意的是，在注册的回调函数中为一个早已处于closing状态（<code>NIDS_CLOSE, NIDS_TIMED_OUT, NIDS_RESET or NIDS_EXITING</code>）的TCP流调用<code>nids_free_tcp_stream</code>会造成二次释放（libnids会在<code>tcp_callback</code>返回时在内部调用<code>nids_free_tcp_stream()</code>），程序会因此崩溃。</p>
+<p><code>nids_unregister_ip_frag(), nids_unregister_ip(), nids_unregister_udp()</code>和<code>nids_unregister_tcp()</code>是新的外部函数，可以解除之前用对应<code>nids_register_*()</code>注册过的回调函数。</p>
+<p><code>tcp_stream.user</code>是传给TCP回调函数的新字段，类似于<code>void **param</code>，但它对相同TCP连接的所有回调函数都是可见的，而<code>param</code>是每个回调函数特有的。</p>
+<h1 id="faq">FAQ</h1>
+<ul>
+<li><p>对于一个连接X，只获取到server发来的数据</p>
+<p>可能是在X的client端运行libnids，并且主机的网卡驱动在硬件上提供了校验和的计算，于是libnids看到client发的数据包的校验和没有计算就把它丢了。解决方法是用<code>nids_register_chksum_ctl()</code>，跳过校验和计算。</p></li>
+<li><p>如何使libnids追踪已建立的TCP连接</p>
+<p>特意没有实现，TCP的某些关键信息只出现在SYN包中。如果确实需要这个功能，可以尝试包含libnids-track-established.patch。</p></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">Creative Commons BY-NC-SA 4.0 International License</a>.<br/>
+博客采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">知识共享署署名（BY）-非商业性（NC）-相同方式共享（SA）</a>。<br/>
+本文首发于<a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a>，转载请保留出处。</p>
+</div>
+</div>
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Libnids/" rel="tag">#Libnids</a>
+          
+            <a href="/tags/网络/" rel="tag">#网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/27/Libnids安装/" rel="next" title="Libnids安装">
+                <i class="fa fa-chevron-left"></i> Libnids安装
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/03/Libnids中TCP相关实现/" rel="prev" title="Libnids中TCP相关实现">
+                Libnids中TCP相关实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="漂浮" />
+          <p class="site-author-name" itemprop="name">漂浮</p>
+          <p class="site-description motion-element" itemprop="description">We must know, we will know.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ip分片重组"><span class="nav-number">2.</span> <span class="nav-text">IP分片重组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcp流重组"><span class="nav-number">3.</span> <span class="nav-text">TCP流重组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一个简单的应用"><span class="nav-number">4.</span> <span class="nav-text">一个简单的应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#libnids中基本的结构体与函数"><span class="nav-number">5.</span> <span class="nav-text">libnids中基本的结构体与函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他有用的技巧"><span class="nav-number">6.</span> <span class="nav-text">其他有用的技巧</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#的新特性"><span class="nav-number">7.</span> <span class="nav-text">1.21的新特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#faq"><span class="nav-number">8.</span> <span class="nav-text">FAQ</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">漂浮</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv">访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+</body>
+</html>

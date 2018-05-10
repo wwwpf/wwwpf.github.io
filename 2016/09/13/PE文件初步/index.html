@@ -1,0 +1,1133 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="PE文件," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="PE是Portable Executable简写，PE文件是32/64位Windows上的主流可执行文件，主要有EXE和DLL文件。 C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include\WinNT.h定义了PE文件的数据结构，">
+<meta name="keywords" content="PE文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PE文件初步">
+<meta property="og:url" content="http://yoursite.com/2016/09/13/PE文件初步/index.html">
+<meta property="og:site_name" content="Memory">
+<meta property="og:description" content="PE是Portable Executable简写，PE文件是32/64位Windows上的主流可执行文件，主要有EXE和DLL文件。 C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include\WinNT.h定义了PE文件的数据结构，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/PE_preview.jpg">
+<meta property="og:image" content="http://yoursite.com/images/PE_DOS_code.jpg">
+<meta property="og:image" content="http://yoursite.com/images/PE_section_table.jpg">
+<meta property="og:image" content="http://yoursite.com/images/PE_IMAGE_THUNK_DATA.jpg">
+<meta property="og:image" content="http://yoursite.com/images/PE_IAT.jpg">
+<meta property="og:image" content="http://yoursite.com/images/PE_EXPORT_FUN.jpg">
+<meta property="og:updated_time" content="2016-12-03T04:01:06.322Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PE文件初步">
+<meta name="twitter:description" content="PE是Portable Executable简写，PE文件是32/64位Windows上的主流可执行文件，主要有EXE和DLL文件。 C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include\WinNT.h定义了PE文件的数据结构，">
+<meta name="twitter:image" content="http://yoursite.com/images/PE_preview.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/09/13/PE文件初步/"/>
+
+  <title> PE文件初步 | Memory </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Memory</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                PE文件初步
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-13T18:02:25+08:00" content="2016-09-13">
+              2016-09-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/cs/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv">本文阅读量
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><code>PE</code>是<code>Portable Executable</code>简写，PE文件是32/64位Windows上的主流可执行文件，主要有EXE和DLL文件。 <code>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include\WinNT.h</code>定义了PE文件的数据结构， <a id="more"></a> PE文件的总体框架如下：</p>
+<p><img src="/images/PE_preview.jpg"></p>
+<h1 id="dos头">DOS头</h1>
+<p>每个PE文件以一个DOS程序开始，如果在DOS下运行，DOS就能识别出这是一个有效的程序，然后运行DOS stub，在不支持PE文件的操作系统下一般会显示“This program cannot be run in DOS mode”。 PE文件以一个<code>IMAGE_DOS_HEADER</code>（<code>MZ</code>头）开始，<code>IMAGE_DOS_HEADER</code>数据结构如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_DOS_HEADER</span> &#123;</span>      <span class="comment">// DOS .EXE header</span></span><br><span class="line">    WORD   e_magic;                     <span class="comment">// Magic number</span></span><br><span class="line">    WORD   e_cblp;                      <span class="comment">// Bytes on last page of file</span></span><br><span class="line">    WORD   e_cp;                        <span class="comment">// Pages in file</span></span><br><span class="line">    WORD   e_crlc;                      <span class="comment">// Relocations</span></span><br><span class="line">    WORD   e_cparhdr;                   <span class="comment">// Size of header in paragraphs</span></span><br><span class="line">    WORD   e_minalloc;                  <span class="comment">// Minimum extra paragraphs needed</span></span><br><span class="line">    WORD   e_maxalloc;                  <span class="comment">// Maximum extra paragraphs needed</span></span><br><span class="line">    WORD   e_ss;                        <span class="comment">// Initial (relative) SS value</span></span><br><span class="line">    WORD   e_sp;                        <span class="comment">// Initial SP value</span></span><br><span class="line">    WORD   e_csum;                      <span class="comment">// Checksum</span></span><br><span class="line">    WORD   e_ip;                        <span class="comment">// Initial IP value</span></span><br><span class="line">    WORD   e_cs;                        <span class="comment">// Initial (relative) CS value</span></span><br><span class="line">    WORD   e_lfarlc;                    <span class="comment">// File address of relocation table</span></span><br><span class="line">    WORD   e_ovno;                      <span class="comment">// Overlay number</span></span><br><span class="line">    WORD   e_res[<span class="number">4</span>];                    <span class="comment">// Reserved words</span></span><br><span class="line">    WORD   e_oemid;                     <span class="comment">// OEM identifier (for e_oeminfo)</span></span><br><span class="line">    WORD   e_oeminfo;                   <span class="comment">// OEM information; e_oemid specific</span></span><br><span class="line">    WORD   e_res2[<span class="number">10</span>];                  <span class="comment">// Reserved words</span></span><br><span class="line">    LONG   e_lfanew;                    <span class="comment">// File address of new exe header</span></span><br><span class="line">  &#125; IMAGE_DOS_HEADER, *PIMAGE_DOS_HEADER;</span><br></pre></td></tr></table></figure>
+<p>在<code>DOS MZ</code>头后是<code>DOS stub</code>,DOS下会根据识别出来的<code>MZ</code>头运行<code>stub</code>中的代码。 以一个简单的“Hellor, world”为例，</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Hello, world.\n"</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用g++编译后，以十六进制打开：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">00000000h: 4D 5A 90 00 03 00 00 00 04 00 00 00 FF FF 00 00 ; MZ?..........</span><br><span class="line">00000010h: B8 00 00 00 00 00 00 00 40 00 00 00 00 00 00 00 ; ?......@.......</span><br><span class="line">00000020h: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ; ................</span><br><span class="line">00000030h: 00 00 00 00 00 00 00 00 00 00 00 00 80 00 00 00 ; ............€...</span><br><span class="line">00000040h: 0E 1F BA 0E 00 B4 09 CD 21 B8 01 4C CD 21 54 68 ; ..?.???L?Th</span><br><span class="line">00000050h: 69 73 20 70 72 6F 67 72 61 6D 20 63 61 6E 6E 6F ; is program canno</span><br><span class="line">00000060h: 74 20 62 65 20 72 75 6E 20 69 6E 20 44 4F 53 20 ; t be run in DOS </span><br><span class="line">00000070h: 6D 6F 64 65 2E 0D 0D 0A 24 00 00 00 00 00 00 00 ; mode....$.......</span><br><span class="line">00000080h: 50 45 00 00 4C 01 08 00 F4 D1 D7 57 00 B4 00 00 ; PE..L...粞譝.?.</span><br></pre></td></tr></table></figure>
+<p><code>e_magic</code>是<code>4D 5A</code>，对应字符<code>MZ</code>，<code>#define</code>如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _MAC</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"pshpack4.h"</span>                   <span class="comment">// 4 byte packing is the default</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_DOS_SIGNATURE                 0x5A4D      <span class="comment">// MZ</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_OS2_SIGNATURE                 0x454E      <span class="comment">// NE</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_OS2_SIGNATURE_LE              0x454C      <span class="comment">// LE</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_VXD_SIGNATURE                 0x454C      <span class="comment">// LE</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_NT_SIGNATURE                  0x00004550  <span class="comment">// PE00</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"pshpack2.h"</span>                   <span class="comment">// 16 bit headers are 2 byte packed</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"pshpack1.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_DOS_SIGNATURE                 0x4D5A      <span class="comment">// MZ</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_OS2_SIGNATURE                 0x4E45      <span class="comment">// NE</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_OS2_SIGNATURE_LE              0x4C45      <span class="comment">// LE</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_NT_SIGNATURE                  0x50450000  <span class="comment">// PE00</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>在文件头偏移<code>3C</code>处，<code>e_lfanew</code>指出了PE文件头的位置，值为<code>00 00 00 80</code>，可以看到在<code>80</code>偏移处，对应字符<code>PE</code>。</p>
+<p>用IDA分析文件可以看到其代码如下：</p>
+<p><img src="/images/PE_DOS_code.jpg"></p>
+<p>程序调用了<code>int 21h</code>，<code>function</code>为9，作用是将地址为<code>DS:DX</code>处的字符串写到标准输出，在<code>0E</code>偏移处就是以<code>$</code>结尾的字符串“This program cannot be run in DOS mode”。然后执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov     ax, 4C01h</span><br><span class="line">int     21h</span><br></pre></td></tr></table></figure>
+<p>终止程序。</p>
+<p>用LordPE可以看到DOS头所有内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">-&gt;DOS Header</span><br><span class="line">   e_magic:     0x5A4D</span><br><span class="line">   e_cblp:      0x0090</span><br><span class="line">   e_cp:        0x0003</span><br><span class="line">   e_crlc:      0x0000</span><br><span class="line">   e_cparhdr:   0x0004</span><br><span class="line">   e_minalloc:  0x0000</span><br><span class="line">   e_maxalloc:  0xFFFF</span><br><span class="line">   e_ss:        0x0000</span><br><span class="line">   e_sp:        0x00B8</span><br><span class="line">   e_csum:      0x0000</span><br><span class="line">   e_ip:        0x0000</span><br><span class="line">   e_cs:        0x0000</span><br><span class="line">   e_lfarlc:    0x0040</span><br><span class="line">   e_ovno:      0x0000</span><br><span class="line">   e_res:       0x0000000000000000</span><br><span class="line">   e_oemid:     0x0000</span><br><span class="line">   e_oeminfo:   0x0000</span><br><span class="line">   e_res2:      0x0000000000000000000000000000000000000000</span><br><span class="line">   e_lfanew:    0x00000080</span><br></pre></td></tr></table></figure>
+<h1 id="pe头">PE头</h1>
+<p>PE头的数据结构如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_NT_HEADERS</span> &#123;</span></span><br><span class="line">    DWORD Signature;</span><br><span class="line">    IMAGE_FILE_HEADER FileHeader;</span><br><span class="line">    IMAGE_OPTIONAL_HEADER32 OptionalHeader;</span><br><span class="line">&#125; IMAGE_NT_HEADERS32, *PIMAGE_NT_HEADERS32;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">00000080h: 50 45 00 00 4C 01 08 00 F4 D1 D7 57 00 B4 00 00 ; PE..L...粞譝.?.</span><br><span class="line">00000090h: 2D 02 00 00 E0 00 07 03 0B 01 02 19 00 7E 00 00 ; -...?.......~..</span><br><span class="line">000000a0h: 00 B0 00 00 00 0C 00 00 C0 12 00 00 00 10 00 00 ; .?.....?......</span><br><span class="line">000000b0h: 00 90 00 00 00 00 40 00 00 10 00 00 00 02 00 00 ; .?...@.........</span><br><span class="line">000000c0h: 04 00 00 00 01 00 00 00 04 00 00 00 00 00 00 00 ; ................</span><br><span class="line">000000d0h: 00 10 01 00 00 04 00 00 30 64 01 00 03 00 00 00 ; ........0d......</span><br><span class="line">000000e0h: 00 00 20 00 00 10 00 00 00 00 10 00 00 10 00 00 ; .. .............</span><br><span class="line">000000f0h: 00 00 00 00 10 00 00 00 00 00 00 00 00 00 00 00 ; ................</span><br><span class="line">00000100h: 00 E0 00 00 34 08 00 00 00 00 00 00 00 00 00 00 ; .?.4...........</span><br><span class="line">00000110h: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ; ................</span><br><span class="line">00000120h: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ; ................</span><br><span class="line">00000130h: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ; ................</span><br><span class="line">00000140h: 04 00 01 00 18 00 00 00 00 00 00 00 00 00 00 00 ; ................</span><br><span class="line">00000150h: 00 00 00 00 00 00 00 00 9C E1 00 00 24 01 00 00 ; ........溼..$...</span><br><span class="line">00000160h: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ; ................</span><br><span class="line">00000170h: 00 00 00 00 00 00 00 00 2E 74 65 78 74 00 00 00 ; .........text...</span><br></pre></td></tr></table></figure>
+<h2 id="signature">Signature</h2>
+<p>A 4-byte signature identifying the file as a PE image，<code>#define IMAGE_NT_SIGNATURE                  0x00004550  // PE00</code>给出了定义，与<code>IMAGE_DOS_SIGNATURE</code>的定义在同一处。</p>
+<h2 id="fileheader">FileHeader</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_FILE_HEADER</span> &#123;</span></span><br><span class="line">    WORD    Machine;</span><br><span class="line">    WORD    NumberOfSections;</span><br><span class="line">    DWORD   TimeDateStamp;</span><br><span class="line">    DWORD   PointerToSymbolTable;</span><br><span class="line">    DWORD   NumberOfSymbols;</span><br><span class="line">    WORD    SizeOfOptionalHeader;</span><br><span class="line">    WORD    Characteristics;</span><br><span class="line">&#125; IMAGE_FILE_HEADER, *PIMAGE_FILE_HEADER;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>Machine</strong> The architecture type of the computer. An image file can only be run on the specified computer or a system that emulates the specified computer。常见标志如下：</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0x014c</td>
+<td>Intel 386</td>
+</tr>
+<tr class="even">
+<td>0x0200</td>
+<td>Intel 64</td>
+</tr>
+<tr class="odd">
+<td>0x8664</td>
+<td>AMD64 (K8)</td>
+</tr>
+</tbody>
+</table>
+<p>这里为<code>01 4C</code>。更多的在<code>WinNT.h</code>中有定义：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_UNKNOWN           0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_I386              0x014c  <span class="comment">// Intel 386.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_R3000             0x0162  <span class="comment">// MIPS little-endian, 0x160 big-endian</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_R4000             0x0166  <span class="comment">// MIPS little-endian</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_R10000            0x0168  <span class="comment">// MIPS little-endian</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_WCEMIPSV2         0x0169  <span class="comment">// MIPS little-endian WCE v2</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_ALPHA             0x0184  <span class="comment">// Alpha_AXP</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_SH3               0x01a2  <span class="comment">// SH3 little-endian</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_SH3DSP            0x01a3</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_SH3E              0x01a4  <span class="comment">// SH3E little-endian</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_SH4               0x01a6  <span class="comment">// SH4 little-endian</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_SH5               0x01a8  <span class="comment">// SH5</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_ARM               0x01c0  <span class="comment">// ARM Little-Endian</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_THUMB             0x01c2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_AM33              0x01d3</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_POWERPC           0x01F0  <span class="comment">// IBM PowerPC Little-Endian</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_POWERPCFP         0x01f1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_IA64              0x0200  <span class="comment">// Intel 64</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_MIPS16            0x0266  <span class="comment">// MIPS</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_ALPHA64           0x0284  <span class="comment">// ALPHA64</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_MIPSFPU           0x0366  <span class="comment">// MIPS</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_MIPSFPU16         0x0466  <span class="comment">// MIPS</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_AXP64             IMAGE_FILE_MACHINE_ALPHA64</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_TRICORE           0x0520  <span class="comment">// Infineon</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_CEF               0x0CEF</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_EBC               0x0EBC  <span class="comment">// EFI Byte Code</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_AMD64             0x8664  <span class="comment">// AMD64 (K8)</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_M32R              0x9041  <span class="comment">// M32R little-endian</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_CEE               0xC0EE</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>NumberOfSections</strong> The number of sections. This indicates the size of the section table, which immediately follows the headers. Note that the Windows loader limits the number of sections to 96.</p></li>
+<li><p><strong>TimeDateStamp</strong> The low 32 bits of the time stamp of the image. This represents the date and time the image was created by the linker. The value is represented in the number of seconds elapsed since midnight (00:00:00), January 1, 1970, Universal Coordinated Time, according to the system clock.</p></li>
+<li><p><strong>PointerToSymbolTable</strong> The offset of the symbol table, in bytes, or zero if no COFF symbol table exists.</p></li>
+<li><p><strong>NumberOfSymbols</strong> The number of symbols in the symbol table.</p></li>
+<li><p><strong>SizeOfOptionalHeader</strong> The size of the optional header, in bytes. This value should be 0 for object files.</p></li>
+<li><p><strong>Characteristics</strong> 文件的属性。</p></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_RELOCS_STRIPPED           0x0001  <span class="comment">// Relocation info stripped from file.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_EXECUTABLE_IMAGE          0x0002  <span class="comment">// File is executable  (i.e. no unresolved externel references).</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_LINE_NUMS_STRIPPED        0x0004  <span class="comment">// Line nunbers stripped from file.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_LOCAL_SYMS_STRIPPED       0x0008  <span class="comment">// Local symbols stripped from file.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_AGGRESIVE_WS_TRIM         0x0010  <span class="comment">// Agressively trim working set</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_LARGE_ADDRESS_AWARE       0x0020  <span class="comment">// App can handle &gt;2gb addresses</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_BYTES_REVERSED_LO         0x0080  <span class="comment">// Bytes of machine word are reversed.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_32BIT_MACHINE             0x0100  <span class="comment">// 32 bit word machine.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_DEBUG_STRIPPED            0x0200  <span class="comment">// Debugging info stripped from file in .DBG file</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP   0x0400  <span class="comment">// If Image is on removable media, copy and run from the swap file.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_NET_RUN_FROM_SWAP         0x0800  <span class="comment">// If Image is on Net, copy and run from the swap file.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_SYSTEM                    0x1000  <span class="comment">// System File.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_DLL                       0x2000  <span class="comment">// File is a DLL.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_UP_SYSTEM_ONLY            0x4000  <span class="comment">// File should only be run on a UP machine</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_BYTES_REVERSED_HI         0x8000  <span class="comment">// Bytes of machine word are reversed.</span></span></span><br></pre></td></tr></table></figure>
+<p>FileHeader所有内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">-&gt;File Header</span><br><span class="line">   Machine:               0x014C  (I386)</span><br><span class="line">   NumberOfSections:      0x0008</span><br><span class="line">   TimeDateStamp:         0x57D7D1F4  (GMT: Tue Sep 13 10:16:20 2016)</span><br><span class="line">   PointerToSymbolTable:  0x0000B400</span><br><span class="line">   NumberOfSymbols:       0x0000022D</span><br><span class="line">   SizeOfOptionalHeader:  0x00E0</span><br><span class="line">   Characteristics:       0x0307</span><br><span class="line">                          (RELOCS_STRIPPED)</span><br><span class="line">                          (EXECUTABLE_IMAGE)</span><br><span class="line">                          (LINE_NUMS_STRIPPED)</span><br><span class="line">                          (32BIT_MACHINE)</span><br><span class="line">                          (DEBUG_STRIPPED)</span><br></pre></td></tr></table></figure>
+<h2 id="optionalheader">OptionalHeader</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_OPTIONAL_HEADER</span> &#123;</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// Standard fields.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">    WORD    Magic;</span><br><span class="line">    BYTE    MajorLinkerVersion;</span><br><span class="line">    BYTE    MinorLinkerVersion;</span><br><span class="line">    DWORD   SizeOfCode;</span><br><span class="line">    DWORD   SizeOfInitializedData;</span><br><span class="line">    DWORD   SizeOfUninitializedData;</span><br><span class="line">    DWORD   AddressOfEntryPoint;</span><br><span class="line">    DWORD   BaseOfCode;</span><br><span class="line">    DWORD   BaseOfData;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// NT additional fields.</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">    DWORD   ImageBase;</span><br><span class="line">    DWORD   SectionAlignment;</span><br><span class="line">    DWORD   FileAlignment;</span><br><span class="line">    WORD    MajorOperatingSystemVersion;</span><br><span class="line">    WORD    MinorOperatingSystemVersion;</span><br><span class="line">    WORD    MajorImageVersion;</span><br><span class="line">    WORD    MinorImageVersion;</span><br><span class="line">    WORD    MajorSubsystemVersion;</span><br><span class="line">    WORD    MinorSubsystemVersion;</span><br><span class="line">    DWORD   Win32VersionValue;</span><br><span class="line">    DWORD   SizeOfImage;</span><br><span class="line">    DWORD   SizeOfHeaders;</span><br><span class="line">    DWORD   CheckSum;</span><br><span class="line">    WORD    Subsystem;</span><br><span class="line">    WORD    DllCharacteristics;</span><br><span class="line">    DWORD   SizeOfStackReserve;</span><br><span class="line">    DWORD   SizeOfStackCommit;</span><br><span class="line">    DWORD   SizeOfHeapReserve;</span><br><span class="line">    DWORD   SizeOfHeapCommit;</span><br><span class="line">    DWORD   LoaderFlags;</span><br><span class="line">    DWORD   NumberOfRvaAndSizes;</span><br><span class="line">    IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];</span><br><span class="line">&#125; IMAGE_OPTIONAL_HEADER32, *PIMAGE_OPTIONAL_HEADER32;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>Magic</strong> The state of the image file.</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_NT_OPTIONAL_HDR32_MAGIC      0x10b</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_NT_OPTIONAL_HDR64_MAGIC      0x20b</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_ROM_OPTIONAL_HDR_MAGIC       0x107</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>MajorLinkerVersion</strong> The major version number of the linker.</p></li>
+<li><p><strong>MinorLinkerVersion</strong> The minor version number of the linker.</p></li>
+<li><p><strong>SizeOfCode</strong> The size of the code section, in bytes, or the sum of all such sections if there are multiple code sections.</p></li>
+<li><p><strong>SizeOfInitializedData</strong> The size of the initialized data section, in bytes, or the sum of all such sections if there are multiple initialized data sections.</p></li>
+<li><p><strong>SizeOfUninitializedData</strong> The size of the uninitialized data section, in bytes, or the sum of all such sections if there are multiple uninitialized data sections.</p></li>
+<li><p><strong>AddressOfEntryPoint</strong> A pointer to the entry point function, relative to the image base address. For executable files, this is the starting address. For device drivers, this is the address of the initialization function. The entry point function is optional for DLLs. When no entry point is present, this member is zero.</p></li>
+<li><p><strong>BaseOfCode</strong> A pointer to the beginning of the code section, relative to the image base.</p></li>
+<li><p><strong>BaseOfData</strong> A pointer to the beginning of the data section, relative to the image base.</p></li>
+<li><p><strong>ImageBase</strong> The preferred address of the first byte of the image when it is loaded in memory. This value is a multiple of 64K bytes. The default value for DLLs is 0x10000000. The default value for applications is 0x00400000, except on Windows CE where it is 0x00010000.</p></li>
+<li><p><strong>SectionAlignment</strong> The alignment of sections loaded in memory, in bytes. This value must be greater than or equal to the <strong>FileAlignment</strong> member. The default value is the page size for the system.</p></li>
+<li><p><strong>FileAlignment</strong> The alignment of the raw data of sections in the image file, in bytes. The value should be a power of 2 between 512 and 64K (inclusive). The default is 512. If the <strong>SectionAlignment</strong> member is less than the system page size, this member must be the same as <strong>SectionAlignment</strong>.</p></li>
+<li><p><strong>MajorOperatingSystemVersion</strong> The major version number of the required operating system.</p></li>
+<li><p><strong>MinorOperatingSystemVersion</strong> The minor version number of the required operating system.</p></li>
+<li><p><strong>MajorImageVersion</strong> The major version number of the image.</p></li>
+<li><p><strong>MinorImageVersion</strong> The minor version number of the image.</p></li>
+<li><p><strong>MajorSubsystemVersion</strong> The major version number of the subsystem.</p></li>
+<li><p><strong>MinorSubsystemVersion</strong> The minor version number of the subsystem.</p></li>
+<li><p><strong>Win32VersionValue</strong> This member is reserved and must be 0.</p></li>
+<li><p><strong>SizeOfImage</strong> The size of the image, in bytes, including all headers. Must be a multiple of <strong>SectionAlignment</strong>.</p></li>
+<li><strong>SizeOfHeaders</strong> The combined size of the following items, rounded to a multiple of the value specified in the <strong>FileAlignment</strong> member.
+<ul>
+<li>e_lfanew member of <strong>IMAGE_DOS_HEADER</strong></li>
+<li>4 byte signature</li>
+<li>size of <strong>IMAGE_FILE_HEADER</strong></li>
+<li>size of optional header</li>
+<li>size of all section headers</li>
+</ul></li>
+<li><p><strong>CheckSum</strong> The image file checksum. The following files are validated at load time: all drivers, any DLL loaded at boot time, and any DLL loaded into a critical system process.</p></li>
+<li><p><strong>Subsystem</strong> The subsystem required to run this image.</p></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Subsystem Values</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_UNKNOWN              0   <span class="comment">// Unknown subsystem.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_NATIVE               1   <span class="comment">// Image doesn't require a subsystem.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_WINDOWS_GUI          2   <span class="comment">// Image runs in the Windows GUI subsystem.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_WINDOWS_CUI          3   <span class="comment">// Image runs in the Windows character subsystem.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_OS2_CUI              5   <span class="comment">// image runs in the OS/2 character subsystem.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_POSIX_CUI            7   <span class="comment">// image runs in the Posix character subsystem.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_NATIVE_WINDOWS       8   <span class="comment">// image is a native Win9x driver.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_WINDOWS_CE_GUI       9   <span class="comment">// Image runs in the Windows CE subsystem.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_EFI_APPLICATION      10  <span class="comment">// Extensible Firmware Interface (EFI) application.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER  11   <span class="comment">// EFI driver with boot services.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER   12  <span class="comment">// EFI driver with run-time services.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_EFI_ROM              13  <span class="comment">// EFI ROM image.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_XBOX                 14  <span class="comment">// Xbox system.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SUBSYSTEM_WINDOWS_BOOT_APPLICATION 16  <span class="comment">// Boot application.</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>DllCharacteristics</strong> The DLL characteristics of the image.</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// DllCharacteristics Entries</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//      IMAGE_LIBRARY_PROCESS_INIT            0x0001     // Reserved.</span></span><br><span class="line"><span class="comment">//      IMAGE_LIBRARY_PROCESS_TERM            0x0002     // Reserved.</span></span><br><span class="line"><span class="comment">//      IMAGE_LIBRARY_THREAD_INIT             0x0004     // Reserved.</span></span><br><span class="line"><span class="comment">//      IMAGE_LIBRARY_THREAD_TERM             0x0008     // Reserved.</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE 0x0040     <span class="comment">// DLL can move.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY    0x0080     <span class="comment">// Code Integrity Image</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_DLLCHARACTERISTICS_NX_COMPAT    0x0100     <span class="comment">// Image is NX compatible</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_DLLCHARACTERISTICS_NO_ISOLATION 0x0200     <span class="comment">// Image understands isolation and doesn't want it</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_DLLCHARACTERISTICS_NO_SEH       0x0400     <span class="comment">// Image does not use SEH.  No SE handler may reside in this image</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_DLLCHARACTERISTICS_NO_BIND      0x0800     <span class="comment">// Do not bind this image.</span></span></span><br><span class="line"><span class="comment">//                                            0x1000     // Reserved.</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_DLLCHARACTERISTICS_WDM_DRIVER   0x2000     <span class="comment">// Driver uses WDM model</span></span></span><br><span class="line"><span class="comment">//                                            0x4000     // Reserved.</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE     0x8000     <span class="comment">// The image is terminal server aware.</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>SizeOfStackReserve</strong> The number of bytes to reserve for the stack. Only the memory specified by the <strong>SizeOfStackCommit</strong> member is committed at load time; the rest is made available one page at a time until this reserve size is reached.</p></li>
+<li><p><strong>SizeOfStackCommit</strong> The number of bytes to commit for the stack.</p></li>
+<li><p><strong>SizeOfHeapReserve</strong> The number of bytes to reserve for the local heap. Only the memory specified by the <strong>SizeOfHeapCommit</strong> member is committed at load time; the rest is made available one page at a time until this reserve size is reached.</p></li>
+<li><p><strong>SizeOfHeapCommit</strong> The number of bytes to commit for the local heap.</p></li>
+<li><p><strong>LoaderFlags</strong> This member is obsolete.</p></li>
+<li><p><strong>NumberOfRvaAndSizes</strong> The number of directory entries in the remainder of the optional header. Each entry describes a location and size.</p></li>
+<li><p><strong>DataDirectory</strong> A pointer to the first <strong>IMAGE_DATA_DIRECTORY</strong> structure in the data directory.</p></li>
+</ul>
+<p><code>OptionalHeader</code>的字段如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">-&gt;Optional Header</span><br><span class="line">   Magic:                        0x010B  (HDR32_MAGIC)</span><br><span class="line">   MajorLinkerVersion:           0x02</span><br><span class="line">   MinorLinkerVersion:           0x19  -&gt; 2.25</span><br><span class="line">   SizeOfCode:                   0x00007E00</span><br><span class="line">   SizeOfInitializedData:        0x0000B000</span><br><span class="line">   SizeOfUninitializedData:      0x00000C00</span><br><span class="line">   AddressOfEntryPoint:          0x000012C0</span><br><span class="line">   BaseOfCode:                   0x00001000</span><br><span class="line">   BaseOfData:                   0x00009000</span><br><span class="line">   ImageBase:                    0x00400000</span><br><span class="line">   SectionAlignment:             0x00001000</span><br><span class="line">   FileAlignment:                0x00000200</span><br><span class="line">   MajorOperatingSystemVersion:  0x0004</span><br><span class="line">   MinorOperatingSystemVersion:  0x0000  -&gt; 4.00</span><br><span class="line">   MajorImageVersion:            0x0001</span><br><span class="line">   MinorImageVersion:            0x0000  -&gt; 1.00</span><br><span class="line">   MajorSubsystemVersion:        0x0004</span><br><span class="line">   MinorSubsystemVersion:        0x0000  -&gt; 4.00</span><br><span class="line">   Win32VersionValue:            0x00000000</span><br><span class="line">   SizeOfImage:                  0x00011000</span><br><span class="line">   SizeOfHeaders:                0x00000400</span><br><span class="line">   CheckSum:                     0x00016430</span><br><span class="line">   Subsystem:                    0x0003  (WINDOWS_CUI)</span><br><span class="line">   DllCharacteristics:           0x0000</span><br><span class="line">   SizeOfStackReserve:           0x00200000</span><br><span class="line">   SizeOfStackCommit:            0x00001000</span><br><span class="line">   SizeOfHeapReserve:            0x00100000</span><br><span class="line">   SizeOfHeapCommit:             0x00001000</span><br><span class="line">   LoaderFlags:                  0x00000000</span><br><span class="line">   NumberOfRvaAndSizes:          0x00000010</span><br></pre></td></tr></table></figure>
+<h3 id="datadirectory">DataDirectory</h3>
+<p>相关定义如下： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Directory format.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_DATA_DIRECTORY</span> &#123;</span></span><br><span class="line">    DWORD   VirtualAddress;     <span class="comment">// The relative virtual address of the table.</span></span><br><span class="line">    DWORD   Size;               <span class="comment">// The size of the table, in bytes.</span></span><br><span class="line">&#125; IMAGE_DATA_DIRECTORY, *PIMAGE_DATA_DIRECTORY;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_NUMBEROF_DIRECTORY_ENTRIES    16</span></span><br></pre></td></tr></table></figure></p>
+<p>数据目录列表如下，<code>Offsets</code>是相对于<code>OptionalHeader</code>的偏移：</p>
+<table>
+<thead>
+<tr class="header">
+<th>Offset(PE/PE32+)</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>60h/70h</td>
+<td>Export table address and size</td>
+</tr>
+<tr class="even">
+<td>68h/78h</td>
+<td>Import table address and size</td>
+</tr>
+<tr class="odd">
+<td>70h/80h</td>
+<td>Resource table address and size</td>
+</tr>
+<tr class="even">
+<td>78h/88h</td>
+<td>Exception table address and size</td>
+</tr>
+<tr class="odd">
+<td>80h/90h</td>
+<td>Certificate table address and size</td>
+</tr>
+<tr class="even">
+<td>88h/98h</td>
+<td>Base relocation table address and size</td>
+</tr>
+<tr class="odd">
+<td>90h/A0h</td>
+<td>Debugging information starting address and size</td>
+</tr>
+<tr class="even">
+<td>98h/A8h</td>
+<td>Architecture-specific data address and size</td>
+</tr>
+<tr class="odd">
+<td>A0h/B0h</td>
+<td>Global pointer register relative virtual address</td>
+</tr>
+<tr class="even">
+<td>A8h/B8h</td>
+<td>Thread local storage (TLS) table address and size</td>
+</tr>
+<tr class="odd">
+<td>B0h/C0h</td>
+<td>Load configuration table address and size</td>
+</tr>
+<tr class="even">
+<td>B8h/C8h</td>
+<td>Bound import table address and size</td>
+</tr>
+<tr class="odd">
+<td>C0h/D0h</td>
+<td>Import address table address and size</td>
+</tr>
+<tr class="even">
+<td>C8h/D8h</td>
+<td>Delay import descriptor address and size</td>
+</tr>
+<tr class="odd">
+<td>D0h/E0h</td>
+<td>The CLR header address and size</td>
+</tr>
+<tr class="even">
+<td>D8h/E8h</td>
+<td>Reserved</td>
+</tr>
+</tbody>
+</table>
+<p>各字段如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">DataDirectory (16)            RVA        Size</span><br><span class="line">-------------                 ---------- ----------</span><br><span class="line">ExportTable                   0x00000000 0x00000000</span><br><span class="line">ImportTable                   0x0000E000 0x00000834  (&quot;.idata&quot;)</span><br><span class="line">Resource                      0x00000000 0x00000000</span><br><span class="line">Exception                     0x00000000 0x00000000</span><br><span class="line">Security                      0x00000000 0x00000000</span><br><span class="line">Relocation                    0x00000000 0x00000000</span><br><span class="line">Debug                         0x00000000 0x00000000</span><br><span class="line">Copyright                     0x00000000 0x00000000</span><br><span class="line">GlobalPtr                     0x00000000 0x00000000</span><br><span class="line">TLSTable                      0x00010004 0x00000018  (&quot;.tls&quot;)</span><br><span class="line">LoadConfig                    0x00000000 0x00000000</span><br><span class="line">BoundImport                   0x00000000 0x00000000</span><br><span class="line">IAT                           0x0000E19C 0x00000124  (&quot;.idata&quot;)</span><br><span class="line">DelayImport                   0x00000000 0x00000000</span><br><span class="line">COM                           0x00000000 0x00000000</span><br><span class="line">Reserved                      0x00000000 0x00000000</span><br></pre></td></tr></table></figure>
+<h1 id="区块表section-table">区块表（Section Table）</h1>
+<p>在<code>PE头</code>之后就是<code>区块表（Section Table）</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">00000170h: 00 00 00 00 00 00 00 00 2E 74 65 78 74 00 00 00 ; .........text...</span><br><span class="line">00000180h: B8 7D 00 00 00 10 00 00 00 7E 00 00 00 04 00 00 ; 竲.......~......</span><br><span class="line">00000190h: 00 00 00 00 00 00 00 00 00 00 00 00 60 00 50 60 ; ............`.P`</span><br><span class="line">000001a0h: 2E 64 61 74 61 00 00 00 2C 00 00 00 00 90 00 00 ; .data...,....?.</span><br><span class="line">000001b0h: 00 02 00 00 00 82 00 00 00 00 00 00 00 00 00 00 ; .....?.........</span><br><span class="line">000001c0h: 00 00 00 00 40 00 30 C0 2E 72 64 61 74 61 00 00 ; ....@.0?rdata..</span><br><span class="line">000001d0h: 14 08 00 00 00 A0 00 00 00 0A 00 00 00 84 00 00 ; .....?......?.</span><br><span class="line">000001e0h: 00 00 00 00 00 00 00 00 00 00 00 00 40 00 60 40 ; ............@.`@</span><br><span class="line">000001f0h: 2E 65 68 5F 66 72 61 6D 64 16 00 00 00 B0 00 00 ; .eh_framd....?.</span><br><span class="line">00000200h: 00 18 00 00 00 8E 00 00 00 00 00 00 00 00 00 00 ; .....?.........</span><br><span class="line">00000210h: 00 00 00 00 40 00 30 40 2E 62 73 73 00 00 00 00 ; ....@.0@.bss....</span><br><span class="line">00000220h: 34 0A 00 00 00 D0 00 00 00 00 00 00 00 00 00 00 ; 4....?.........</span><br><span class="line">00000230h: 00 00 00 00 00 00 00 00 00 00 00 00 80 00 60 C0 ; ............€.`?</span><br><span class="line">00000240h: 2E 69 64 61 74 61 00 00 34 08 00 00 00 E0 00 00 ; .idata..4....?.</span><br><span class="line">00000250h: 00 0A 00 00 00 A6 00 00 00 00 00 00 00 00 00 00 ; .....?.........</span><br><span class="line">00000260h: 00 00 00 00 40 00 30 C0 2E 43 52 54 00 00 00 00 ; ....@.0?CRT....</span><br><span class="line">00000270h: 18 00 00 00 00 F0 00 00 00 02 00 00 00 B0 00 00 ; .....?......?.</span><br><span class="line">00000280h: 00 00 00 00 00 00 00 00 00 00 00 00 40 00 30 C0 ; ............@.0?</span><br><span class="line">00000290h: 2E 74 6C 73 00 00 00 00 20 00 00 00 00 00 01 00 ; .tls.... .......</span><br><span class="line">000002a0h: 00 02 00 00 00 B2 00 00 00 00 00 00 00 00 00 00 ; .....?.........</span><br><span class="line">000002b0h: 00 00 00 00 40 00 30 C0 00 00 00 00 00 00 00 00 ; ....@.0?.......</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Section header format.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SIZEOF_SHORT_NAME              8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_SECTION_HEADER</span> &#123;</span></span><br><span class="line">    BYTE    Name[IMAGE_SIZEOF_SHORT_NAME];</span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">            DWORD   PhysicalAddress;</span><br><span class="line">            DWORD   VirtualSize;</span><br><span class="line">    &#125; Misc;</span><br><span class="line">    DWORD   VirtualAddress;</span><br><span class="line">    DWORD   SizeOfRawData;</span><br><span class="line">    DWORD   PointerToRawData;</span><br><span class="line">    DWORD   PointerToRelocations;</span><br><span class="line">    DWORD   PointerToLinenumbers;</span><br><span class="line">    WORD    NumberOfRelocations;</span><br><span class="line">    WORD    NumberOfLinenumbers;</span><br><span class="line">    DWORD   Characteristics;</span><br><span class="line">&#125; IMAGE_SECTION_HEADER, *PIMAGE_SECTION_HEADER;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>Name</strong> An 8-byte, null-padded UTF-8 string. There is no terminating null character if the string is exactly eight characters long. For longer names, this member contains a forward slash (/) followed by an ASCII representation of a decimal number that is an offset into the string table. Executable images do not use a string table and do not support section names longer than eight characters.</p></li>
+<li><strong>Misc</strong>
+<ul>
+<li><strong>PhysicalAddress</strong> The file address.</li>
+<li><strong>VirtualSize</strong> The total size of the section when loaded into memory, in bytes. If this value is greater than the <strong>SizeOfRawData</strong> member, the section is filled with zeroes. This field is valid only for executable images and should be set to 0 for object files.</li>
+</ul></li>
+<li><p><strong>VirtualAddress</strong> The address of the first byte of the section when loaded into memory, relative to the image base. For object files, this is the address of the first byte before relocation is applied.</p></li>
+<li><p><strong>SizeOfRawData</strong> The size of the initialized data on disk, in bytes. This value must be a multiple of the <strong>FileAlignment</strong> member of the <strong>IMAGE_OPTIONAL_HEADER</strong> structure. If this value is less than the <strong>VirtualSize</strong> member, the remainder of the section is filled with zeroes. If the section contains only uninitialized data, the member is zero.</p></li>
+<li><p><strong>PointerToRawData</strong> A file pointer to the first page within the COFF file. This value must be a multiple of the <strong>FileAlignment</strong> member of the <strong>IMAGE_OPTIONAL_HEADER</strong> structure. If a section contains only uninitialized data, set this member is zero.</p></li>
+<li><p><strong>PointerToRelocations</strong> A file pointer to the beginning of the relocation entries for the section. If there are no relocations, this value is zero.</p></li>
+<li><p><strong>PointerToLinenumbers</strong> A file pointer to the beginning of the line-number entries for the section. If there are no COFF line numbers, this value is zero.</p></li>
+<li><p><strong>NumberOfRelocations</strong> The number of relocation entries for the section. This value is zero for executable images.</p></li>
+<li><p><strong>NumberOfLinenumbers</strong> The number of line-number entries for the section.</p></li>
+<li><p><strong>Characteristics</strong> The characteristics of the image.</p></li>
+</ul>
+<p>各种标志如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Section characteristics.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">//      IMAGE_SCN_TYPE_REG                   0x00000000  // Reserved.</span></span><br><span class="line"><span class="comment">//      IMAGE_SCN_TYPE_DSECT                 0x00000001  // Reserved.</span></span><br><span class="line"><span class="comment">//      IMAGE_SCN_TYPE_NOLOAD                0x00000002  // Reserved.</span></span><br><span class="line"><span class="comment">//      IMAGE_SCN_TYPE_GROUP                 0x00000004  // Reserved.</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_TYPE_NO_PAD                0x00000008  <span class="comment">// Reserved.</span></span></span><br><span class="line"><span class="comment">//      IMAGE_SCN_TYPE_COPY                  0x00000010  // Reserved.</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_CNT_CODE                   0x00000020  <span class="comment">// Section contains code.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_CNT_INITIALIZED_DATA       0x00000040  <span class="comment">// Section contains initialized data.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_CNT_UNINITIALIZED_DATA     0x00000080  <span class="comment">// Section contains uninitialized data.</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_LNK_OTHER                  0x00000100  <span class="comment">// Reserved.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_LNK_INFO                   0x00000200  <span class="comment">// Section contains comments or some other type of information.</span></span></span><br><span class="line"><span class="comment">//      IMAGE_SCN_TYPE_OVER                  0x00000400  // Reserved.</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_LNK_REMOVE                 0x00000800  <span class="comment">// Section contents will not become part of image.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_LNK_COMDAT                 0x00001000  <span class="comment">// Section contents comdat.</span></span></span><br><span class="line"><span class="comment">//                                           0x00002000  // Reserved.</span></span><br><span class="line"><span class="comment">//      IMAGE_SCN_MEM_PROTECTED - Obsolete   0x00004000</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_NO_DEFER_SPEC_EXC          0x00004000  <span class="comment">// Reset speculative exceptions handling bits in the TLB entries for this section.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_GPREL                      0x00008000  <span class="comment">// Section content can be accessed relative to GP</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_MEM_FARDATA                0x00008000</span></span><br><span class="line"><span class="comment">//      IMAGE_SCN_MEM_SYSHEAP  - Obsolete    0x00010000</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_MEM_PURGEABLE              0x00020000</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_MEM_16BIT                  0x00020000</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_MEM_LOCKED                 0x00040000</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_MEM_PRELOAD                0x00080000</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_1BYTES               0x00100000  <span class="comment">//</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_2BYTES               0x00200000  <span class="comment">//</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_4BYTES               0x00300000  <span class="comment">//</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_8BYTES               0x00400000  <span class="comment">//</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_16BYTES              0x00500000  <span class="comment">// Default alignment if no others are specified.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_32BYTES              0x00600000  <span class="comment">//</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_64BYTES              0x00700000  <span class="comment">//</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_128BYTES             0x00800000  <span class="comment">//</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_256BYTES             0x00900000  <span class="comment">//</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_512BYTES             0x00A00000  <span class="comment">//</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_1024BYTES            0x00B00000  <span class="comment">//</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_2048BYTES            0x00C00000  <span class="comment">//</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_4096BYTES            0x00D00000  <span class="comment">//</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_8192BYTES            0x00E00000  <span class="comment">//</span></span></span><br><span class="line"><span class="comment">// Unused                                    0x00F00000</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_ALIGN_MASK                 0x00F00000</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_LNK_NRELOC_OVFL            0x01000000  <span class="comment">// Section contains extended relocations.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_MEM_DISCARDABLE            0x02000000  <span class="comment">// Section can be discarded.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_MEM_NOT_CACHED             0x04000000  <span class="comment">// Section is not cachable.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_MEM_NOT_PAGED              0x08000000  <span class="comment">// Section is not pageable.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_MEM_SHARED                 0x10000000  <span class="comment">// Section is shareable.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_MEM_EXECUTE                0x20000000  <span class="comment">// Section is executable.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_MEM_READ                   0x40000000  <span class="comment">// Section is readable.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_SCN_MEM_WRITE                  0x80000000  <span class="comment">// Section is writeable.</span></span></span><br></pre></td></tr></table></figure>
+<p><code>Section Table</code>内容如下：</p>
+<p><img src="/images/PE_section_table.jpg"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">-&gt;Section Header Table</span><br><span class="line">   1. item:</span><br><span class="line">    Name:                  .text</span><br><span class="line">    VirtualSize:           0x00007DB8</span><br><span class="line">    VirtualAddress:        0x00001000</span><br><span class="line">    SizeOfRawData:         0x00007E00</span><br><span class="line">    PointerToRawData:      0x00000400</span><br><span class="line">    PointerToRelocations:  0x00000000</span><br><span class="line">    PointerToLinenumbers:  0x00000000</span><br><span class="line">    NumberOfRelocations:   0x0000</span><br><span class="line">    NumberOfLinenumbers:   0x0000</span><br><span class="line">    Characteristics:       0x60500060</span><br><span class="line">    (CODE, INITIALIZED_DATA, EXECUTE, READ, ALIGN_16BYTES)</span><br><span class="line"></span><br><span class="line">   2. item:</span><br><span class="line">    Name:                  .data</span><br><span class="line">    VirtualSize:           0x0000002C</span><br><span class="line">    VirtualAddress:        0x00009000</span><br><span class="line">    SizeOfRawData:         0x00000200</span><br><span class="line">    PointerToRawData:      0x00008200</span><br><span class="line">    PointerToRelocations:  0x00000000</span><br><span class="line">    PointerToLinenumbers:  0x00000000</span><br><span class="line">    NumberOfRelocations:   0x0000</span><br><span class="line">    NumberOfLinenumbers:   0x0000</span><br><span class="line">    Characteristics:       0xC0300040</span><br><span class="line">    (INITIALIZED_DATA, READ, WRITE, ALIGN_4BYTES)</span><br><span class="line"></span><br><span class="line">   3. item:</span><br><span class="line">    Name:                  .rdata</span><br><span class="line">    VirtualSize:           0x00000814</span><br><span class="line">    VirtualAddress:        0x0000A000</span><br><span class="line">    SizeOfRawData:         0x00000A00</span><br><span class="line">    PointerToRawData:      0x00008400</span><br><span class="line">    PointerToRelocations:  0x00000000</span><br><span class="line">    PointerToLinenumbers:  0x00000000</span><br><span class="line">    NumberOfRelocations:   0x0000</span><br><span class="line">    NumberOfLinenumbers:   0x0000</span><br><span class="line">    Characteristics:       0x40600040</span><br><span class="line">    (INITIALIZED_DATA, READ, ALIGN_32BYTES)</span><br><span class="line"></span><br><span class="line">   4. item:</span><br><span class="line">    Name:                  .eh_fram</span><br><span class="line">    VirtualSize:           0x00001664</span><br><span class="line">    VirtualAddress:        0x0000B000</span><br><span class="line">    SizeOfRawData:         0x00001800</span><br><span class="line">    PointerToRawData:      0x00008E00</span><br><span class="line">    PointerToRelocations:  0x00000000</span><br><span class="line">    PointerToLinenumbers:  0x00000000</span><br><span class="line">    NumberOfRelocations:   0x0000</span><br><span class="line">    NumberOfLinenumbers:   0x0000</span><br><span class="line">    Characteristics:       0x40300040</span><br><span class="line">    (INITIALIZED_DATA, READ, ALIGN_4BYTES)</span><br><span class="line"></span><br><span class="line">   5. item:</span><br><span class="line">    Name:                  .bss</span><br><span class="line">    VirtualSize:           0x00000A34</span><br><span class="line">    VirtualAddress:        0x0000D000</span><br><span class="line">    SizeOfRawData:         0x00000000</span><br><span class="line">    PointerToRawData:      0x00000000</span><br><span class="line">    PointerToRelocations:  0x00000000</span><br><span class="line">    PointerToLinenumbers:  0x00000000</span><br><span class="line">    NumberOfRelocations:   0x0000</span><br><span class="line">    NumberOfLinenumbers:   0x0000</span><br><span class="line">    Characteristics:       0xC0600080</span><br><span class="line">    (UNINITIALIZED_DATA, READ, WRITE, ALIGN_32BYTES)</span><br><span class="line"></span><br><span class="line">   6. item:</span><br><span class="line">    Name:                  .idata</span><br><span class="line">    VirtualSize:           0x00000834</span><br><span class="line">    VirtualAddress:        0x0000E000</span><br><span class="line">    SizeOfRawData:         0x00000A00</span><br><span class="line">    PointerToRawData:      0x0000A600</span><br><span class="line">    PointerToRelocations:  0x00000000</span><br><span class="line">    PointerToLinenumbers:  0x00000000</span><br><span class="line">    NumberOfRelocations:   0x0000</span><br><span class="line">    NumberOfLinenumbers:   0x0000</span><br><span class="line">    Characteristics:       0xC0300040</span><br><span class="line">    (INITIALIZED_DATA, READ, WRITE, ALIGN_4BYTES)</span><br><span class="line"></span><br><span class="line">   7. item:</span><br><span class="line">    Name:                  .CRT</span><br><span class="line">    VirtualSize:           0x00000018</span><br><span class="line">    VirtualAddress:        0x0000F000</span><br><span class="line">    SizeOfRawData:         0x00000200</span><br><span class="line">    PointerToRawData:      0x0000B000</span><br><span class="line">    PointerToRelocations:  0x00000000</span><br><span class="line">    PointerToLinenumbers:  0x00000000</span><br><span class="line">    NumberOfRelocations:   0x0000</span><br><span class="line">    NumberOfLinenumbers:   0x0000</span><br><span class="line">    Characteristics:       0xC0300040</span><br><span class="line">    (INITIALIZED_DATA, READ, WRITE, ALIGN_4BYTES)</span><br><span class="line"></span><br><span class="line">   8. item:</span><br><span class="line">    Name:                  .tls</span><br><span class="line">    VirtualSize:           0x00000020</span><br><span class="line">    VirtualAddress:        0x00010000</span><br><span class="line">    SizeOfRawData:         0x00000200</span><br><span class="line">    PointerToRawData:      0x0000B200</span><br><span class="line">    PointerToRelocations:  0x00000000</span><br><span class="line">    PointerToLinenumbers:  0x00000000</span><br><span class="line">    NumberOfRelocations:   0x0000</span><br><span class="line">    NumberOfLinenumbers:   0x0000</span><br><span class="line">    Characteristics:       0xC0300040</span><br><span class="line">    (INITIALIZED_DATA, READ, WRITE, ALIGN_4BYTES)</span><br></pre></td></tr></table></figure>
+<p>一些常见的区块如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>.text</td>
+<td>默认代码区块。</td>
+</tr>
+<tr class="even">
+<td>.data</td>
+<td>默认读/写数据区块。全局变量/静态变量一般放在此处。</td>
+</tr>
+<tr class="odd">
+<td>.rdata</td>
+<td>默认只读数据区块，很少用到。</td>
+</tr>
+<tr class="even">
+<td>.idata</td>
+<td>输入表，包含其他外来DLL的函数及数据信息。</td>
+</tr>
+<tr class="odd">
+<td>.edata</td>
+<td>输出表。</td>
+</tr>
+<tr class="even">
+<td>.rsrc</td>
+<td>资源，包含模块的全部资源：图标、菜单、位图等。只读。</td>
+</tr>
+<tr class="odd">
+<td>.bss</td>
+<td>未初始化数据，很少用到。</td>
+</tr>
+<tr class="even">
+<td>.crt</td>
+<td>支持CRT所添加的数据。</td>
+</tr>
+<tr class="odd">
+<td>.tls</td>
+<td>支持通过__declspec(thread)声明的线程局部存储变量的数据。</td>
+</tr>
+<tr class="even">
+<td>.reloc</td>
+<td>可执行文件的基址重定位。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="区块对齐">区块对齐</h2>
+<p>在PE文件头<code>IMAGE_OPTIONAL_HEADER</code>结构中，<code>SectionAlignment</code>和<code>FileAlignment</code>分别定义了区块在内存和文件中的对齐值，文件对齐值通常是<code>0x200</code>，x86系统下内存对齐值通常是<code>0x1000</code>。</p>
+<h2 id="内存偏移与文件偏移的转换">内存偏移与文件偏移的转换</h2>
+<p>由于内存对齐值与文件对齐值不一定相同，因此数据在内存与文件中的偏移也不一定相同，在一些情况下就需要将文件偏移与内存偏移进行转换。 DOS头、PE头、区块表在两种地址下的偏移都是一样的，而区块则会发生改变，若记<span class="math inline">\(~\Delta k~\)</span>为内存偏移（RVA）与文件偏移（File Offset）的差，即 <span class="math display">\[\Delta k = \rm RVA - File\,Offset = VA - ImageBase - File\,Offset\]</span> 那么每个区块中的<span class="math inline">\(~\Delta k~\)</span>都是相同的，可以通过上式，用RVA, File Offset, VA任意一个求出其余两者。</p>
+<h1 id="区块section">区块（Section ）</h1>
+<p><code>Section Table</code>之后是各个<code>Section</code>。</p>
+<h2 id="输入表import-table">输入表（Import Table）</h2>
+<p>每个被PE文件引入的DLL都对应了一个<code>输入地址表(Import Address Table)</code>，IAT包含了一组函数指针。 <code>OptionalHeader</code>中<code>DataDirectory</code>的第二项就是<code>Import Table</code>，输入表以一个<code>IMAGE_IMPORT_DESCRIPTOR(IID)</code>数组开始，IID数组以一个全<code>0</code>的IID结构结束。</p>
+<h3 id="image_import_descriptor">IMAGE_IMPORT_DESCRIPTOR</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">typedef struct _IMAGE_IMPORT_DESCRIPTOR &#123;</span><br><span class="line">    union &#123;</span><br><span class="line">        DWORD   Characteristics;            // 0 for terminating null import descriptor</span><br><span class="line">        DWORD   OriginalFirstThunk;         // RVA to original unbound IAT (PIMAGE_THUNK_DATA)</span><br><span class="line">    &#125; DUMMYUNIONNAME;</span><br><span class="line">    DWORD   TimeDateStamp;                  // 0 if not bound,</span><br><span class="line">                                            // -1 if bound, and real date\time stamp</span><br><span class="line">                                            //     in IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT (new BIND)</span><br><span class="line">                                            // O.W. date/time stamp of DLL bound to (Old BIND)</span><br><span class="line"></span><br><span class="line">    DWORD   ForwarderChain;                 // -1 if no forwarders</span><br><span class="line">    DWORD   Name;</span><br><span class="line">    DWORD   FirstThunk;                     // RVA to IAT (if bound this IAT has actual addresses)</span><br><span class="line">&#125; IMAGE_IMPORT_DESCRIPTOR;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>OriginalFirstThunk(Characteristics)</strong> 包含指向输入名称表（INT）的RVA，INT是一个<code>IMAGE_THUNK_DATA</code>数组，每个<code>IMAGE_THUNK_DATA</code>指向一个<code>IMAGE_IMPORT_BY_NAME</code>结构。</p></li>
+<li><p><strong>ForwarderChain</strong> 第一个被转向的API的索引，一般为0。在PE引用DLL中的API，该API又引用其他DLL中API时使用。</p></li>
+<li><p><strong>Name</strong> 指向DLL的名字。</p></li>
+<li><p><strong>FirstThunk</strong> 指向IAT的RVA，IAT也是一个<code>IMAGE_THUNK_DATA</code>数组。</p></li>
+</ul>
+<p><code>OriginalFirstThunk</code>与<code>FirstThunk</code>指向两个本质上相同的<code>IMAGE_THUNK_DATA</code>数组，如图所示：</p>
+<p><img src="/images/PE_IMAGE_THUNK_DATA.jpg"></p>
+<h3 id="image_thunk_data">IMAGE_THUNK_DATA</h3>
+<p>INT与IAT中的两个<code>IMAGE_THUNK_DATA</code>数组均以全0结束。<code>IMAGE_THUNK_DATA</code>结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">typedef struct _IMAGE_THUNK_DATA64 &#123;</span><br><span class="line">    union &#123;</span><br><span class="line">        ULONGLONG ForwarderString;  // PBYTE </span><br><span class="line">        ULONGLONG Function;         // PDWORD</span><br><span class="line">        ULONGLONG Ordinal;</span><br><span class="line">        ULONGLONG AddressOfData;    // PIMAGE_IMPORT_BY_NAME</span><br><span class="line">    &#125; u1;</span><br><span class="line">&#125; IMAGE_THUNK_DATA64;</span><br><span class="line">typedef IMAGE_THUNK_DATA64 * PIMAGE_THUNK_DATA64;</span><br><span class="line"></span><br><span class="line">#include &quot;poppack.h&quot;                        // Back to 4 byte packing</span><br><span class="line"></span><br><span class="line">typedef struct _IMAGE_THUNK_DATA32 &#123;</span><br><span class="line">    union &#123;</span><br><span class="line">        DWORD ForwarderString;      // PBYTE </span><br><span class="line">        DWORD Function;             // PDWORD</span><br><span class="line">        DWORD Ordinal;</span><br><span class="line">        DWORD AddressOfData;        // PIMAGE_IMPORT_BY_NAME</span><br><span class="line">    &#125; u1;</span><br><span class="line">&#125; IMAGE_THUNK_DATA32;</span><br><span class="line">typedef IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ForwarderString</td>
+<td>指向一个转向者字符串的RVA</td>
+</tr>
+<tr class="even">
+<td>Function</td>
+<td>被输入函数的内存地址</td>
+</tr>
+<tr class="odd">
+<td>Ordinal</td>
+<td>被输入函数的序号</td>
+</tr>
+<tr class="even">
+<td>AddressOfData</td>
+<td>指向<code>IMAGE_IMPORT_BY_NAME</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="image_import_by_name">IMAGE_IMPORT_BY_NAME</h3>
+<p>存储输入函数的相关信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef struct _IMAGE_IMPORT_BY_NAME &#123;</span><br><span class="line">    WORD    Hint;</span><br><span class="line">    BYTE    Name[1];</span><br><span class="line">&#125; IMAGE_IMPORT_BY_NAME, *PIMAGE_IMPORT_BY_NAME;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>Hint</strong> 该函数在其驻留DLL输出表中的序号。</p></li>
+<li><p><strong>Name[1]</strong> 函数名，ASCII码字符串，以<code>NULL</code>结束。</p></li>
+</ul>
+<h3 id="输入地址表iat">输入地址表（IAT)</h3>
+<p>IAT会被PE装载器重写，PE装载器搜索<code>OriginalFirstThunk</code>（如果有），然后迭代搜索数组中的指针，找到每个<code>IMAGE_IMPORT_BY_NAME</code>指向的输入函数的地址，然后装载器用函数真正入口地址替换IAT中<code>IMAGE_THUNK_DATA</code>中的值。PE文件装载内存后IAT如下：</p>
+<p><img src="/images/PE_IAT.jpg"></p>
+<p>考察“Hellor, world”中的输入表，<code>.idata</code>的RVA为<code>00 00 E0 00</code>，在文件中的偏移为<code>00 00 A6 00</code>，<span class="math inline">\(\Delta k = \mathrm{0x3A00}\)</span>，跳转到此处： <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">0000a600h: 78 E0 00 00 00 00 00 00 00 00 00 00 34 E7 00 00 ; x?.........4?.</span><br><span class="line">0000a610h: 9C E1 00 00 D8 E0 00 00 00 00 00 00 00 00 00 00 ; 溼..剜..........</span><br><span class="line">0000a620h: 4C E7 00 00 FC E1 00 00 E4 E0 00 00 00 00 00 00 ; L?...溧......</span><br><span class="line">0000a630h: 00 00 00 00 E4 E7 00 00 08 E2 00 00 74 E1 00 00 ; ....溏...?.t?.</span><br><span class="line">0000a640h: 00 00 00 00 00 00 00 00 00 E8 00 00 98 E2 00 00 ; .........?.樷..</span><br><span class="line">0000a650h: 88 E1 00 00 00 00 00 00 00 00 00 00 24 E8 00 00 ; 堘..........$?.</span><br><span class="line">0000a660h: AC E2 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ; ..............</span><br><span class="line">0000a670h: 00 00 00 00 00 00 00 00 C0 E2 00 00 D8 E2 00 00 ; ........棱..剽..</span><br></pre></td></tr></table></figure></p>
+<p>每个IID大小为0x14字节，可以看到这里IID数组共有<code>5</code>个元素，第一个元素的值如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. ImageImportDescriptor:</span><br><span class="line"> OriginalFirstThunk:  0x0000E078</span><br><span class="line"> TimeDateStamp:       0x00000000  (GMT: Thu Jan 01 00:00:00 1970)</span><br><span class="line"> ForwarderChain:      0x00000000</span><br><span class="line"> Name:                0x0000E734  (&quot;KERNEL32.dll&quot;)</span><br><span class="line"> FirstThunk:          0x0000E19C</span><br></pre></td></tr></table></figure>
+<p>第一个IID所指向INT的RVA为<code>00 00 E0 78</code>，对应文件偏移为<code>00 00 E0 78 - 00 00 3A 00 =  00 00 A6 78</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0000a670h: 00 00 00 00 00 00 00 00 C0 E2 00 00 D8 E2 00 00 ; ........棱..剽..</span><br><span class="line">0000a680h: F0 E2 00 00 FE E2 00 00 0A E3 00 00 1C E3 00 00 ; 疴.....?..?.</span><br><span class="line">0000a690h: 2C E3 00 00 3A E3 00 00 4C E3 00 00 5C E3 00 00 ; ,?.:?.L?.\?.</span><br><span class="line">0000a6a0h: 70 E3 00 00 82 E3 00 00 9E E3 00 00 B4 E3 00 00 ; p?.傘..炪..淬..</span><br><span class="line">0000a6b0h: C8 E3 00 00 E0 E3 00 00 F0 E3 00 00 06 E4 00 00 ; 茹..嚆..疸...?.</span><br><span class="line">0000a6c0h: 24 E4 00 00 2C E4 00 00 3A E4 00 00 4C E4 00 00 ; $?.,?.:?.L?.</span><br><span class="line">0000a6d0h: 5C E4 00 00 00 00 00 00 72 E4 00 00 7C E4 00    ; \?.....r?.|?</span><br></pre></td></tr></table></figure>
+<p>可以看到这个INT一共有<code>23</code>个元素，第一个元素的值是<code>00 00 E2 C0</code>，是其所指向的<code>IMAGE_IMPORT_BY_NAME</code>的RVA，文件偏移为<code>00 00 A8 C0</code>，跳到此处：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0000a8c0h: CF 00 44 65 6C 65 74 65 43 72 69 74 69 63 61 6C ; ?DeleteCritical</span><br><span class="line">0000a8d0h: 53 65 63 74 69 6F 6E 00 EC 00 45 6E 74 65 72 43 ; Section.?EnterC</span><br></pre></td></tr></table></figure>
+<p>从<code>00 00 A8 C2</code>处开始就是输入函数的名字，可以看到函数名为<code>DeleteCriticalSection</code>。同理可以得到所有IID相关信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line">-&gt;Import Table</span><br><span class="line">   1. ImageImportDescriptor:</span><br><span class="line">    OriginalFirstThunk:  0x0000E078</span><br><span class="line">    TimeDateStamp:       0x00000000  (GMT: Thu Jan 01 00:00:00 1970)</span><br><span class="line">    ForwarderChain:      0x00000000</span><br><span class="line">    Name:                0x0000E734  (&quot;KERNEL32.dll&quot;)</span><br><span class="line">    FirstThunk:          0x0000E19C</span><br><span class="line"></span><br><span class="line">    Ordinal/Hint API name</span><br><span class="line">    ------------ ---------------------------------------</span><br><span class="line">    0x00CF       &quot;DeleteCriticalSection&quot;</span><br><span class="line">    0x00EC       &quot;EnterCriticalSection&quot;</span><br><span class="line">    0x0117       &quot;ExitProcess&quot;</span><br><span class="line">    0x012C       &quot;FindClose&quot;</span><br><span class="line">    0x0130       &quot;FindFirstFileA&quot;</span><br><span class="line">    0x0141       &quot;FindNextFileA&quot;</span><br><span class="line">    0x0160       &quot;FreeLibrary&quot;</span><br><span class="line">    0x0184       &quot;GetCommandLineA&quot;</span><br><span class="line">    0x01FE       &quot;GetLastError&quot;</span><br><span class="line">    0x0211       &quot;GetModuleHandleA&quot;</span><br><span class="line">    0x0241       &quot;GetProcAddress&quot;</span><br><span class="line">    0x02DE       &quot;InitializeCriticalSection&quot;</span><br><span class="line">    0x02E8       &quot;InterlockedExchange&quot;</span><br><span class="line">    0x02FB       &quot;IsDBCSLeadByteEx&quot;</span><br><span class="line">    0x032E       &quot;LeaveCriticalSection&quot;</span><br><span class="line">    0x0331       &quot;LoadLibraryA&quot;</span><br><span class="line">    0x035C       &quot;MultiByteToWideChar&quot;</span><br><span class="line">    0x0474       &quot;SetUnhandledExceptionFilter&quot;</span><br><span class="line">    0x0480       &quot;Sleep&quot;</span><br><span class="line">    0x0495       &quot;TlsGetValue&quot;</span><br><span class="line">    0x04BD       &quot;VirtualProtect&quot;</span><br><span class="line">    0x04BF       &quot;VirtualQuery&quot;</span><br><span class="line">    0x04DF       &quot;WideCharToMultiByte&quot;</span><br><span class="line"></span><br><span class="line">   2. ImageImportDescriptor:</span><br><span class="line">    OriginalFirstThunk:  0x0000E0D8</span><br><span class="line">    TimeDateStamp:       0x00000000  (GMT: Thu Jan 01 00:00:00 1970)</span><br><span class="line">    ForwarderChain:      0x00000000</span><br><span class="line">    Name:                0x0000E74C  (&quot;msvcrt.dll&quot;)</span><br><span class="line">    FirstThunk:          0x0000E1FC</span><br><span class="line"></span><br><span class="line">    Ordinal/Hint API name</span><br><span class="line">    ------------ ---------------------------------------</span><br><span class="line">    0x0050       &quot;_strdup&quot;</span><br><span class="line">    0x0052       &quot;_stricoll&quot;</span><br><span class="line"></span><br><span class="line">   3. ImageImportDescriptor:</span><br><span class="line">    OriginalFirstThunk:  0x0000E0E4</span><br><span class="line">    TimeDateStamp:       0x00000000  (GMT: Thu Jan 01 00:00:00 1970)</span><br><span class="line">    ForwarderChain:      0x00000000</span><br><span class="line">    Name:                0x0000E7E4  (&quot;msvcrt.dll&quot;)</span><br><span class="line">    FirstThunk:          0x0000E208</span><br><span class="line"></span><br><span class="line">    Ordinal/Hint API name</span><br><span class="line">    ------------ ---------------------------------------</span><br><span class="line">    0x0058       &quot;__getmainargs&quot;</span><br><span class="line">    0x0077       &quot;__mb_cur_max&quot;</span><br><span class="line">    0x0083       &quot;__p__environ&quot;</span><br><span class="line">    0x0085       &quot;__p__fmode&quot;</span><br><span class="line">    0x0099       &quot;__set_app_type&quot;</span><br><span class="line">    0x00DB       &quot;_cexit&quot;</span><br><span class="line">    0x011D       &quot;_errno&quot;</span><br><span class="line">    0x015E       &quot;_fullpath&quot;</span><br><span class="line">    0x01A1       &quot;_iob&quot;</span><br><span class="line">    0x01A6       &quot;_isctype&quot;</span><br><span class="line">    0x02B1       &quot;_onexit&quot;</span><br><span class="line">    0x02BA       &quot;_pctype&quot;</span><br><span class="line">    0x02F1       &quot;_setmode&quot;</span><br><span class="line">    0x043B       &quot;abort&quot;</span><br><span class="line">    0x0443       &quot;atexit&quot;</span><br><span class="line">    0x0445       &quot;atoi&quot;</span><br><span class="line">    0x044A       &quot;calloc&quot;</span><br><span class="line">    0x0466       &quot;fputc&quot;</span><br><span class="line">    0x046B       &quot;free&quot;</span><br><span class="line">    0x0476       &quot;fwrite&quot;</span><br><span class="line">    0x047B       &quot;getenv&quot;</span><br><span class="line">    0x049E       &quot;localeconv&quot;</span><br><span class="line">    0x04A3       &quot;malloc&quot;</span><br><span class="line">    0x04AA       &quot;mbstowcs&quot;</span><br><span class="line">    0x04AF       &quot;memcpy&quot;</span><br><span class="line">    0x04C4       &quot;realloc&quot;</span><br><span class="line">    0x04CB       &quot;setlocale&quot;</span><br><span class="line">    0x04CD       &quot;signal&quot;</span><br><span class="line">    0x04D8       &quot;strchr&quot;</span><br><span class="line">    0x04DA       &quot;strcoll&quot;</span><br><span class="line">    0x04E1       &quot;strlen&quot;</span><br><span class="line">    0x04FD       &quot;tolower&quot;</span><br><span class="line">    0x0504       &quot;vfprintf&quot;</span><br><span class="line">    0x051C       &quot;wcslen&quot;</span><br><span class="line">    0x052D       &quot;wcstombs&quot;</span><br><span class="line"></span><br><span class="line">   4. ImageImportDescriptor:</span><br><span class="line">    OriginalFirstThunk:  0x0000E174</span><br><span class="line">    TimeDateStamp:       0x00000000  (GMT: Thu Jan 01 00:00:00 1970)</span><br><span class="line">    ForwarderChain:      0x00000000</span><br><span class="line">    Name:                0x0000E800  (&quot;libgcc_s_dw2-1.dll&quot;)</span><br><span class="line">    FirstThunk:          0x0000E298</span><br><span class="line"></span><br><span class="line">    Ordinal/Hint API name</span><br><span class="line">    ------------ ---------------------------------------</span><br><span class="line">    0x0024       &quot;__deregister_frame_info&quot;</span><br><span class="line">    0x0069       &quot;__register_frame_info&quot;</span><br><span class="line">    0x0075       &quot;__udivdi3&quot;</span><br><span class="line">    0x0077       &quot;__umoddi3&quot;</span><br><span class="line"></span><br><span class="line">   5. ImageImportDescriptor:</span><br><span class="line">    OriginalFirstThunk:  0x0000E188</span><br><span class="line">    TimeDateStamp:       0x00000000  (GMT: Thu Jan 01 00:00:00 1970)</span><br><span class="line">    ForwarderChain:      0x00000000</span><br><span class="line">    Name:                0x0000E824  (&quot;libstdc++-6.dll&quot;)</span><br><span class="line">    FirstThunk:          0x0000E2AC</span><br><span class="line"></span><br><span class="line">    Ordinal/Hint API name</span><br><span class="line">    ------------ ---------------------------------------</span><br><span class="line">    0x0F2A       &quot;_ZNSt8ios_base4InitC1Ev&quot;</span><br><span class="line">    0x0F2C       &quot;_ZNSt8ios_base4InitD1Ev&quot;</span><br><span class="line">    0x103A       &quot;_ZSt4cout&quot;</span><br><span class="line">    0x10A4       &quot;_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="输出表export-table">输出表（Export Table）</h2>
+<p>输出表一般存在于DLL文件中，用于让其他EXE或DLL调用该DLL中的函数。数据目录表的第一个成员就是输出表，指向一个<code>IMAGE_EXPORT_DIRECTORY(IED)</code>结构。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line">// Export Format</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">typedef struct _IMAGE_EXPORT_DIRECTORY &#123;</span><br><span class="line">    DWORD   Characteristics;</span><br><span class="line">    DWORD   TimeDateStamp;</span><br><span class="line">    WORD    MajorVersion;</span><br><span class="line">    WORD    MinorVersion;</span><br><span class="line">    DWORD   Name;</span><br><span class="line">    DWORD   Base;</span><br><span class="line">    DWORD   NumberOfFunctions;</span><br><span class="line">    DWORD   NumberOfNames;</span><br><span class="line">    DWORD   AddressOfFunctions;     // RVA from base of image</span><br><span class="line">    DWORD   AddressOfNames;         // RVA from base of image</span><br><span class="line">    DWORD   AddressOfNameOrdinals;  // RVA from base of image</span><br><span class="line">&#125; IMAGE_EXPORT_DIRECTORY, *PIMAGE_EXPORT_DIRECTORY;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>Characteristics</strong> 总是0</p></li>
+<li><p><strong>TimeDateStamp</strong> 输出表创建的GMT时间</p></li>
+<li><p><strong>MajorVersion</strong> 主版本号，设置为0</p></li>
+<li><p><strong>MinorVersion</strong> 次版本号，设置为0</p></li>
+<li><p><strong>Name</strong> 指向DLL名字的RVA。</p></li>
+<li><p><strong>Base</strong> 输出表的起始序数值，一般是1（不是必须），通过序数查询输出函数时，会减去这个值，然后作为<code>输出地址表（EAT）</code>的索引。</p></li>
+<li><p><strong>NumberOfFunctions</strong> EAT中的条目数量，如果为0，表明该序数值没有代码或数据输出。</p></li>
+<li><p><strong>NumberOfNames</strong> <code>输出函数名称表（ENT）</code>的条目数量，总是小于等于<code>NumberOfFunctions</code>。小于时符号只通过序数输出。</p></li>
+<li><p><strong>AddressOfFunctions</strong> EAT的RVA，EAT是一个RVA数组。</p></li>
+<li><p><strong>AddressOfNames</strong> ENT的RVA，ENT是一个指向ASCII字符串的RVA数组，ASCII字符串按顺序排列。</p></li>
+<li><p><strong>AddressOfNameOrdinals</strong> 输出序数表的RVA。输出序数表是一个字的数组，将ENT中的数组索引映射到相应的输出地址表条目。</p></li>
+</ul>
+<p>用VS2015新建一个默认的DLL文件<code>test_dll.dll</code>，转到IED处，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">00006b20h: 00 00 00 00 0D CE EB 57 00 00 00 00 7A 7D 01 00 ; .....坞W....z&#125;..</span><br><span class="line">00006b30h: 01 00 00 00 05 00 00 00 05 00 00 00 48 7D 01 00 ; ............H&#125;..</span><br><span class="line">00006b40h: 5C 7D 01 00 70 7D 01 00 8F 12 01 00 0A 10 01 00 ; \&#125;..p&#125;..?......</span><br></pre></td></tr></table></figure>
+<p>各字段如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">-&gt;Export Table</span><br><span class="line">   Characteristics:        0x00000000</span><br><span class="line">   TimeDateStamp:          0x57EBCE0D  (GMT: Wed Sep 28 14:05:01 2016)</span><br><span class="line">   MajorVersion:           0x0000</span><br><span class="line">   MinorVersion:           0x0000  -&gt; 0.00</span><br><span class="line">   Name:                   0x00017D7A  (&quot;test_dll.dll&quot;)</span><br><span class="line">   Base:                   0x00000001</span><br><span class="line">   NumberOfFunctions:      0x00000005</span><br><span class="line">   NumberOfNames:          0x00000005</span><br><span class="line">   AddressOfFunctions:     0x00017D48</span><br><span class="line">   AddressOfNames:         0x00017D5C</span><br><span class="line">   AddressOfNameOrdinals:  0x00017D70</span><br></pre></td></tr></table></figure>
+<p><code>0x00017D48</code>对应的文件偏移为<code>00006B48</code>，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">00006b40h: 5C 7D 01 00 70 7D 01 00 8F 12 01 00 0A 10 01 00 ; \&#125;..p&#125;..?......</span><br><span class="line">00006b50h: A3 12 01 00 BD 11 01 00 38 81 01 00 87 7D 01 00 ; ?..?..8?.噠..</span><br></pre></td></tr></table></figure>
+<p>第一个函数的RVA是<code>00 01 12 8F</code>，对应内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0000068fh: E9 3C 03 00 00 E9 11 37 00 00 E9 72 15 00 00 E9 ; ?...?7..閞...?</span><br><span class="line">0000069fh: 65 36 00 00 E9 A8 03 00 00 E9 53 0F 00 00 E9 1A ; e6..楱...镾...?</span><br><span class="line">000006afh: 36 00 00 E9 C9 10 00 00 E9 0A 36 00 00 CC CC CC ; 6..樯...?6..烫?</span><br><span class="line">000006bfh: CC                                              ; ?</span><br></pre></td></tr></table></figure>
+<p>对应的汇编代码</p>
+<p><img src="/images/PE_EXPORT_FUN.jpg"></p>
+<p>再看函数名字， <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">00006b50h: A3 12 01 00 BD 11 01 00 38 81 01 00 87 7D 01 00 ; ?..?..8?.噠..</span><br><span class="line">00006b60h: 9C 7D 01 00 BC 7D 01 00 DA 7D 01 00 ED 7D 01 00 ; 渳..紏..趠..韢..</span><br><span class="line">00006b70h: 00 00 01 00 02 00 03 00 04 00 74 65 73 74 5F 64 ; ..........test_d</span><br></pre></td></tr></table></figure></p>
+<p>第一个名字RVA是<code>00 01 7D 87</code>，即文件偏移<code>00 00 6B 87</code>处，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">00006b80h: 6C 6C 2E 64 6C 6C 00 3F 3F 30 43 74 65 73 74 5F ; ll.dll.??0Ctest_</span><br><span class="line">00006b90h: 64 6C 6C 40 40 51 41 45 40 58 5A 00 3F 3F 34 43 ; dll@@QAE@XZ.??4C</span><br><span class="line">00006ba0h: 74 65 73 74 5F 64 6C 6C 40 40 51 41 45 41 41 56 ; test_dll@@QAEAAV</span><br><span class="line">00006bb0h: 30 40 24 24 51 41 56 30 40 40 5A 00 3F 3F 34 43 ; 0@$$QAV0@@Z.??4C</span><br><span class="line">00006bc0h: 74 65 73 74 5F 64 6C 6C 40 40 51 41 45 41 41 56 ; test_dll@@QAEAAV</span><br><span class="line">00006bd0h: 30 40 41 42 56 30 40 40 5A 00 3F 66 6E 74 65 73 ; 0@ABV0@@Z.?fntes</span><br><span class="line">00006be0h: 74 5F 64 6C 6C 40 40 59 41 48 58 5A 00 3F 6E 74 ; t_dll@@YAHXZ.?nt</span><br><span class="line">00006bf0h: 65 73 74 5F 64 6C 6C 40 40 33 48 41 00 00 00 00 ; est_dll@@3HA....</span><br></pre></td></tr></table></figure>
+<p>对应的字符串为<code>??0Ctest_dll@@QAE@XZ</code>。所有的5个名字如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Ordinal RVA        Symbol Name</span><br><span class="line">------- ---------- ----------------------------------</span><br><span class="line">0x0001  0x0001128F &quot;??0Ctest_dll@@QAE@XZ&quot;</span><br><span class="line">0x0002  0x0001100A &quot;??4Ctest_dll@@QAEAAV0@$$QAV0@@Z&quot;</span><br><span class="line">0x0003  0x000112A3 &quot;??4Ctest_dll@@QAEAAV0@ABV0@@Z&quot;</span><br><span class="line">0x0004  0x000111BD &quot;?fntest_dll@@YAHXZ&quot;</span><br><span class="line">0x0005  0x00018138 &quot;?ntest_dll@@3HA&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="基址重定位表base-relocation-table">基址重定位表（Base Relocation Table）</h2>
+<p>PE文件中的定位都假设了文件被装入默认的基地址，如果被装载到内存中其他地址，就需要重定位。基址重定位表位于<code>.reloc</code>区块，对应数据目录表中的<code>IMAGE_DIRECTORY_ENTRY_BASERELOC</code>，重定位表由重定位块组成，每个块存放<code>4KB</code>重定位信息，且各重定位块以<code>DWORD</code>对齐，重定位块是一个<code>IMAGE_BASE_RELOCATION</code>结构，所有重定位块以一个<code>VirtualAddress</code>全<code>0</code>的<code>IMAGE_BASE_RELOCATION</code>结束。</p>
+<h3 id="image_base_relocation">IMAGE_BASE_RELOCATION</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line">// Based relocation format.</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">typedef struct _IMAGE_BASE_RELOCATION &#123;</span><br><span class="line">    DWORD   VirtualAddress;</span><br><span class="line">    DWORD   SizeOfBlock;</span><br><span class="line">//  WORD    TypeOffset[1];</span><br><span class="line">&#125; IMAGE_BASE_RELOCATION;</span><br><span class="line">typedef IMAGE_BASE_RELOCATION UNALIGNED * PIMAGE_BASE_RELOCATION;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>VirtualAddress</strong> 重定位数据的开始RVA地址，重定位项地址加上<code>VirtualAddress</code>才是完整的RVA地址。</p></li>
+<li><p><strong>SizeOfBlock</strong> 当前重定位结构大小。</p></li>
+<li><p><strong>TypeOffset</strong> 一个数组，每个元素两字节，高4位代表重定位类型；低12位代表重定位地址。常见的重定位类型如下：</p></li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>#define</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>IMAGE_REL_BASED_ABSOLUTE</td>
+<td>0</td>
+<td>用于对齐</td>
+</tr>
+<tr class="even">
+<td>IMAGE_REL_BASED_HIGHLOW</td>
+<td>3</td>
+<td>重定位指向的整个地址都需要修正，几乎总是此情况</td>
+</tr>
+<tr class="odd">
+<td>IMAGE_REL_BASED_DIR64</td>
+<td>10</td>
+<td>64位PE文件中，指向的整个地址需要修正</td>
+</tr>
+</tbody>
+</table>
+<p>举例说明，下面是<code>test_dll</code>的重定位表的部分数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">00008400h: 00 10 01 00 74 00 00 00 D1 36 E1 36 F2 36 05 37 ; ....t...???.7</span><br><span class="line">00008410h: 68 37 BC 37 C0 37 C4 37 C8 37 F6 37 FB 37 0D 38 ; h7??????.8</span><br></pre></td></tr></table></figure>
+<p>第一个重定位块的<code>VirtualAddress</code>是<code>00 01 10 00</code>，<code>TypeOffset</code>见下表</p>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>重定位项1</th>
+<th>重定位项2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>TypeOffset</code>高4位</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td><code>TypeOffset</code>低12位</td>
+<td>6D1</td>
+<td>6E1</td>
+</tr>
+<tr class="odd">
+<td>低12位+ <code>VirtualAddress</code></td>
+<td>000116D1</td>
+<td>000116E1</td>
+</tr>
+<tr class="even">
+<td>文件偏移</td>
+<td>00000AD1</td>
+<td>00000AE1</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">00000ad0h: B8 CD 10 01 10 C3 CC CC CC CC CC CC CC CC CC CC ; 竿...锰烫烫烫烫?</span><br><span class="line">00000ae0h: B8 E0 11 01 10 C3 CC CC CC CC CC CC CC CC CC CC ; 膏...锰烫烫烫烫?</span><br></pre></td></tr></table></figure>
+<p>于是<code>10 01 10 CD</code>和<code>10 01 11 E0</code>便是需要重定位的数据，这些数据在重定位时，需要加上<span class="math inline">\(实际装入地址 -文件默认基地址\)</span></p>
+<h2 id="资源resource">资源（Resource）</h2>
+<p>Windows程序的各种界面，包括加速键、位图、光标、对话框等都是资源。资源的具体格式已经在下面的注释中给出了。</p>
+<h3 id="image_resource_directory">IMAGE_RESOURCE_DIRECTORY</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line">// Resource Format.</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">//</span><br><span class="line">// Resource directory consists of two counts, following by a variable length</span><br><span class="line">// array of directory entries.  The first count is the number of entries at</span><br><span class="line">// beginning of the array that have actual names associated with each entry.</span><br><span class="line">// The entries are in ascending order, case insensitive strings.  The second</span><br><span class="line">// count is the number of entries that immediately follow the named entries.</span><br><span class="line">// This second count identifies the number of entries that have 16-bit integer</span><br><span class="line">// Ids as their name.  These entries are also sorted in ascending order.</span><br><span class="line">//</span><br><span class="line">// This structure allows fast lookup by either name or number, but for any</span><br><span class="line">// given resource entry only one form of lookup is supported, not both.</span><br><span class="line">// This is consistant with the syntax of the .RC file and the .RES file.</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">typedef struct _IMAGE_RESOURCE_DIRECTORY &#123;</span><br><span class="line">    DWORD   Characteristics;</span><br><span class="line">    DWORD   TimeDateStamp;</span><br><span class="line">    WORD    MajorVersion;</span><br><span class="line">    WORD    MinorVersion;</span><br><span class="line">    WORD    NumberOfNamedEntries;</span><br><span class="line">    WORD    NumberOfIdEntries;</span><br><span class="line">//  IMAGE_RESOURCE_DIRECTORY_ENTRY DirectoryEntries[];</span><br><span class="line">&#125; IMAGE_RESOURCE_DIRECTORY, *PIMAGE_RESOURCE_DIRECTORY;</span><br></pre></td></tr></table></figure>
+<h3 id="image_resource_directory_entry">IMAGE_RESOURCE_DIRECTORY_ENTRY</h3>
+<p>在<code>IMAGE_RESOURCE_DIRECTORY</code>之后就是<code>IMAGE_RESOURCE_DIRECTORY_ENTRY</code>，在匿名结构体中用到了位域成员。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line">// Each directory contains the 32-bit Name of the entry and an offset,</span><br><span class="line">// relative to the beginning of the resource directory of the data associated</span><br><span class="line">// with this directory entry.  If the name of the entry is an actual text</span><br><span class="line">// string instead of an integer Id, then the high order bit of the name field</span><br><span class="line">// is set to one and the low order 31-bits are an offset, relative to the</span><br><span class="line">// beginning of the resource directory of the string, which is of type</span><br><span class="line">// IMAGE_RESOURCE_DIRECTORY_STRING.  Otherwise the high bit is clear and the</span><br><span class="line">// low-order 16-bits are the integer Id that identify this resource directory</span><br><span class="line">// entry. If the directory entry is yet another resource directory (i.e. a</span><br><span class="line">// subdirectory), then the high order bit of the offset field will be</span><br><span class="line">// set to indicate this.  Otherwise the high bit is clear and the offset</span><br><span class="line">// field points to a resource data entry.</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">typedef struct _IMAGE_RESOURCE_DIRECTORY_ENTRY &#123;</span><br><span class="line">    union &#123;</span><br><span class="line">        struct &#123;</span><br><span class="line">            DWORD NameOffset:31;</span><br><span class="line">            DWORD NameIsString:1;</span><br><span class="line">        &#125; DUMMYSTRUCTNAME;</span><br><span class="line">        DWORD   Name;</span><br><span class="line">        WORD    Id;</span><br><span class="line">    &#125; DUMMYUNIONNAME;</span><br><span class="line">    union &#123;</span><br><span class="line">        DWORD   OffsetToData;</span><br><span class="line">        struct &#123;</span><br><span class="line">            DWORD   OffsetToDirectory:31;</span><br><span class="line">            DWORD   DataIsDirectory:1;</span><br><span class="line">        &#125; DUMMYSTRUCTNAME2;</span><br><span class="line">    &#125; DUMMYUNIONNAME2;</span><br><span class="line">&#125; IMAGE_RESOURCE_DIRECTORY_ENTRY, *PIMAGE_RESOURCE_DIRECTORY_ENTRY;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line">// For resource directory entries that have actual string names, the Name</span><br><span class="line">// field of the directory entry points to an object of the following type.</span><br><span class="line">// All of these string objects are stored together after the last resource</span><br><span class="line">// directory entry and before the first resource data object.  This minimizes</span><br><span class="line">// the impact of these variable length objects on the alignment of the fixed</span><br><span class="line">// size directory entry objects.</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">typedef struct _IMAGE_RESOURCE_DIRECTORY_STRING &#123;</span><br><span class="line">    WORD    Length;</span><br><span class="line">    CHAR    NameString[ 1 ];</span><br><span class="line">&#125; IMAGE_RESOURCE_DIRECTORY_STRING, *PIMAGE_RESOURCE_DIRECTORY_STRING;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">typedef struct _IMAGE_RESOURCE_DIR_STRING_U &#123;</span><br><span class="line">    WORD    Length;</span><br><span class="line">    WCHAR   NameString[ 1 ];</span><br><span class="line">&#125; IMAGE_RESOURCE_DIR_STRING_U, *PIMAGE_RESOURCE_DIR_STRING_U;</span><br></pre></td></tr></table></figure>
+<h3 id="image_resource_data_entry">IMAGE_RESOURCE_DATA_ENTRY</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line">// Each resource data entry describes a leaf node in the resource directory</span><br><span class="line">// tree.  It contains an offset, relative to the beginning of the resource</span><br><span class="line">// directory of the data for the resource, a size field that gives the number</span><br><span class="line">// of bytes of data at that offset, a CodePage that should be used when</span><br><span class="line">// decoding code point values within the resource data.  Typically for new</span><br><span class="line">// applications the code page would be the unicode code page.</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">typedef struct _IMAGE_RESOURCE_DATA_ENTRY &#123;</span><br><span class="line">    DWORD   OffsetToData;</span><br><span class="line">    DWORD   Size;</span><br><span class="line">    DWORD   CodePage;</span><br><span class="line">    DWORD   Reserved;</span><br><span class="line">&#125; IMAGE_RESOURCE_DATA_ENTRY, *PIMAGE_RESOURCE_DATA_ENTRY;</span><br></pre></td></tr></table></figure>
+<h4 id="第一级目录">第一级目录</h4>
+<p>结合<code>test_dll</code>来看，<code>IMAGE_RESOURCE_DIRECTORY</code>位于文件偏移<code>00 00 7E 00</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">00007e00h: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 ; ................</span><br><span class="line">00007e10h: 18 00 00 00 18 00 00 80 00 00 00 00 00 00 00 00 ; .......€........</span><br><span class="line">00007e20h: 00 00 00 00 00 00 01 00 02 00 00 00 30 00 00 80 ; ............0..€</span><br><span class="line">00007e30h: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 ; ................</span><br><span class="line">00007e40h: 09 04 00 00 48 00 00 00 70 C1 01 00 7D 01 00 00 ; ....H...p?.&#125;...</span><br><span class="line">00007e50h: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ; ................</span><br></pre></td></tr></table></figure>
+<p><code>NumberOfIdEntries</code>为1，接下来是紧随其后的entry，<code>Name</code>字段是<code>00 00 00 18</code>，最高位为0，此时作为ID使用，<code>OffsetToData</code>字段是<code>80 00 00 18</code>，最高位为1，表明该entry仍然是一个目录，低31位的值是0x18——所指向目录相对于资源起始地址的偏移，于是所指向目录的文件偏移为7E00+18=7E18。</p>
+<h4 id="第二级目录">第二级目录</h4>
+<p><code>NumberOfIdEntries</code>仍然是1，entry的<code>OffsetToData</code>为<code>80 00 00 30</code>，指向7E30处。</p>
+<h4 id="第三级目录">第三级目录</h4>
+<p><code>NumberOfIdEntries</code>为1，entry<code>OffsetToData</code>最高位是0，低31位指向一个data entry，文件偏移为7E48。</p>
+<h4 id="data-entry">data entry</h4>
+<p><code>OffsetToData</code>=<code>00 01 C1 70</code>是data所在的RVA，<code>Size</code>=<code>00 00 01 7D</code>，其他两个字段均为0。此处data内容是一段字符：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">00007f70h: 3C 3F 78 6D 6C 20 76 65 72 73 69 6F 6E 3D 27 31 ; &lt;?xml version=&apos;1</span><br><span class="line">00007f80h: 2E 30 27 20 65 6E 63 6F 64 69 6E 67 3D 27 55 54 ; .0&apos; encoding=&apos;UT</span><br><span class="line">00007f90h: 46 2D 38 27 20 73 74 61 6E 64 61 6C 6F 6E 65 3D ; F-8&apos; standalone=</span><br><span class="line">00007fa0h: 27 79 65 73 27 3F 3E 0D 0A 3C 61 73 73 65 6D 62 ; &apos;yes&apos;?&gt;..&lt;assemb</span><br><span class="line">00007fb0h: 6C 79 20 78 6D 6C 6E 73 3D 27 75 72 6E 3A 73 63 ; ly xmlns=&apos;urn:sc</span><br><span class="line">00007fc0h: 68 65 6D 61 73 2D 6D 69 63 72 6F 73 6F 66 74 2D ; hemas-microsoft-</span><br></pre></td></tr></table></figure>
+<h4 id="整体结构">整体结构</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">-&gt;Resource Tree (detailed dump)</span><br><span class="line">   [Resource Directory (0)]:</span><br><span class="line">   Characteristics:       0x00000000</span><br><span class="line">   TimeDateStamp:         0x00000000  (Thu Jan 01 00:00:00 1970)</span><br><span class="line">   MajorVersion:          0x0000</span><br><span class="line">   MinorVersion:          0x0000  -&gt; 0.00</span><br><span class="line">   NumberOfNamedEntries:  0x0000</span><br><span class="line">   NumberOfIdEntries:     0x0001</span><br><span class="line">   ---------------------------------------------------------</span><br><span class="line">     [ResourceEntry]:</span><br><span class="line">     Name/Id:       0x00000018</span><br><span class="line">     OffsetToData:  0x80000018  (DATA_IS_DIRECTORY)</span><br><span class="line">       [Resource Directory (1)]:</span><br><span class="line">       Characteristics:       0x00000000</span><br><span class="line">       TimeDateStamp:         0x00000000  (Thu Jan 01 00:00:00 1970)</span><br><span class="line">       MajorVersion:          0x0000</span><br><span class="line">       MinorVersion:          0x0000  -&gt; 0.00</span><br><span class="line">       NumberOfNamedEntries:  0x0000</span><br><span class="line">       NumberOfIdEntries:     0x0001</span><br><span class="line">         [ResourceEntry]:</span><br><span class="line">         Name/Id:       0x00000002</span><br><span class="line">         OffsetToData:  0x80000030  (DATA_IS_DIRECTORY)</span><br><span class="line">           [Resource Directory (2)]:</span><br><span class="line">           Characteristics:       0x00000000</span><br><span class="line">           TimeDateStamp:         0x00000000  (Thu Jan 01 00:00:00 1970)</span><br><span class="line">           MajorVersion:          0x0000</span><br><span class="line">           MinorVersion:          0x0000  -&gt; 0.00</span><br><span class="line">           NumberOfNamedEntries:  0x0000</span><br><span class="line">           NumberOfIdEntries:     0x0001</span><br><span class="line">             [ResourceEntry]:</span><br><span class="line">             Name/Id:       0x00000409</span><br><span class="line">             OffsetToData:  0x00000048</span><br><span class="line">               [ResourceDataEntry]:</span><br><span class="line">               OffsetToData (RVA):  0x0001C170</span><br><span class="line">               Size:                0x0000017D</span><br><span class="line">               CodePage:            0x00000000</span><br><span class="line">               Reserved:            0x00000000</span><br></pre></td></tr></table></figure>
+<h1 id="参考资料">参考资料</h1>
+<ul>
+<li><strong><a href="https://msdn.microsoft.com/" target="_blank" rel="noopener">MSDN</a></strong></li>
+<li><strong><a href="http://bbs.pediy.com/showthread.php?t=66210" target="_blank" rel="noopener">《加密与解密》</a></strong></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">Creative Commons BY-NC-SA 4.0 International License</a>.<br/>
+博客采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">知识共享署署名（BY）-非商业性（NC）-相同方式共享（SA）</a>。<br/>
+本文首发于<a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a>，转载请保留出处。</p>
+</div>
+</div>
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/PE文件/" rel="tag">#PE文件</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/15/主机与虚拟机网络通信/" rel="prev" title="主机与虚拟机网络通信">
+                主机与虚拟机网络通信 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="漂浮" />
+          <p class="site-author-name" itemprop="name">漂浮</p>
+          <p class="site-description motion-element" itemprop="description">We must know, we will know.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#dos头"><span class="nav-number">1.</span> <span class="nav-text">DOS头</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pe头"><span class="nav-number">2.</span> <span class="nav-text">PE头</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#signature"><span class="nav-number">2.1.</span> <span class="nav-text">Signature</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fileheader"><span class="nav-number">2.2.</span> <span class="nav-text">FileHeader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#optionalheader"><span class="nav-number">2.3.</span> <span class="nav-text">OptionalHeader</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#datadirectory"><span class="nav-number">2.3.1.</span> <span class="nav-text">DataDirectory</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#区块表section-table"><span class="nav-number">3.</span> <span class="nav-text">区块表（Section Table）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#区块对齐"><span class="nav-number">3.1.</span> <span class="nav-text">区块对齐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存偏移与文件偏移的转换"><span class="nav-number">3.2.</span> <span class="nav-text">内存偏移与文件偏移的转换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#区块section"><span class="nav-number">4.</span> <span class="nav-text">区块（Section ）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#输入表import-table"><span class="nav-number">4.1.</span> <span class="nav-text">输入表（Import Table）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#image_import_descriptor"><span class="nav-number">4.1.1.</span> <span class="nav-text">IMAGE_IMPORT_DESCRIPTOR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#image_thunk_data"><span class="nav-number">4.1.2.</span> <span class="nav-text">IMAGE_THUNK_DATA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#image_import_by_name"><span class="nav-number">4.1.3.</span> <span class="nav-text">IMAGE_IMPORT_BY_NAME</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输入地址表iat"><span class="nav-number">4.1.4.</span> <span class="nav-text">输入地址表（IAT)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出表export-table"><span class="nav-number">4.2.</span> <span class="nav-text">输出表（Export Table）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基址重定位表base-relocation-table"><span class="nav-number">4.3.</span> <span class="nav-text">基址重定位表（Base Relocation Table）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#image_base_relocation"><span class="nav-number">4.3.1.</span> <span class="nav-text">IMAGE_BASE_RELOCATION</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源resource"><span class="nav-number">4.4.</span> <span class="nav-text">资源（Resource）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#image_resource_directory"><span class="nav-number">4.4.1.</span> <span class="nav-text">IMAGE_RESOURCE_DIRECTORY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#image_resource_directory_entry"><span class="nav-number">4.4.2.</span> <span class="nav-text">IMAGE_RESOURCE_DIRECTORY_ENTRY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#image_resource_data_entry"><span class="nav-number">4.4.3.</span> <span class="nav-text">IMAGE_RESOURCE_DATA_ENTRY</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第一级目录"><span class="nav-number">4.4.3.1.</span> <span class="nav-text">第一级目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二级目录"><span class="nav-number">4.4.3.2.</span> <span class="nav-text">第二级目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第三级目录"><span class="nav-number">4.4.3.3.</span> <span class="nav-text">第三级目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#data-entry"><span class="nav-number">4.4.3.4.</span> <span class="nav-text">data entry</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#整体结构"><span class="nav-number">4.4.3.5.</span> <span class="nav-text">整体结构</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">漂浮</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv">访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+</body>
+</html>

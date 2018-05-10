@@ -1,0 +1,693 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="逆向," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="概述 kx消消乐版本1.52。仅作为学习研究，对本地游戏的一些功能进行了修改。 lua解密 观察 lib\armeabi 下的so文件，发现网上有文章提到了 libhegame。根据资料，游戏代码主要位于加密后的lua脚本中。 加密后的lua的文件名中包含该文件的MD5，例如MainApplication.fa4649711ff8bb0263b0cca9085aa9e4.lua的md5是f">
+<meta name="keywords" content="逆向">
+<meta property="og:type" content="article">
+<meta property="og:title" content="某消消乐手游分析">
+<meta property="og:url" content="http://yoursite.com/2018/04/27/某消消乐手游分析/index.html">
+<meta property="og:site_name" content="Memory">
+<meta property="og:description" content="概述 kx消消乐版本1.52。仅作为学习研究，对本地游戏的一些功能进行了修改。 lua解密 观察 lib\armeabi 下的so文件，发现网上有文章提到了 libhegame。根据资料，游戏代码主要位于加密后的lua脚本中。 加密后的lua的文件名中包含该文件的MD5，例如MainApplication.fa4649711ff8bb0263b0cca9085aa9e4.lua的md5是f">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-04-27T05:08:43.938Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="某消消乐手游分析">
+<meta name="twitter:description" content="概述 kx消消乐版本1.52。仅作为学习研究，对本地游戏的一些功能进行了修改。 lua解密 观察 lib\armeabi 下的so文件，发现网上有文章提到了 libhegame。根据资料，游戏代码主要位于加密后的lua脚本中。 加密后的lua的文件名中包含该文件的MD5，例如MainApplication.fa4649711ff8bb0263b0cca9085aa9e4.lua的md5是f">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/27/某消消乐手游分析/"/>
+
+  <title> 某消消乐手游分析 | Memory </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Memory</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                某消消乐手游分析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-04-27T12:28:39+08:00" content="2018-04-27">
+              2018-04-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/cs/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv">本文阅读量
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="概述">概述</h1>
+<p>kx消消乐版本1.52。仅作为学习研究，对本地游戏的一些功能进行了修改。</p>
+<h1 id="lua解密">lua解密</h1>
+<p>观察 <code>lib\armeabi</code> 下的so文件，发现网上有文章提到了 <code>libhegame</code>。根据资料，游戏代码主要位于加密后的lua脚本中。</p>
+<p>加密后的lua的文件名中包含该文件的MD5，例如MainApplication.fa4649711ff8bb0263b0cca9085aa9e4.lua的md5是fa4649711ff8bb0263b0cca9085aa9e4；初始向量IV是原始lua文件的MD5，如GamePlayConfig.200dc27111c390e146d9193be27c2424.lua的前16字节是0462 f05f 926c d538 e9ee e82a 4c5e 76ef，也是原始lua文件的MD5。</p>
+<a id="more"></a>
+<h2 id="解密代码">解密代码</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">key = <span class="string">b"\xe9\x74\x7d\x92\xcc\x32\x2e\x7d\x11\x2e\x7c\x34\x51\xd7\xb3\x6a"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrypt_lua</span><span class="params">(c)</span>:</span></span><br><span class="line">    IV = c[<span class="number">0</span>:<span class="number">16</span>]</span><br><span class="line">    main_data = c[<span class="number">16</span>:]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 解密</span></span><br><span class="line">    cryptor = AES.new(key, AES.MODE_CBC, IV)</span><br><span class="line">    pad_compress_data = cryptor.decrypt(main_data)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 去除填充字节</span></span><br><span class="line">    pad_compress_data_len = len(pad_compress_data)</span><br><span class="line">    padding_len = pad_compress_data[<span class="number">-1</span>]</span><br><span class="line">    compress_data = pad_compress_data[<span class="number">0</span>:pad_compress_data_len - padding_len]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 解压缩</span></span><br><span class="line">    raw_data = zlib.decompress(compress_data)</span><br><span class="line">    <span class="keyword">return</span> raw_data</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
+<h2 id="加密代码">加密代码</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_md5_bytes</span><span class="params">(data)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> hashlib.md5(data).digest()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">encry_lua</span><span class="params">(m)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 压缩</span></span><br><span class="line">    compress_data = zlib.compress(m)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 填充</span></span><br><span class="line">    padding_len = <span class="number">16</span> - (len(compress_data) &amp; <span class="number">0xf</span>)</span><br><span class="line">    compress_data += bytes([padding_len]) * padding_len</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 加密</span></span><br><span class="line">    IV = get_md5_bytes(m)</span><br><span class="line">    cryptor = AES.new(key, AES.MODE_CBC, IV)</span><br><span class="line">    encry_data = cryptor.encrypt(compress_data)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (IV, encry_data)</span><br></pre></td></tr></table></figure>
+<h1 id="校验">校验</h1>
+<p>若出现“Your current game version is illgeal”</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//\com\happyelements\hellolua\MainActivity.class</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testSignature</span><span class="params">()</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    String[] arrayOfString = <span class="keyword">new</span> String[<span class="number">5</span>];</span><br><span class="line">    arrayOfString[<span class="number">0</span>] = <span class="string">"d12428684ac5205ef3d6db9ec3e62e3d"</span>;</span><br><span class="line">    arrayOfString[<span class="number">1</span>] = <span class="string">"72226f7801e3c0a5da03157b1df244ce"</span>;</span><br><span class="line">    arrayOfString[<span class="number">2</span>] = <span class="string">"42a0b767dd6fea9e81b9c4920b959521"</span>;</span><br><span class="line">    arrayOfString[<span class="number">3</span>] = <span class="string">"ce187ed67e05c2d8879bf66bbfdfc8b9"</span>;</span><br><span class="line">    arrayOfString[<span class="number">4</span>] = <span class="string">"86cc879de7b5050a44380ff30b829121"</span>;</span><br><span class="line">    String str = getSignature();</span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> k = arrayOfString.length;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; k)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> (arrayOfString[i].equalsIgnoreCase(str)) &#123;</span><br><span class="line">        j = <span class="number">1</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      i++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (j == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">new</span> AlertDialog.Builder(<span class="keyword">this</span>).setTitle(<span class="string">"Warnning"</span>).setMessage(<span class="string">"Your current game version is illegal. Please download the official version."</span>).setNegativeButton(<span class="string">"Close"</span>, <span class="keyword">new</span> DialogInterface.OnClickListener()</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(DialogInterface paramAnonymousDialogInterface, <span class="keyword">int</span> paramAnonymousInt)</span> </span>&#123;&#125;</span><br><span class="line">      &#125;).show();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>根据代码，可以将j初始化为1。</p>
+<p>修改 lua 文件后需要加密并以原来的文件名保存，如果更改文件名会有如下错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">error loading module zoo.data.MetaRef from file src/zoo/data/MetaRef.lua:</span><br><span class="line">    fileSize:0</span><br><span class="line">    message: zoo.data.MetaRef, unknown error</span><br></pre></td></tr></table></figure>
+<p>如果闪退，查看 app 的 crash_log，注释掉引用 <code>CCSpriteEx</code> 与 <code>CCNodeEx</code> 的代码，即可启动游戏。</p>
+<h1 id="修改">修改</h1>
+<h2 id="步数修改">步数修改</h2>
+<p>网上已有相关资料，直接修改 <code>MoveMode:userMove()</code> 中的代码即可。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--src\zoo\gamePlay\mode\MoveMode.lua</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MoveMode:useMove</span><span class="params">()</span></span></span><br><span class="line">  <span class="keyword">local</span> mainLogic = self.mainLogic;</span><br><span class="line">    mainLogic.theCurMoves = mainLogic.theCurMoves + <span class="number">10</span>;</span><br><span class="line">    <span class="comment">--mainLogic.theCurMoves = mainLogic.theCurMoves - 1;</span></span><br><span class="line">  <span class="keyword">if</span> mainLogic.PlayUIDelegate <span class="keyword">then</span> <span class="comment">--------调用UI界面函数显示移动步数</span></span><br><span class="line">    mainLogic.PlayUIDelegate:setMoveOrTimeCountCallback(mainLogic.theCurMoves, <span class="literal">false</span>)</span><br><span class="line">	<span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h2 id="游戏币修改">游戏币修改</h2>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--src\zoo\data\DataRef.lua</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">UserRef:getCoin</span><span class="params">()</span></span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">666666</span></span><br><span class="line">    <span class="comment">--local key = "UserRef.coin"..tostring(self)</span></span><br><span class="line">    <span class="comment">--return decrypt_integer(key)</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>风车币 <code>getCash</code> 同理，精力应该也可以照此修改。</p>
+<h2 id="新手无限精力有效时间">新手无限精力有效时间</h2>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--src\zoo\panelBusLogic\UseEnergyBottleLogic.lua</span></span><br><span class="line"><span class="keyword">local</span> oldBuff = UserManager:getInstance().userExtend:getNotConsumeEnergyBuff()</span><br><span class="line"><span class="keyword">local</span> newBuff = <span class="number">0</span></span><br><span class="line"><span class="keyword">if</span> oldBuff &lt; Localhost:<span class="built_in">time</span>() <span class="keyword">then</span></span><br><span class="line">    newBuff = Localhost:<span class="built_in">time</span>() + <span class="number">3600</span> * <span class="number">1000</span> * <span class="number">24</span> * <span class="number">365</span> * <span class="number">10</span></span><br><span class="line">    <span class="comment">--newBuff = Localhost:time() + 3600 * 1000</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    newBuff = oldBuff + <span class="number">3600</span> * <span class="number">1000</span> * <span class="number">24</span> * <span class="number">365</span> * <span class="number">10</span></span><br><span class="line">    <span class="comment">--newBuff = oldBuff + 3600 * 1000</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h2 id="游戏内道具使用次数">游戏内道具使用次数</h2>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--src\zoo\animation\PropListAnimation.lua</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">PropListAnimation:getPropUnlimitable</span><span class="params">(itemId)</span></span></span><br><span class="line">    <span class="comment">-- local summerWeeklyLimitPropList = &#123;GamePropsType.kRandomBird, GamePropsType.kBroom, GamePropsType.kBroom_l&#125;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">--[[if self.isUnlimited then</span></span><br><span class="line"><span class="comment">      if self.levelType == GameLevelType.kSummerWeekly then</span></span><br><span class="line"><span class="comment">        local maxUseTime = kSummerWeeklyPropUseLimit[itemId]</span></span><br><span class="line"><span class="comment">        return false, maxUseTime</span></span><br><span class="line"><span class="comment">      else</span></span><br><span class="line"><span class="comment">        return true</span></span><br><span class="line"><span class="comment">      end</span></span><br><span class="line"><span class="comment">    else</span></span><br><span class="line"><span class="comment">      return false</span></span><br><span class="line"><span class="comment">    end]]</span><span class="comment">--</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h2 id="游戏外道具购买次数">游戏外道具购买次数</h2>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--src\zoo\panelBusLogic\BuyLogic.lua</span></span><br><span class="line"><span class="comment">-- 返回值：实际价格（可能是折扣价，0即为不可买），可买最高数量（仅与限购相关），折扣前价格（如果折扣了的话）</span></span><br><span class="line"><span class="comment">-- 实际价格为0表示出错，不考虑另外的返回值；可买数量为-1表示不限购买数量；折扣前价格为0表示当前就是原价</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">BuyLogic:getPrice</span><span class="params">()</span></span></span><br><span class="line">    <span class="keyword">return</span> realPrice, <span class="number">-1</span>, originalPrice</span><br><span class="line">    <span class="comment">--return realPrice, buyLimit, originalPrice</span></span><br></pre></td></tr></table></figure>
+<h1 id="参考资料">参考资料</h1>
+<ul>
+<li><a href="https://www.52pojie.cn/thread-611248-1-1.html" class="uri" target="_blank" rel="noopener">https://www.52pojie.cn/thread-611248-1-1.html</a></li>
+<li><a href="http://gslab.qq.com/article-37-1.html" class="uri" target="_blank" rel="noopener">http://gslab.qq.com/article-37-1.html</a></li>
+<li><a href="http://gslab.qq.com/article-18-1.html" class="uri" target="_blank" rel="noopener">http://gslab.qq.com/article-18-1.html</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">Creative Commons BY-NC-SA 4.0 International License</a>.<br/>
+博客采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">知识共享署署名（BY）-非商业性（NC）-相同方式共享（SA）</a>。<br/>
+本文首发于<a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a>，转载请保留出处。</p>
+</div>
+</div>
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/逆向/" rel="tag">#逆向</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/03/寻找出现m次的数字/" rel="next" title="寻找出现m次的数字">
+                <i class="fa fa-chevron-left"></i> 寻找出现m次的数字
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="漂浮" />
+          <p class="site-author-name" itemprop="name">漂浮</p>
+          <p class="site-description motion-element" itemprop="description">We must know, we will know.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lua解密"><span class="nav-number">2.</span> <span class="nav-text">lua解密</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解密代码"><span class="nav-number">2.1.</span> <span class="nav-text">解密代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加密代码"><span class="nav-number">2.2.</span> <span class="nav-text">加密代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#校验"><span class="nav-number">3.</span> <span class="nav-text">校验</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#修改"><span class="nav-number">4.</span> <span class="nav-text">修改</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#步数修改"><span class="nav-number">4.1.</span> <span class="nav-text">步数修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#游戏币修改"><span class="nav-number">4.2.</span> <span class="nav-text">游戏币修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新手无限精力有效时间"><span class="nav-number">4.3.</span> <span class="nav-text">新手无限精力有效时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#游戏内道具使用次数"><span class="nav-number">4.4.</span> <span class="nav-text">游戏内道具使用次数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#游戏外道具购买次数"><span class="nav-number">4.5.</span> <span class="nav-text">游戏外道具购买次数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">漂浮</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv">访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+</body>
+</html>

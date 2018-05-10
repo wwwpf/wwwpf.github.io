@@ -1,0 +1,771 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Libnids,网络," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="变量 nids_tcp_timeouts 双向链表nids_tcp_timeouts按结点的timeout从小到大排列， tcp_latest, tcp_oldest static struct tcp_stream *tcp_latest = 0, *tcp_oldest = 0; tcp_latest指向最新的TCP连接，tcp_oldest指向最老的连接，所有TCP连接组成一个双向">
+<meta name="keywords" content="Libnids,网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Libnids中TCP相关实现">
+<meta property="og:url" content="http://yoursite.com/2017/03/03/Libnids中TCP相关实现/index.html">
+<meta property="og:site_name" content="Memory">
+<meta property="og:description" content="变量 nids_tcp_timeouts 双向链表nids_tcp_timeouts按结点的timeout从小到大排列， tcp_latest, tcp_oldest static struct tcp_stream *tcp_latest = 0, *tcp_oldest = 0; tcp_latest指向最新的TCP连接，tcp_oldest指向最老的连接，所有TCP连接组成一个双向">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-03-09T08:38:46.770Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Libnids中TCP相关实现">
+<meta name="twitter:description" content="变量 nids_tcp_timeouts 双向链表nids_tcp_timeouts按结点的timeout从小到大排列， tcp_latest, tcp_oldest static struct tcp_stream *tcp_latest = 0, *tcp_oldest = 0; tcp_latest指向最新的TCP连接，tcp_oldest指向最老的连接，所有TCP连接组成一个双向">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/03/Libnids中TCP相关实现/"/>
+
+  <title> Libnids中TCP相关实现 | Memory </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Memory</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Libnids中TCP相关实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-03T17:39:43+08:00" content="2017-03-03">
+              2017-03-03
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/cs/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv">本文阅读量
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="变量">变量</h1>
+<h2 id="nids_tcp_timeouts">nids_tcp_timeouts</h2>
+<p>双向链表<code>nids_tcp_timeouts</code>按结点的<code>timeout</code>从小到大排列，</p>
+<h2 id="tcp_latest-tcp_oldest">tcp_latest, tcp_oldest</h2>
+<p><code>static struct tcp_stream *tcp_latest = 0, *tcp_oldest = 0;</code></p>
+<p><code>tcp_latest</code>指向最新的TCP连接，<code>tcp_oldest</code>指向最老的连接，所有TCP连接组成一个双向链表，前驱是更新的连接，后继是更旧的连接。 <a id="more"></a></p>
+<h2 id="tcp_stream_table">tcp_stream_table</h2>
+<p><code>static struct tcp_stream **tcp_stream_table;</code></p>
+<p>使用哈希表<code>tcp_stream_table</code>保存所有跟踪的TCP连接，发生碰撞的连接通过双向链表保存。</p>
+<h2 id="streams_pool-free_streams">streams_pool， free_streams</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">static struct tcp_stream *streams_pool;</span><br><span class="line">static struct tcp_stream *free_streams;</span><br></pre></td></tr></table></figure>
+<p><code>streams_pool</code>保存为流分配的内存的首地址，<code>free_streams</code>指向下一个可使用的流空间。</p>
+<h2 id="tcp_procs">tcp_procs</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">struct proc_node *tcp_procs;</span><br></pre></td></tr></table></figure>
+<p>为处理TCP连接注册的所有回调函数。</p>
+<h1 id="结构体">结构体</h1>
+<h2 id="skbuff">skbuff</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">struct skbuff</span><br><span class="line">&#123;</span><br><span class="line">    struct skbuff *next;</span><br><span class="line">    struct skbuff *prev;</span><br><span class="line"></span><br><span class="line">    void *data;</span><br><span class="line">    u_int len;</span><br><span class="line">    u_int truesize;</span><br><span class="line">    u_int urg_ptr;</span><br><span class="line"></span><br><span class="line">    char fin;</span><br><span class="line">    char urg;</span><br><span class="line">    u_int seq;</span><br><span class="line">    u_int ack;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="tcp_stream">tcp_stream</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">struct tcp_stream</span><br><span class="line">&#123;</span><br><span class="line">    struct tuple4 addr;</span><br><span class="line">    char nids_state;</span><br><span class="line">    struct lurker_node *listeners;  // 该连接监听者</span><br><span class="line">    struct half_stream client;      // 主动打开的一端</span><br><span class="line">    struct half_stream server;      // 被动打开的一端</span><br><span class="line">    struct tcp_stream *next_node;   // 与prev_node字段类似，</span><br><span class="line">    struct tcp_stream *prev_node;   // 指向双向链表的前驱或者后继</span><br><span class="line">    int hash_index;                 // 在哈希表中的位置</span><br><span class="line">    struct tcp_stream *next_time;   // 指向下一个旧的TCP连接</span><br><span class="line">    struct tcp_stream *prev_time;   // 指向下一个新的TCP连接</span><br><span class="line">    int read;</span><br><span class="line">    struct tcp_stream *next_free;   // 用于指向内存池的下一个可用位置</span><br><span class="line">    void *user;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<!-- more -->
+<h2 id="half_stream">half_stream</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">struct half_stream</span><br><span class="line">&#123;</span><br><span class="line">    char state;</span><br><span class="line">    char collect;</span><br><span class="line">    char collect_urg;</span><br><span class="line"></span><br><span class="line">    char *data;                 // 缓冲区地址</span><br><span class="line">    int offset;                 // 缓冲区首字节在TCP流中的偏移</span><br><span class="line">    int count;                  // 收到的所有字节数</span><br><span class="line">    int count_new;              // 本次（最近一次）收到的字节数</span><br><span class="line">    int bufsize;                // 缓冲区大小</span><br><span class="line">    int rmem_alloc;             // 缓存的所有报文段大小</span><br><span class="line"></span><br><span class="line">    int urg_count;</span><br><span class="line">    u_int acked;</span><br><span class="line">    u_int seq;</span><br><span class="line">    u_int ack_seq;</span><br><span class="line">    u_int first_data_seq;</span><br><span class="line">    u_char urgdata;</span><br><span class="line">    u_char count_new_urg;</span><br><span class="line">    u_char urg_seen;</span><br><span class="line">    u_int urg_ptr;</span><br><span class="line">    u_short window;</span><br><span class="line">    u_char ts_on;</span><br><span class="line">    u_char wscale_on;</span><br><span class="line">    u_int curr_ts;</span><br><span class="line">    u_int wscale;</span><br><span class="line">    struct skbuff *list;        // TCP队列，缓存报文段</span><br><span class="line">    struct skbuff *listtail;    // 双向链表，根据序列号以&lt;排序</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="lurker_node">lurker_node</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">struct lurker_node              // 潜伏结点，用于处理TCP连接</span><br><span class="line">&#123;</span><br><span class="line">    void (*item)();             // 回调函数地址</span><br><span class="line">    void *data;                 // 传给回调函数的数据地址</span><br><span class="line">    char whatto;                // （紧急）数据达到client或者server</span><br><span class="line">    struct lurker_node *next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="函数">函数</h1>
+<h2 id="tcp_init">tcp_init</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">int tcp_init(int size)</span><br><span class="line">&#123;</span><br><span class="line">    int i;</span><br><span class="line">    struct tcp_timeout *tmp;</span><br><span class="line"></span><br><span class="line">    if (!size) return 0;</span><br><span class="line">    tcp_stream_table_size = size;</span><br><span class="line">    tcp_stream_table = calloc(tcp_stream_table_size, sizeof(char *));</span><br><span class="line">    if (!tcp_stream_table)</span><br><span class="line">    &#123;</span><br><span class="line">        nids_params.no_mem(&quot;tcp_init&quot;);</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">    max_stream = 3 * tcp_stream_table_size / 4;</span><br><span class="line">    streams_pool = (struct tcp_stream *) malloc((max_stream + 1) * sizeof(struct tcp_stream));</span><br><span class="line">    if (!streams_pool)</span><br><span class="line">    &#123;</span><br><span class="line">        nids_params.no_mem(&quot;tcp_init&quot;);</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">    for (i = 0; i &lt; max_stream; i++)</span><br><span class="line">        streams_pool[i].next_free = &amp;(streams_pool[i + 1]);</span><br><span class="line">    streams_pool[max_stream].next_free = 0;</span><br><span class="line">    free_streams = streams_pool;</span><br><span class="line">    init_hash();</span><br><span class="line">    while (nids_tcp_timeouts)</span><br><span class="line">    &#123;</span><br><span class="line">        tmp = nids_tcp_timeouts-&gt;next;</span><br><span class="line">        free(nids_tcp_timeouts);</span><br><span class="line">        nids_tcp_timeouts = tmp;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>TCP的相关初始化，为哈希表分配<code>tcp_stream_table_size</code>大小的空间，默认是1040，可跟踪的最多连接是<code>max_stream = 3 * tcp_stream_table_size / 4</code>个，然后为连接池分配<code>max_stream + 1</code>个<code>tcp_stream</code>的空间，接下来将这些元素通过<code>next_free</code>连接起来，<code>next_free</code>表示下一个可用的结点，全局变量<code>free_streams</code>指向刚刚分配的空间，然后初始化哈希，下一个循环处理处于超时关闭状态的TCP连接，删除这些连接并释放内存。</p>
+<h2 id="add_tcp_closing_timeout">add_tcp_closing_timeout</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">static void add_tcp_closing_timeout(struct tcp_stream *a_tcp)</span><br><span class="line">&#123;</span><br><span class="line">    struct tcp_timeout *to;</span><br><span class="line">    struct tcp_timeout *newto;</span><br><span class="line"></span><br><span class="line">    if (!nids_params.tcp_workarounds)</span><br><span class="line">        return;</span><br><span class="line">    newto = malloc(sizeof (struct tcp_timeout));</span><br><span class="line">    if (!newto)</span><br><span class="line">        nids_params.no_mem(&quot;add_tcp_closing_timeout&quot;);</span><br><span class="line">    newto-&gt;a_tcp = a_tcp;</span><br><span class="line">    newto-&gt;timeout.tv_sec = nids_last_pcap_header-&gt;ts.tv_sec + 10;</span><br><span class="line">    newto-&gt;prev = 0;</span><br><span class="line">    for (newto-&gt;next = to = nids_tcp_timeouts; to; newto-&gt;next = to = to-&gt;next)</span><br><span class="line">    &#123;</span><br><span class="line">        if (to-&gt;a_tcp == a_tcp)</span><br><span class="line">        &#123;</span><br><span class="line">            free(newto);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        if (to-&gt;timeout.tv_sec &gt; newto-&gt;timeout.tv_sec)</span><br><span class="line">            break;</span><br><span class="line">        newto-&gt;prev = to;</span><br><span class="line">    &#125;</span><br><span class="line">    if (!newto-&gt;prev)</span><br><span class="line">        nids_tcp_timeouts = newto;</span><br><span class="line">    else</span><br><span class="line">        newto-&gt;prev-&gt;next = newto;</span><br><span class="line">    if (newto-&gt;next)</span><br><span class="line">        newto-&gt;next-&gt;prev = newto;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将<code>a_tcp</code>添加到双向链表<code>nids_tcp_timeouts</code>中（如果不存在）并使其依然有序。</p>
+<h2 id="del_tcp_closing_timeout">del_tcp_closing_timeout</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">static void del_tcp_closing_timeout(struct tcp_stream *a_tcp)</span><br><span class="line">&#123;</span><br><span class="line">    struct tcp_timeout *to;</span><br><span class="line"></span><br><span class="line">    if (!nids_params.tcp_workarounds)</span><br><span class="line">        return;</span><br><span class="line">    for (to = nids_tcp_timeouts; to; to = to-&gt;next)</span><br><span class="line">        if (to-&gt;a_tcp == a_tcp)</span><br><span class="line">            break;</span><br><span class="line">    if (!to)</span><br><span class="line">        return;</span><br><span class="line">    if (!to-&gt;prev)</span><br><span class="line">        nids_tcp_timeouts = to-&gt;next;</span><br><span class="line">    else</span><br><span class="line">        to-&gt;prev-&gt;next = to-&gt;next;</span><br><span class="line">    if (to-&gt;next)</span><br><span class="line">        to-&gt;next-&gt;prev = to-&gt;prev;</span><br><span class="line">    free(to);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将<code>a_tcp</code>对应的结点从<code>nids_tcp_timeouts</code>链表中删除并释放内存。</p>
+<h2 id="nids_free_tcp_stream">nids_free_tcp_stream</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">void nids_free_tcp_stream(struct tcp_stream *a_tcp)</span><br><span class="line">&#123;</span><br><span class="line">    int hash_index = a_tcp-&gt;hash_index;</span><br><span class="line">    struct lurker_node *i, *j;</span><br><span class="line"></span><br><span class="line">    del_tcp_closing_timeout(a_tcp);</span><br><span class="line">    purge_queue(&amp;a_tcp-&gt;server);</span><br><span class="line">    purge_queue(&amp;a_tcp-&gt;client);</span><br><span class="line"></span><br><span class="line">    if (a_tcp-&gt;next_node)</span><br><span class="line">        a_tcp-&gt;next_node-&gt;prev_node = a_tcp-&gt;prev_node;</span><br><span class="line">    if (a_tcp-&gt;prev_node)</span><br><span class="line">        a_tcp-&gt;prev_node-&gt;next_node = a_tcp-&gt;next_node;</span><br><span class="line">    else</span><br><span class="line">        tcp_stream_table[hash_index] = a_tcp-&gt;next_node;</span><br><span class="line">    if (a_tcp-&gt;client.data)</span><br><span class="line">        free(a_tcp-&gt;client.data);</span><br><span class="line">    if (a_tcp-&gt;server.data)</span><br><span class="line">        free(a_tcp-&gt;server.data);</span><br><span class="line">    if (a_tcp-&gt;next_time)</span><br><span class="line">        a_tcp-&gt;next_time-&gt;prev_time = a_tcp-&gt;prev_time;</span><br><span class="line">    if (a_tcp-&gt;prev_time)</span><br><span class="line">        a_tcp-&gt;prev_time-&gt;next_time = a_tcp-&gt;next_time;</span><br><span class="line">    if (a_tcp == tcp_oldest)</span><br><span class="line">        tcp_oldest = a_tcp-&gt;prev_time;</span><br><span class="line">    if (a_tcp == tcp_latest)</span><br><span class="line">        tcp_latest = a_tcp-&gt;next_time;</span><br><span class="line"></span><br><span class="line">    i = a_tcp-&gt;listeners;</span><br><span class="line"></span><br><span class="line">    while (i)</span><br><span class="line">    &#123;</span><br><span class="line">        j = i-&gt;next;</span><br><span class="line">        free(i);</span><br><span class="line">        i = j;</span><br><span class="line">    &#125;</span><br><span class="line">    a_tcp-&gt;next_free = free_streams;</span><br><span class="line">    free_streams = a_tcp;</span><br><span class="line">    tcp_num--;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将<code>a_tcp</code>从哈希表中删除，释放占用内存，调整前驱后继，并使可用的流空间指向该地址。</p>
+<h2 id="tcp_check_timeouts">tcp_check_timeouts</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">void tcp_check_timeouts(struct timeval *now)</span><br><span class="line">&#123;</span><br><span class="line">    struct tcp_timeout *to;</span><br><span class="line">    struct tcp_timeout *next;</span><br><span class="line">    struct lurker_node *i;</span><br><span class="line"></span><br><span class="line">    for (to = nids_tcp_timeouts; to; to = next)</span><br><span class="line">    &#123;</span><br><span class="line">        if (now-&gt;tv_sec &lt; to-&gt;timeout.tv_sec)</span><br><span class="line">            return;</span><br><span class="line">        to-&gt;a_tcp-&gt;nids_state = NIDS_TIMED_OUT;</span><br><span class="line">        for (i = to-&gt;a_tcp-&gt;listeners; i; i = i-&gt;next)</span><br><span class="line">            (i-&gt;item)(to-&gt;a_tcp, &amp;i-&gt;data);</span><br><span class="line">        next = to-&gt;next;</span><br><span class="line">        nids_free_tcp_stream(to-&gt;a_tcp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将所有超时的连接删除。</p>
+<h2 id="get_ts">get_ts</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">static int get_ts(struct tcphdr *this_tcphdr, unsigned int *ts)</span><br><span class="line">&#123;</span><br><span class="line">    int len = 4 * this_tcphdr-&gt;th_off;</span><br><span class="line">    unsigned int tmp_ts;</span><br><span class="line">    unsigned char *options = (unsigned char*)(this_tcphdr + 1);</span><br><span class="line">    int ind = 0, ret = 0;</span><br><span class="line">    while (ind &lt;= len - (int)sizeof (struct tcphdr) - 10)</span><br><span class="line">        switch (options[ind])</span><br><span class="line">        &#123;</span><br><span class="line">        case 0: /* TCPOPT_EOL */</span><br><span class="line">            return ret;</span><br><span class="line">        case 1: /* TCPOPT_NOP */</span><br><span class="line">            ind++;</span><br><span class="line">            continue;</span><br><span class="line">        case 8: /* TCPOPT_TIMESTAMP */</span><br><span class="line">            memcpy((char*)&amp;tmp_ts, options + ind + 2, 4);</span><br><span class="line">            *ts = ntohl(tmp_ts);</span><br><span class="line">            ret = 1;</span><br><span class="line">            /* no break, intentionally */</span><br><span class="line">        default:</span><br><span class="line">            if (options[ind + 1] &lt; 2) /* &quot;silly option&quot; */</span><br><span class="line">                return ret;</span><br><span class="line">            ind += options[ind + 1];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    return ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>遍历TCP头部的选项，获取时间戳。看一下TCP头部选项的格式就能理解。</p>
+<h2 id="get_wscale">get_wscale</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">static int get_wscale(struct tcphdr *this_tcphdr, unsigned int *ws)</span><br><span class="line">&#123;</span><br><span class="line">    int len = 4 * this_tcphdr-&gt;th_off;</span><br><span class="line">    unsigned int tmp_ws;</span><br><span class="line">    unsigned char *options = (unsigned char*)(this_tcphdr + 1);</span><br><span class="line">    int ind = 0, ret = 0;</span><br><span class="line">    *ws = 1;</span><br><span class="line">    while (ind &lt;= len - (int)sizeof (struct tcphdr) - 3)</span><br><span class="line">        switch (options[ind])</span><br><span class="line">        &#123;</span><br><span class="line">        case 0: /* TCPOPT_EOL */</span><br><span class="line">            return ret;</span><br><span class="line">        case 1: /* TCPOPT_NOP */</span><br><span class="line">            ind++;</span><br><span class="line">            continue;</span><br><span class="line">        case 3: /* TCPOPT_WSCALE */</span><br><span class="line">            tmp_ws = options[ind + 2];</span><br><span class="line">            if (tmp_ws &gt; 14)</span><br><span class="line">                tmp_ws = 14;</span><br><span class="line">            *ws = 1 &lt;&lt; tmp_ws;</span><br><span class="line">            ret = 1;</span><br><span class="line">            /* no break, intentionally */</span><br><span class="line">        default:</span><br><span class="line">            if (options[ind + 1] &lt; 2) /* &quot;silly option&quot; */</span><br><span class="line">                return ret;</span><br><span class="line">            ind += options[ind + 1];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    return ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>获取窗口的扩大因子。</p>
+<h2 id="add_new_tcp">add_new_tcp</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">static void add_new_tcp(struct tcphdr *this_tcphdr, struct ip *this_iphdr)</span><br><span class="line">&#123;</span><br><span class="line">    struct tcp_stream *tolink;</span><br><span class="line">    struct tcp_stream *a_tcp;</span><br><span class="line">    int hash_index;</span><br><span class="line">    struct tuple4 addr;</span><br><span class="line"></span><br><span class="line">    addr.source = ntohs(this_tcphdr-&gt;th_sport);</span><br><span class="line">    addr.dest = ntohs(this_tcphdr-&gt;th_dport);</span><br><span class="line">    addr.saddr = this_iphdr-&gt;ip_src.s_addr;</span><br><span class="line">    addr.daddr = this_iphdr-&gt;ip_dst.s_addr;</span><br><span class="line">    hash_index = mk_hash_index(addr);</span><br><span class="line"></span><br><span class="line">    if (tcp_num &gt; max_stream)</span><br><span class="line">    &#123;</span><br><span class="line">        struct lurker_node *i;</span><br><span class="line">        int orig_client_state = tcp_oldest-&gt;client.state;</span><br><span class="line">        tcp_oldest-&gt;nids_state = NIDS_TIMED_OUT;</span><br><span class="line">        for (i = tcp_oldest-&gt;listeners; i; i = i-&gt;next)</span><br><span class="line">            (i-&gt;item)(tcp_oldest, &amp;i-&gt;data);</span><br><span class="line">        nids_free_tcp_stream(tcp_oldest);</span><br><span class="line">        if (orig_client_state != TCP_SYN_SENT)</span><br><span class="line">            nids_params.syslog(NIDS_WARN_TCP, NIDS_WARN_TCP_TOOMUCH, ugly_iphdr, this_tcphdr);</span><br><span class="line">    &#125;</span><br><span class="line">    a_tcp = free_streams;</span><br><span class="line">    if (!a_tcp)</span><br><span class="line">    &#123;</span><br><span class="line">        fprintf(stderr, &quot;gdb me ...\n&quot;);</span><br><span class="line">        pause();</span><br><span class="line">    &#125;</span><br><span class="line">    free_streams = a_tcp-&gt;next_free;</span><br><span class="line"></span><br><span class="line">    tcp_num++;</span><br><span class="line">    tolink = tcp_stream_table[hash_index];</span><br><span class="line">    memset(a_tcp, 0, sizeof(struct tcp_stream));</span><br><span class="line">    a_tcp-&gt;hash_index = hash_index;</span><br><span class="line">    a_tcp-&gt;addr = addr;</span><br><span class="line">    a_tcp-&gt;client.state = TCP_SYN_SENT;</span><br><span class="line">    a_tcp-&gt;client.seq = ntohl(this_tcphdr-&gt;th_seq) + 1;</span><br><span class="line">    a_tcp-&gt;client.first_data_seq = a_tcp-&gt;client.seq;</span><br><span class="line">    a_tcp-&gt;client.window = ntohs(this_tcphdr-&gt;th_win);</span><br><span class="line">    a_tcp-&gt;client.ts_on = get_ts(this_tcphdr, &amp;a_tcp-&gt;client.curr_ts);</span><br><span class="line">    a_tcp-&gt;client.wscale_on = get_wscale(this_tcphdr, &amp;a_tcp-&gt;client.wscale);</span><br><span class="line">    a_tcp-&gt;server.state = TCP_CLOSE;</span><br><span class="line">    a_tcp-&gt;next_node = tolink;</span><br><span class="line">    a_tcp-&gt;prev_node = 0;</span><br><span class="line">    if (tolink)</span><br><span class="line">        tolink-&gt;prev_node = a_tcp;</span><br><span class="line">    tcp_stream_table[hash_index] = a_tcp;</span><br><span class="line">    a_tcp-&gt;next_time = tcp_latest;</span><br><span class="line">    a_tcp-&gt;prev_time = 0;</span><br><span class="line">    if (!tcp_oldest)</span><br><span class="line">        tcp_oldest = a_tcp;</span><br><span class="line">    if (tcp_latest)</span><br><span class="line">        tcp_latest-&gt;prev_time = a_tcp;</span><br><span class="line">    tcp_latest = a_tcp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>添加新的TCP连接，如果连接个数超过最大值，删除最老的连接。</p>
+<p>然后在可用的内存池<code>free_streams</code>里分配一个<code>tcp_stream</code>空间给<code>a_tcp</code>，并调整可用内存池的首地址。接下来初始化<code>a_tcp</code>，第一个报文段的序列号是初始序列号<code>this_tcphdr-&gt;th_seq</code>加1。如果哈希表相应位置已存在TCP连接，则将<code>a_tcp</code>插到链表头部。然后调整最新的TCP连接和最老的TCP连接。</p>
+<h2 id="add2buf">add2buf</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">static void add2buf(struct half_stream *rcv, char *data, int datalen)</span><br><span class="line">&#123;</span><br><span class="line">    int toalloc;</span><br><span class="line"></span><br><span class="line">    if (datalen + rcv-&gt;count - rcv-&gt;offset &gt; rcv-&gt;bufsize)</span><br><span class="line">    &#123;</span><br><span class="line">        if (!rcv-&gt;data)</span><br><span class="line">        &#123;</span><br><span class="line">            if (datalen &lt; 2048)</span><br><span class="line">                toalloc = 4096;</span><br><span class="line">            else</span><br><span class="line">                toalloc = datalen * 2;</span><br><span class="line">            rcv-&gt;data = malloc(toalloc);</span><br><span class="line">            rcv-&gt;bufsize = toalloc;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            if (datalen &lt; rcv-&gt;bufsize)</span><br><span class="line">                toalloc = 2 * rcv-&gt;bufsize;</span><br><span class="line">            else</span><br><span class="line">                toalloc = rcv-&gt;bufsize + 2 * datalen;</span><br><span class="line">            rcv-&gt;data = realloc(rcv-&gt;data, toalloc);</span><br><span class="line">            rcv-&gt;bufsize = toalloc;</span><br><span class="line">        &#125;</span><br><span class="line">        if (!rcv-&gt;data)</span><br><span class="line">            nids_params.no_mem(&quot;add2buf&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    memcpy(rcv-&gt;data + rcv-&gt;count - rcv-&gt;offset, data, datalen);</span><br><span class="line">    rcv-&gt;count_new = datalen;</span><br><span class="line">    rcv-&gt;count += datalen;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将本次收到的数据加入缓冲区，如果会造成溢出，根据缓冲区已有数据和本次收到数据大小，以2的幂方式增长缓冲区。</p>
+<h2 id="ride_lurkers">ride_lurkers</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">static void ride_lurkers(struct tcp_stream *a_tcp, char mask)</span><br><span class="line">&#123;</span><br><span class="line">    struct lurker_node *i;</span><br><span class="line">    char cc, sc, ccu, scu;</span><br><span class="line"></span><br><span class="line">    for (i = a_tcp-&gt;listeners; i; i = i-&gt;next)</span><br><span class="line">        if (i-&gt;whatto &amp; mask)</span><br><span class="line">        &#123;</span><br><span class="line">            cc = a_tcp-&gt;client.collect;</span><br><span class="line">            sc = a_tcp-&gt;server.collect;</span><br><span class="line">            ccu = a_tcp-&gt;client.collect_urg;</span><br><span class="line">            scu = a_tcp-&gt;server.collect_urg;</span><br><span class="line"></span><br><span class="line">            (i-&gt;item)(a_tcp, &amp;i-&gt;data);</span><br><span class="line">            if (cc &lt; a_tcp-&gt;client.collect)</span><br><span class="line">                i-&gt;whatto |= COLLECT_cc;</span><br><span class="line">            if (ccu &lt; a_tcp-&gt;client.collect_urg)</span><br><span class="line">                i-&gt;whatto |= COLLECT_ccu;</span><br><span class="line">            if (sc &lt; a_tcp-&gt;server.collect)</span><br><span class="line">                i-&gt;whatto |= COLLECT_sc;</span><br><span class="line">            if (scu &lt; a_tcp-&gt;server.collect_urg)</span><br><span class="line">                i-&gt;whatto |= COLLECT_scu;</span><br><span class="line">            if (cc &gt; a_tcp-&gt;client.collect)</span><br><span class="line">                i-&gt;whatto &amp;= ~COLLECT_cc;</span><br><span class="line">            if (ccu &gt; a_tcp-&gt;client.collect_urg)</span><br><span class="line">                i-&gt;whatto &amp;= ~COLLECT_ccu;</span><br><span class="line">            if (sc &gt; a_tcp-&gt;server.collect)</span><br><span class="line">                i-&gt;whatto &amp;= ~COLLECT_sc;</span><br><span class="line">            if (scu &gt; a_tcp-&gt;server.collect_urg)</span><br><span class="line">                i-&gt;whatto &amp;= ~COLLECT_scu;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>根据潜伏结点的<code>whatto</code>与<code>mask</code>调用回调函数，并调整<code>whatto</code>值。</p>
+<h2 id="notify">notify</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">static void notify(struct tcp_stream *a_tcp, struct half_stream *rcv)</span><br><span class="line">&#123;</span><br><span class="line">    struct lurker_node *i, **prev_addr;</span><br><span class="line">    char mask;</span><br><span class="line"></span><br><span class="line">    if (rcv-&gt;count_new_urg)</span><br><span class="line">    &#123;</span><br><span class="line">        if (!rcv-&gt;collect_urg)</span><br><span class="line">            return;</span><br><span class="line">        if (rcv == &amp;a_tcp-&gt;client)</span><br><span class="line">            mask = COLLECT_ccu;</span><br><span class="line">        else</span><br><span class="line">            mask = COLLECT_scu;</span><br><span class="line">        ride_lurkers(a_tcp, mask);</span><br><span class="line">        goto prune_listeners;</span><br><span class="line">    &#125;</span><br><span class="line">    if (rcv-&gt;collect)</span><br><span class="line">    &#123;</span><br><span class="line">        if (rcv == &amp;a_tcp-&gt;client)</span><br><span class="line">            mask = COLLECT_cc;</span><br><span class="line">        else</span><br><span class="line">            mask = COLLECT_sc;</span><br><span class="line">        do</span><br><span class="line">        &#123;</span><br><span class="line">            int total;</span><br><span class="line">            a_tcp-&gt;read = rcv-&gt;count - rcv-&gt;offset;</span><br><span class="line">            total = a_tcp-&gt;read;</span><br><span class="line"></span><br><span class="line">            ride_lurkers(a_tcp, mask);</span><br><span class="line">            if (a_tcp-&gt;read &gt; total - rcv-&gt;count_new)</span><br><span class="line">                rcv-&gt;count_new = total - a_tcp-&gt;read;</span><br><span class="line"></span><br><span class="line">            if (a_tcp-&gt;read &gt; 0)</span><br><span class="line">            &#123;</span><br><span class="line">                memmove(rcv-&gt;data, rcv-&gt;data + a_tcp-&gt;read, rcv-&gt;count - rcv-&gt;offset - a_tcp-&gt;read);</span><br><span class="line">                rcv-&gt;offset += a_tcp-&gt;read;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        while (nids_params.one_loop_less &amp;&amp; a_tcp-&gt;read &gt; 0 &amp;&amp; rcv-&gt;count_new);</span><br><span class="line">        // we know that if one_loop_less!=0, we have only one callback to notify</span><br><span class="line">        rcv-&gt;count_new = 0;</span><br><span class="line">    &#125;</span><br><span class="line">prune_listeners:</span><br><span class="line">    prev_addr = &amp;a_tcp-&gt;listeners;</span><br><span class="line">    i = a_tcp-&gt;listeners;</span><br><span class="line">    while (i)</span><br><span class="line">        if (!i-&gt;whatto)</span><br><span class="line">        &#123;</span><br><span class="line">            *prev_addr = i-&gt;next;</span><br><span class="line">            free(i);</span><br><span class="line">            i = *prev_addr;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            prev_addr = &amp;i-&gt;next;</span><br><span class="line">            i = i-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果要处理紧急数据，根据数据的方向设定<code>mask</code>并通知给<code>a_tcp</code>的潜伏结点，然后调整潜伏结点，删除所有忽略正常数据及紧急数据的潜伏结点。</p>
+<p>如果需要处理正常数据，通知相应的潜伏结点，并适当地调整缓冲区，将上次未处理的数据移至缓冲区起始处，如果<code>nids_params.one_loop_less</code>非零，libnids假定只有一个回调函数，于是循环直到没有未处理的新数据或者不再读取到数据，</p>
+<h2 id="add_from_skb">add_from_skb</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">static void add_from_skb(struct tcp_stream *a_tcp, struct half_stream *rcv,</span><br><span class="line">                         struct half_stream *snd,</span><br><span class="line">                         u_char *data, int datalen,</span><br><span class="line">                         u_int this_seq, char fin, char urg, u_int urg_ptr)</span><br><span class="line">&#123;</span><br><span class="line">    u_int lost = EXP_SEQ - this_seq;</span><br><span class="line">    int to_copy, to_copy2;</span><br><span class="line"></span><br><span class="line">    if (urg &amp;&amp; after(urg_ptr, EXP_SEQ - 1) &amp;&amp;</span><br><span class="line">        (!rcv-&gt;urg_seen || after(urg_ptr, rcv-&gt;urg_ptr)))</span><br><span class="line">    &#123;</span><br><span class="line">        rcv-&gt;urg_ptr = urg_ptr;</span><br><span class="line">        rcv-&gt;urg_seen = 1;</span><br><span class="line">    &#125;</span><br><span class="line">    if (rcv-&gt;urg_seen &amp;&amp; after(rcv-&gt;urg_ptr + 1, this_seq + lost) &amp;&amp;</span><br><span class="line">        before(rcv-&gt;urg_ptr, this_seq + datalen))</span><br><span class="line">    &#123;</span><br><span class="line">        to_copy = rcv-&gt;urg_ptr - (this_seq + lost);</span><br><span class="line">        if (to_copy &gt; 0)</span><br><span class="line">        &#123;</span><br><span class="line">            if (rcv-&gt;collect)</span><br><span class="line">            &#123;</span><br><span class="line">                add2buf(rcv, (char *)(data + lost), to_copy);</span><br><span class="line">                notify(a_tcp, rcv);</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                rcv-&gt;count += to_copy;</span><br><span class="line">                rcv-&gt;offset = rcv-&gt;count; /* clear the buffer */</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        rcv-&gt;urgdata = data[rcv-&gt;urg_ptr - this_seq];</span><br><span class="line">        rcv-&gt;count_new_urg = 1;</span><br><span class="line">        notify(a_tcp, rcv);</span><br><span class="line">        rcv-&gt;count_new_urg = 0;</span><br><span class="line">        rcv-&gt;urg_seen = 0;</span><br><span class="line">        rcv-&gt;urg_count++;</span><br><span class="line">        to_copy2 = this_seq + datalen - rcv-&gt;urg_ptr - 1;</span><br><span class="line">        if (to_copy2 &gt; 0)</span><br><span class="line">        &#123;</span><br><span class="line">            if (rcv-&gt;collect)</span><br><span class="line">            &#123;</span><br><span class="line">                add2buf(rcv, (char *)(data + lost + to_copy + 1), to_copy2);</span><br><span class="line">                notify(a_tcp, rcv);</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                rcv-&gt;count += to_copy2;</span><br><span class="line">                rcv-&gt;offset = rcv-&gt;count; /* clear the buffer */</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        if (datalen - lost &gt; 0)</span><br><span class="line">        &#123;</span><br><span class="line">            if (rcv-&gt;collect)</span><br><span class="line">            &#123;</span><br><span class="line">                add2buf(rcv, (char *)(data + lost), datalen - lost);</span><br><span class="line">                notify(a_tcp, rcv);</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                rcv-&gt;count += datalen - lost;</span><br><span class="line">                rcv-&gt;offset = rcv-&gt;count; /* clear the buffer */</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (fin)</span><br><span class="line">    &#123;</span><br><span class="line">        snd-&gt;state = FIN_SENT;</span><br><span class="line">        if (rcv-&gt;state == TCP_CLOSING)</span><br><span class="line">            add_tcp_closing_timeout(a_tcp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接收方从<code>skbuff</code>中添加数据，<code>EXP_SEQ</code>是接收方上次发送的<code>ACK</code>。</p>
+<p>首先判断是否设置紧急标志，紧急指针在<code>EXP_SEQ</code>（含）之后，并且接收方之前没有看到紧急标志或者本次紧急指针在上次设置的紧急指针之后，如果条件为真，设置紧急指针的相应变量。</p>
+<p>再判断是否看到紧急标志，且紧急指针在这次数据中，如果满足条件，设置需要处理的数据大小<code>to_copy</code>，紧急数据的范围是[EXP_SEQ, rcv-&gt;urg_ptr)，如果大于0，再判断<code>rcv-&gt;collect</code>，如果需要存储数据，则将<code>EXP_SEQ</code>之后的<code>to_copy</code>字节其加入缓冲区，再通知相关连接，否则调整<code>rcv-&gt;count</code>并清空缓冲区，根据<code>rcv-&gt;offset</code>定义，它是缓冲区第一字节在TCP流中的偏移，将其设为接收方收到的总字节数，意味着缓冲区已经指向了数据流末尾，没有数据。接下来<code>rcv-&gt;urgdata</code>存储了一字节紧急数据，调整变量，设置正常数据大小<code>to_copy2</code>，其范围是(rcv-&gt;urg_ptr, this_seq + datalen)。</p>
+<p>如果先前的判断为假，再判断本次数据是否包含<code>EXP_SEQ</code>之后的数据，有则加入缓冲区。</p>
+<p>如果设置<code>FIN</code>，修改snd状态为<code>FIN_SENT</code>，如果rcv状态已经是<code>CLOSING</code>，则将<code>a_tcp</code>加入超时关闭的链表中。</p>
+<h2 id="tcp_queue">tcp_queue</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line">static void tcp_queue(struct tcp_stream *a_tcp, struct tcphdr *this_tcphdr,</span><br><span class="line">                      struct half_stream *snd, struct half_stream *rcv,</span><br><span class="line">                      char *data, int datalen, int skblen)</span><br><span class="line">&#123;</span><br><span class="line">    u_int this_seq = ntohl(this_tcphdr-&gt;th_seq);</span><br><span class="line">    struct skbuff *pakiet, *tmp;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * Did we get anything new to ack?</span><br><span class="line">     */</span><br><span class="line"></span><br><span class="line">    if (!after(this_seq, EXP_SEQ))</span><br><span class="line">    &#123;</span><br><span class="line">        if (after(this_seq + datalen + (this_tcphdr-&gt;th_flags &amp; TH_FIN), EXP_SEQ))</span><br><span class="line">        &#123;</span><br><span class="line">            /* the packet straddles our window end */</span><br><span class="line">            get_ts(this_tcphdr, &amp;snd-&gt;curr_ts);</span><br><span class="line">            add_from_skb(a_tcp, rcv, snd, (u_char *)data, datalen, this_seq,</span><br><span class="line">                         (this_tcphdr-&gt;th_flags &amp; TH_FIN),</span><br><span class="line">                         (this_tcphdr-&gt;th_flags &amp; TH_URG),</span><br><span class="line">                         ntohs(this_tcphdr-&gt;th_urp) + this_seq - 1);</span><br><span class="line">            /*</span><br><span class="line">             * Do we have any old packets to ack that the above</span><br><span class="line">             * made visible? (Go forward from skb)</span><br><span class="line">             */</span><br><span class="line">            pakiet = rcv-&gt;list;</span><br><span class="line">            while (pakiet)</span><br><span class="line">            &#123;</span><br><span class="line">                if (after(pakiet-&gt;seq, EXP_SEQ))</span><br><span class="line">                    break;</span><br><span class="line">                if (after(pakiet-&gt;seq + pakiet-&gt;len + pakiet-&gt;fin, EXP_SEQ))</span><br><span class="line">                &#123;</span><br><span class="line">                    add_from_skb(a_tcp, rcv, snd, pakiet-&gt;data,</span><br><span class="line">                                 pakiet-&gt;len, pakiet-&gt;seq, pakiet-&gt;fin, pakiet-&gt;urg,</span><br><span class="line">                                 pakiet-&gt;urg_ptr + pakiet-&gt;seq - 1);</span><br><span class="line">                &#125;</span><br><span class="line">                rcv-&gt;rmem_alloc -= pakiet-&gt;truesize;</span><br><span class="line">                if (pakiet-&gt;prev)</span><br><span class="line">                    pakiet-&gt;prev-&gt;next = pakiet-&gt;next;</span><br><span class="line">                else</span><br><span class="line">                    rcv-&gt;list = pakiet-&gt;next;</span><br><span class="line">                if (pakiet-&gt;next)</span><br><span class="line">                    pakiet-&gt;next-&gt;prev = pakiet-&gt;prev;</span><br><span class="line">                else</span><br><span class="line">                    rcv-&gt;listtail = pakiet-&gt;prev;</span><br><span class="line">                tmp = pakiet-&gt;next;</span><br><span class="line">                free(pakiet-&gt;data);</span><br><span class="line">                free(pakiet);</span><br><span class="line">                pakiet = tmp;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">            return;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        struct skbuff *p = rcv-&gt;listtail;</span><br><span class="line"></span><br><span class="line">        pakiet = mknew(struct skbuff);</span><br><span class="line">        pakiet-&gt;truesize = skblen;</span><br><span class="line">        rcv-&gt;rmem_alloc += pakiet-&gt;truesize;</span><br><span class="line">        pakiet-&gt;len = datalen;</span><br><span class="line">        pakiet-&gt;data = malloc(datalen);</span><br><span class="line">        if (!pakiet-&gt;data)</span><br><span class="line">            nids_params.no_mem(&quot;tcp_queue&quot;);</span><br><span class="line">        memcpy(pakiet-&gt;data, data, datalen);</span><br><span class="line">        pakiet-&gt;fin = (this_tcphdr-&gt;th_flags &amp; TH_FIN);</span><br><span class="line">        /* Some Cisco - at least - hardware accept to close a TCP connection</span><br><span class="line">         * even though packets were lost before the first TCP FIN packet and</span><br><span class="line">         * never retransmitted; this violates RFC 793, but since it really</span><br><span class="line">         * happens, it has to be dealt with... The idea is to introduce a 10s</span><br><span class="line">         * timeout after TCP FIN packets were sent by both sides so that</span><br><span class="line">         * corresponding libnids resources can be released instead of waiting</span><br><span class="line">         * for retransmissions which will never happen.  -- Sebastien Raveau</span><br><span class="line">         */</span><br><span class="line">        if (pakiet-&gt;fin)</span><br><span class="line">        &#123;</span><br><span class="line">            snd-&gt;state = TCP_CLOSING;</span><br><span class="line">            if (rcv-&gt;state == FIN_SENT || rcv-&gt;state == FIN_CONFIRMED)</span><br><span class="line">                add_tcp_closing_timeout(a_tcp);</span><br><span class="line">        &#125;</span><br><span class="line">        pakiet-&gt;seq = this_seq;</span><br><span class="line">        pakiet-&gt;urg = (this_tcphdr-&gt;th_flags &amp; TH_URG);</span><br><span class="line">        pakiet-&gt;urg_ptr = ntohs(this_tcphdr-&gt;th_urp);</span><br><span class="line">        for (;;)</span><br><span class="line">        &#123;</span><br><span class="line">            if (!p || !after(p-&gt;seq, this_seq))</span><br><span class="line">                break;</span><br><span class="line">            p = p-&gt;prev;</span><br><span class="line">        &#125;</span><br><span class="line">        if (!p)</span><br><span class="line">        &#123;</span><br><span class="line">            pakiet-&gt;prev = 0;</span><br><span class="line">            pakiet-&gt;next = rcv-&gt;list;</span><br><span class="line">            if (rcv-&gt;list)</span><br><span class="line">                rcv-&gt;list-&gt;prev = pakiet;</span><br><span class="line">            rcv-&gt;list = pakiet;</span><br><span class="line">            if (!rcv-&gt;listtail)</span><br><span class="line">                rcv-&gt;listtail = pakiet;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            pakiet-&gt;next = p-&gt;next;</span><br><span class="line">            p-&gt;next = pakiet;</span><br><span class="line">            pakiet-&gt;prev = p;</span><br><span class="line">            if (pakiet-&gt;next)</span><br><span class="line">                pakiet-&gt;next-&gt;prev = pakiet;</span><br><span class="line">            else</span><br><span class="line">                rcv-&gt;listtail = pakiet;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果<code>this_seq &lt;= EXP_SEQ</code>，再判断是否<code>this_seq + datalen + (this_tcphdr-&gt;th_flags &amp; TH_FIN) &gt; EXP_SEQ</code>，也就是判断本次数据中是否有未确认的数据，如果有，设置时间戳并从<code>skbuff</code>中添加数据。接下来处理之前未被确认的数据（如果有）。</p>
+<ul>
+<li>如果TCP队列中有数据，遍历链表，将<code>EXP_SEQ</code>在[pakiet-&gt;seq, pakiet-&gt;seq + pakiet-&gt;len + pakiet-&gt;fin]中的数据加入，如果<code>EXP_SEQ &lt;= pakiet-&gt;seq</code>，以后再处理这些报文段，如果<code>pakiet-&gt;seq + pakiet-&gt;len + pakiet-&gt;fin &lt;= EXP_SEQ</code>，该报文段已经处理过。然后调整未处理报文段的链表并释放所占用的空间。</li>
+</ul>
+<p>如果这次数据均已被确认，直接返回。</p>
+<p>现在处理报文段序列号在<code>ACK</code>之后的情况，等待确认，为报文段分配相应空间，调整<code>rcv-&gt;rmem_alloc</code>，如果设置<code>FIN</code>，调整发送方状态为<code>TCP_CLOSING</code>，如果接收方状态是<code>FIN_SENT</code>或者<code>FIN_CONFIRMED</code>，将该连接加入超时关闭的队列。剩下的工作是将该报文段插入缓存的TCP队列中，根据序列号从小到大排序。</p>
+<h2 id="handle_ack">handle_ack</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">static void handle_ack(struct half_stream *snd, u_int acknum)</span><br><span class="line">&#123;</span><br><span class="line">    int ackdiff;</span><br><span class="line"></span><br><span class="line">    ackdiff = acknum - snd-&gt;ack_seq;</span><br><span class="line">    if (ackdiff &gt; 0)</span><br><span class="line">    &#123;</span><br><span class="line">        snd-&gt;ack_seq = acknum;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果确认了更新的数据，调整<code>ACK</code>。</p>
+<h2 id="find_stream">find_stream</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">struct tcp_stream *find_stream(struct tcphdr *this_tcphdr, struct ip *this_iphdr,</span><br><span class="line">                               int *from_client)</span><br><span class="line">&#123;</span><br><span class="line">    struct tuple4 this_addr, reversed;</span><br><span class="line">    struct tcp_stream *a_tcp;</span><br><span class="line"></span><br><span class="line">    this_addr.source = ntohs(this_tcphdr-&gt;th_sport);</span><br><span class="line">    this_addr.dest = ntohs(this_tcphdr-&gt;th_dport);</span><br><span class="line">    this_addr.saddr = this_iphdr-&gt;ip_src.s_addr;</span><br><span class="line">    this_addr.daddr = this_iphdr-&gt;ip_dst.s_addr;</span><br><span class="line">    a_tcp = nids_find_tcp_stream(&amp;this_addr);</span><br><span class="line">    if (a_tcp)</span><br><span class="line">    &#123;</span><br><span class="line">        *from_client = 1;</span><br><span class="line">        return a_tcp;</span><br><span class="line">    &#125;</span><br><span class="line">    reversed.source = ntohs(this_tcphdr-&gt;th_dport);</span><br><span class="line">    reversed.dest = ntohs(this_tcphdr-&gt;th_sport);</span><br><span class="line">    reversed.saddr = this_iphdr-&gt;ip_dst.s_addr;</span><br><span class="line">    reversed.daddr = this_iphdr-&gt;ip_src.s_addr;</span><br><span class="line">    a_tcp = nids_find_tcp_stream(&amp;reversed);</span><br><span class="line">    if (a_tcp)</span><br><span class="line">    &#123;</span><br><span class="line">        *from_client = 0;</span><br><span class="line">        return a_tcp;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>根据TCP首部和IP首部，调用<code>nids_find_tcp_stream</code>在哈希表中寻找连接，<code>this_addr</code>是与<code>this_tcphdr</code>同方向的四元组，<code>reversed</code>则是反向，先寻找同向的连接，没找到则寻找反向连接，仍未找到则返回0。</p>
+<h2 id="nids_find_tcp_stream">nids_find_tcp_stream</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">struct tcp_stream *nids_find_tcp_stream(struct tuple4 *addr)</span><br><span class="line">&#123;</span><br><span class="line">    int hash_index;</span><br><span class="line">    struct tcp_stream *a_tcp;</span><br><span class="line"></span><br><span class="line">    hash_index = mk_hash_index(*addr);</span><br><span class="line">    for (a_tcp = tcp_stream_table[hash_index];</span><br><span class="line">         a_tcp &amp;&amp; memcmp(&amp;a_tcp-&gt;addr, addr, sizeof (struct tuple4));</span><br><span class="line">         a_tcp = a_tcp-&gt;next_node);</span><br><span class="line">    return a_tcp ? a_tcp : 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>计算哈希值，在对应位置的链表中顺序搜索<code>addr</code>，没有则返回0。</p>
+<h2 id="tcp_exit">tcp_exit</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">void tcp_exit(void)</span><br><span class="line">&#123;</span><br><span class="line">    int i;</span><br><span class="line">    struct lurker_node *j;</span><br><span class="line">    struct tcp_stream *a_tcp, *t_tcp;</span><br><span class="line"></span><br><span class="line">    if (!tcp_stream_table || !streams_pool)</span><br><span class="line">        return;</span><br><span class="line">    for (i = 0; i &lt; tcp_stream_table_size; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        a_tcp = tcp_stream_table[i];</span><br><span class="line">        while (a_tcp)</span><br><span class="line">        &#123;</span><br><span class="line">            t_tcp = a_tcp;</span><br><span class="line">            a_tcp = a_tcp-&gt;next_node;</span><br><span class="line">            for (j = t_tcp-&gt;listeners; j; j = j-&gt;next)</span><br><span class="line">            &#123;</span><br><span class="line">                t_tcp-&gt;nids_state = NIDS_EXITING;</span><br><span class="line">                (j-&gt;item)(t_tcp, &amp;j-&gt;data);</span><br><span class="line">            &#125;</span><br><span class="line">            nids_free_tcp_stream(t_tcp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    free(tcp_stream_table);</span><br><span class="line">    tcp_stream_table = NULL;</span><br><span class="line">    free(streams_pool);</span><br><span class="line">    streams_pool = NULL;</span><br><span class="line">    /* FIXME: anything else we should free? */</span><br><span class="line">    /* yes plz.. */</span><br><span class="line">    tcp_latest = tcp_oldest = NULL;</span><br><span class="line">    tcp_num = 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>遍历哈希表，将TCP连接的nids状态设为<code>nids_state</code>并调用所有的潜伏结点进行处理，然后释放该连接。释放哈希表，释放为流分配的空间，调整相关变量。</p>
+<h2 id="process_tcp">process_tcp</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br></pre></td><td class="code"><pre><span class="line">void process_tcp(u_char *data, int skblen)</span><br><span class="line">&#123;</span><br><span class="line">    struct ip *this_iphdr = (struct ip *)data;</span><br><span class="line">    struct tcphdr *this_tcphdr = (struct tcphdr *)(data + 4 * this_iphdr-&gt;ip_hl);</span><br><span class="line">    int datalen, iplen;</span><br><span class="line">    int from_client = 1;</span><br><span class="line">    unsigned int tmp_ts;</span><br><span class="line">    struct tcp_stream *a_tcp;</span><br><span class="line">    struct half_stream *snd, *rcv;</span><br><span class="line"></span><br><span class="line">    ugly_iphdr = this_iphdr;</span><br><span class="line">    iplen = ntohs(this_iphdr-&gt;ip_len);</span><br><span class="line">    if ((unsigned)iplen &lt; 4 * this_iphdr-&gt;ip_hl + sizeof(struct tcphdr))</span><br><span class="line">    &#123;</span><br><span class="line">        nids_params.syslog(NIDS_WARN_TCP, NIDS_WARN_TCP_HDR, this_iphdr,</span><br><span class="line">                           this_tcphdr);</span><br><span class="line">        return;</span><br><span class="line">    &#125; // ktos sie bawi</span><br><span class="line"></span><br><span class="line">    datalen = iplen - 4 * this_iphdr-&gt;ip_hl - 4 * this_tcphdr-&gt;th_off;</span><br><span class="line"></span><br><span class="line">    if (datalen &lt; 0)</span><br><span class="line">    &#123;</span><br><span class="line">        nids_params.syslog(NIDS_WARN_TCP, NIDS_WARN_TCP_HDR, this_iphdr,</span><br><span class="line">                           this_tcphdr);</span><br><span class="line">        return;</span><br><span class="line">    &#125; // ktos sie bawi</span><br><span class="line"></span><br><span class="line">    if ((this_iphdr-&gt;ip_src.s_addr | this_iphdr-&gt;ip_dst.s_addr) == 0)</span><br><span class="line">    &#123;</span><br><span class="line">        nids_params.syslog(NIDS_WARN_TCP, NIDS_WARN_TCP_HDR, this_iphdr,</span><br><span class="line">                           this_tcphdr);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    if (!(this_tcphdr-&gt;th_flags &amp; TH_ACK))</span><br><span class="line">        detect_scan(this_iphdr);</span><br><span class="line">    if (!nids_params.n_tcp_streams) return;</span><br><span class="line">    if (my_tcp_check(this_tcphdr, iplen - 4 * this_iphdr-&gt;ip_hl,</span><br><span class="line">                     this_iphdr-&gt;ip_src.s_addr, this_iphdr-&gt;ip_dst.s_addr))</span><br><span class="line">    &#123;</span><br><span class="line">        nids_params.syslog(NIDS_WARN_TCP, NIDS_WARN_TCP_HDR, this_iphdr,</span><br><span class="line">                           this_tcphdr);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">#if 0</span><br><span class="line">  check_flags(this_iphdr, this_tcphdr);</span><br><span class="line">    //ECN</span><br><span class="line">#endif</span><br><span class="line">    if (!(a_tcp = find_stream(this_tcphdr, this_iphdr, &amp;from_client)))</span><br><span class="line">    &#123;</span><br><span class="line">        if ((this_tcphdr-&gt;th_flags &amp; TH_SYN) &amp;&amp;</span><br><span class="line">            !(this_tcphdr-&gt;th_flags &amp; TH_ACK) &amp;&amp;</span><br><span class="line">            !(this_tcphdr-&gt;th_flags &amp; TH_RST))</span><br><span class="line">            add_new_tcp(this_tcphdr, this_iphdr);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    if (from_client)</span><br><span class="line">    &#123;</span><br><span class="line">        snd = &amp;a_tcp-&gt;client;</span><br><span class="line">        rcv = &amp;a_tcp-&gt;server;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        rcv = &amp;a_tcp-&gt;client;</span><br><span class="line">        snd = &amp;a_tcp-&gt;server;</span><br><span class="line">    &#125;</span><br><span class="line">    if ((this_tcphdr-&gt;th_flags &amp; TH_SYN))</span><br><span class="line">    &#123;</span><br><span class="line">        if (from_client || a_tcp-&gt;client.state != TCP_SYN_SENT ||</span><br><span class="line">            a_tcp-&gt;server.state != TCP_CLOSE || !(this_tcphdr-&gt;th_flags &amp; TH_ACK))</span><br><span class="line">            return;</span><br><span class="line">        if (a_tcp-&gt;client.seq != ntohl(this_tcphdr-&gt;th_ack))</span><br><span class="line">            return;</span><br><span class="line">        a_tcp-&gt;server.state = TCP_SYN_RECV;</span><br><span class="line">        a_tcp-&gt;server.seq = ntohl(this_tcphdr-&gt;th_seq) + 1;</span><br><span class="line">        a_tcp-&gt;server.first_data_seq = a_tcp-&gt;server.seq;</span><br><span class="line">        a_tcp-&gt;server.ack_seq = ntohl(this_tcphdr-&gt;th_ack);</span><br><span class="line">        a_tcp-&gt;server.window = ntohs(this_tcphdr-&gt;th_win);</span><br><span class="line">        if (a_tcp-&gt;client.ts_on)</span><br><span class="line">        &#123;</span><br><span class="line">            a_tcp-&gt;server.ts_on = get_ts(this_tcphdr, &amp;a_tcp-&gt;server.curr_ts);</span><br><span class="line">            if (!a_tcp-&gt;server.ts_on)</span><br><span class="line">                a_tcp-&gt;client.ts_on = 0;</span><br><span class="line">        &#125;</span><br><span class="line">        else a_tcp-&gt;server.ts_on = 0;</span><br><span class="line">        if (a_tcp-&gt;client.wscale_on)</span><br><span class="line">        &#123;</span><br><span class="line">            a_tcp-&gt;server.wscale_on = get_wscale(this_tcphdr, &amp;a_tcp-&gt;server.wscale);</span><br><span class="line">            if (!a_tcp-&gt;server.wscale_on)</span><br><span class="line">            &#123;</span><br><span class="line">                a_tcp-&gt;client.wscale_on = 0;</span><br><span class="line">                a_tcp-&gt;client.wscale = 1;</span><br><span class="line">                a_tcp-&gt;server.wscale = 1;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            a_tcp-&gt;server.wscale_on = 0;</span><br><span class="line">            a_tcp-&gt;server.wscale = 1;</span><br><span class="line">        &#125;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    if (</span><br><span class="line">        ! (!datalen &amp;&amp; ntohl(this_tcphdr-&gt;th_seq) == rcv-&gt;ack_seq)</span><br><span class="line">        &amp;&amp;</span><br><span class="line">        (!before(ntohl(this_tcphdr-&gt;th_seq), rcv-&gt;ack_seq + rcv-&gt;window * rcv-&gt;wscale) ||</span><br><span class="line">            before(ntohl(this_tcphdr-&gt;th_seq) + datalen, rcv-&gt;ack_seq)</span><br><span class="line">        )</span><br><span class="line">    )</span><br><span class="line">        return;</span><br><span class="line"></span><br><span class="line">    if ((this_tcphdr-&gt;th_flags &amp; TH_RST))</span><br><span class="line">    &#123;</span><br><span class="line">        if (a_tcp-&gt;nids_state == NIDS_DATA)</span><br><span class="line">        &#123;</span><br><span class="line">            struct lurker_node *i;</span><br><span class="line"></span><br><span class="line">            a_tcp-&gt;nids_state = NIDS_RESET;</span><br><span class="line">            for (i = a_tcp-&gt;listeners; i; i = i-&gt;next)</span><br><span class="line">                (i-&gt;item)(a_tcp, &amp;i-&gt;data);</span><br><span class="line">        &#125;</span><br><span class="line">        nids_free_tcp_stream(a_tcp);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* PAWS check */</span><br><span class="line">    if (rcv-&gt;ts_on &amp;&amp; get_ts(this_tcphdr, &amp;tmp_ts) &amp;&amp;</span><br><span class="line">        before(tmp_ts, snd-&gt;curr_ts))</span><br><span class="line">        return;</span><br><span class="line"></span><br><span class="line">    if ((this_tcphdr-&gt;th_flags &amp; TH_ACK))</span><br><span class="line">    &#123;</span><br><span class="line">        if (from_client &amp;&amp; a_tcp-&gt;client.state == TCP_SYN_SENT &amp;&amp;</span><br><span class="line">            a_tcp-&gt;server.state == TCP_SYN_RECV)</span><br><span class="line">        &#123;</span><br><span class="line">            if (ntohl(this_tcphdr-&gt;th_ack) == a_tcp-&gt;server.seq)</span><br><span class="line">            &#123;</span><br><span class="line">                a_tcp-&gt;client.state = TCP_ESTABLISHED;</span><br><span class="line">                a_tcp-&gt;client.ack_seq = ntohl(this_tcphdr-&gt;th_ack);</span><br><span class="line">                &#123;</span><br><span class="line">                    struct proc_node *i;</span><br><span class="line">                    struct lurker_node *j;</span><br><span class="line">                    void *data;</span><br><span class="line"></span><br><span class="line">                    a_tcp-&gt;server.state = TCP_ESTABLISHED;</span><br><span class="line">                    a_tcp-&gt;nids_state = NIDS_JUST_EST;</span><br><span class="line">                    for (i = tcp_procs; i; i = i-&gt;next)</span><br><span class="line">                    &#123;</span><br><span class="line">                        char whatto = 0;</span><br><span class="line">                        char cc = a_tcp-&gt;client.collect;</span><br><span class="line">                        char sc = a_tcp-&gt;server.collect;</span><br><span class="line">                        char ccu = a_tcp-&gt;client.collect_urg;</span><br><span class="line">                        char scu = a_tcp-&gt;server.collect_urg;</span><br><span class="line"></span><br><span class="line">                        (i-&gt;item)(a_tcp, &amp;data);</span><br><span class="line">                        if (cc &lt; a_tcp-&gt;client.collect)</span><br><span class="line">                            whatto |= COLLECT_cc;</span><br><span class="line">                        if (ccu &lt; a_tcp-&gt;client.collect_urg)</span><br><span class="line">                            whatto |= COLLECT_ccu;</span><br><span class="line">                        if (sc &lt; a_tcp-&gt;server.collect)</span><br><span class="line">                            whatto |= COLLECT_sc;</span><br><span class="line">                        if (scu &lt; a_tcp-&gt;server.collect_urg)</span><br><span class="line">                            whatto |= COLLECT_scu;</span><br><span class="line">                        if (nids_params.one_loop_less)</span><br><span class="line">                        &#123;</span><br><span class="line">                            if (a_tcp-&gt;client.collect &gt;= 2)</span><br><span class="line">                            &#123;</span><br><span class="line">                                a_tcp-&gt;client.collect = cc;</span><br><span class="line">                                whatto &amp;= ~COLLECT_cc;</span><br><span class="line">                            &#125;</span><br><span class="line">                            if (a_tcp-&gt;server.collect &gt;= 2)</span><br><span class="line">                            &#123;</span><br><span class="line">                                a_tcp-&gt;server.collect = sc;</span><br><span class="line">                                whatto &amp;= ~COLLECT_sc;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                        if (whatto)</span><br><span class="line">                        &#123;</span><br><span class="line">                            j = mknew(struct lurker_node);</span><br><span class="line">                            j-&gt;item = i-&gt;item;</span><br><span class="line">                            j-&gt;data = data;</span><br><span class="line">                            j-&gt;whatto = whatto;</span><br><span class="line">                            j-&gt;next = a_tcp-&gt;listeners;</span><br><span class="line">                            a_tcp-&gt;listeners = j;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    if (!a_tcp-&gt;listeners)</span><br><span class="line">                    &#123;</span><br><span class="line">                        nids_free_tcp_stream(a_tcp);</span><br><span class="line">                        return;</span><br><span class="line">                    &#125;</span><br><span class="line">                    a_tcp-&gt;nids_state = NIDS_DATA;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            // return;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if ((this_tcphdr-&gt;th_flags &amp; TH_ACK))</span><br><span class="line">    &#123;</span><br><span class="line">        handle_ack(snd, ntohl(this_tcphdr-&gt;th_ack));</span><br><span class="line">        if (rcv-&gt;state == FIN_SENT)</span><br><span class="line">            rcv-&gt;state = FIN_CONFIRMED;</span><br><span class="line">        if (rcv-&gt;state == FIN_CONFIRMED &amp;&amp; snd-&gt;state == FIN_CONFIRMED)</span><br><span class="line">        &#123;</span><br><span class="line">            struct lurker_node *i;</span><br><span class="line"></span><br><span class="line">            a_tcp-&gt;nids_state = NIDS_CLOSE;</span><br><span class="line">            for (i = a_tcp-&gt;listeners; i; i = i-&gt;next)</span><br><span class="line">                (i-&gt;item)(a_tcp, &amp;i-&gt;data);</span><br><span class="line">            nids_free_tcp_stream(a_tcp);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (datalen + (this_tcphdr-&gt;th_flags &amp; TH_FIN) &gt; 0)</span><br><span class="line">        tcp_queue(a_tcp, this_tcphdr, snd, rcv,</span><br><span class="line">                  (char *) (this_tcphdr) + 4 * this_tcphdr-&gt;th_off,</span><br><span class="line">                  datalen, skblen);</span><br><span class="line">    snd-&gt;window = ntohs(this_tcphdr-&gt;th_win);</span><br><span class="line">    if (rcv-&gt;rmem_alloc &gt; 65535)</span><br><span class="line">        prune_queue(rcv, this_tcphdr);</span><br><span class="line">    if (!a_tcp-&gt;listeners)</span><br><span class="line">        nids_free_tcp_stream(a_tcp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>处理TCP连接，<code>data</code>参数指向IP包的起始处，TCP包的偏移在<code>this_iphdr-&gt;ip_hl * 4</code>。检测IP包的长度，检测TCP数据的大小，检测IP全0的情况，如果没有设置<code>ACK</code>，调用<code>detect_scan</code>检测扫描。然后如果有必要，进行校验和计算。</p>
+<p>如果没有找到该连接，如果是发起连接建立请求的报文段，那么添加新的TCP连接，否则返回。然后根据<code>from_client</code>决定报文段方向，client-&gt;server或者server-&gt;client。</p>
+<p>如果设置了<code>SYN</code>，这是三次握手的第二个报文段，因为如果是第一个报文段，那么在之前已经处理（通过<code>add_new_tcp</code>添加新的TCP连接）。此时client应该处于<code>SYN_SENT</code>，server处于<code>CLOSED</code>，并且设置<code>ACK</code>，如果不满足任一条件那么连接建立失败。第二个报文段需要对第一个报文段进行确认，如果ack与ISN(c)+1不同，连接建立失败。一切正常的话，将server状态转到<code>SYN_RECV</code>，设定第一字节序列号与确认号及其他选项，如果client与server中有一端不支持时间戳或者窗口扩大选项，则关闭对应选项。</p>
+<p>如果数据长度不为0或者序列号不等于确认号，并且报文段序列号在接收窗口之外或者整个报文段数据均已确认，则直接返回。</p>
+<p>如果设置了<code>RST</code>标志，调用所有的潜伏结点最后一次处理该TCP连接，然后释放掉该连接并返回。</p>
+<p>接下来<code>PAWS(Protection Against Wrapping Sequence)</code>，处理序列号回绕的情况，根据时间戳（如果有），如果报文段时间戳在发送方当前时间之前，那么这是之前迷失在网络中的报文段到达了发送方，这种情况下直接丢弃。</p>
+<p>如果设置了<code>ACK</code>，判断是否为三次握手的第三个报文段，再判断确认号是否正确，如果正确，那么TCP连接就此建立，修改nids状态为<code>NIDS_JUST_EST</code>，调用回调函数，这里用未初始化的局部<code>data</code>隐藏了形参<code>data</code>，如果该回调函数处理数据，修改<code>whatto</code>，如果设置了<code>nids_params.one_loop_less</code>，那么只允许一个回调函数处理TCP连接，再根据<code>whatto</code>建立潜伏结点，如果该连接没有潜伏结点来处理，释放为该连接分配的资源。最后修改nids状态为<code>NIDS_DATA</code>。</p>
+<p>再次判断是否设置<code>ACK</code>，并调整确认号，如果接收方状态为<code>FIN_SENT</code>，那么这已经是四次挥手第二个报文段，将接收方状态修改为<code>FIN_CONFIRMED</code>，接下来判断是否完成四次挥手，满足条件就释放该连接。</p>
+<p>如果有任何数据或者是<code>FIN</code>报文段，将其加入TCP队列等待处理。</p>
+<p>接下来设置发送方的窗口，如果接收方缓存的数据过多，将其丢弃。如果该TCP连接不再被监听，则将其释放。</p>
+<h2 id="nids_discard">nids_discard</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">void nids_discard(struct tcp_stream *a_tcp, int num)</span><br><span class="line">&#123;</span><br><span class="line">    if (num &lt; a_tcp-&gt;read)</span><br><span class="line">        a_tcp-&gt;read = num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果满足条件，修改已读取的数据为<code>num</code>。</p>
+<h2 id="process_icmp">process_icmp</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">void process_icmp(u_char *data)</span><br><span class="line">&#123;</span><br><span class="line">    struct ip *iph = (struct ip *) data;</span><br><span class="line">    struct ip *orig_ip;</span><br><span class="line">    STRUCT_ICMP *pkt;</span><br><span class="line">    struct tcphdr *th;</span><br><span class="line">    struct half_stream *hlf;</span><br><span class="line">    int match_addr;</span><br><span class="line">    struct tcp_stream *a_tcp;</span><br><span class="line">    struct lurker_node *i;</span><br><span class="line"></span><br><span class="line">    int from_client;</span><br><span class="line">    /* we will use unsigned, to suppress warning; we must be careful with</span><br><span class="line">       possible wrap when substracting </span><br><span class="line">       the following is ok, as the ip header has already been sanitized */</span><br><span class="line">    unsigned int len = ntohs(iph-&gt;ip_len) - (iph-&gt;ip_hl &lt;&lt; 2);</span><br><span class="line"></span><br><span class="line">    if (len &lt; sizeof(STRUCT_ICMP))</span><br><span class="line">        return;</span><br><span class="line">    pkt = (STRUCT_ICMP *) (data + (iph-&gt;ip_hl &lt;&lt; 2));</span><br><span class="line">    if (ip_compute_csum((char *) pkt, len))</span><br><span class="line">        return;</span><br><span class="line">    if (pkt-&gt;ICMP_TYPE != ICMP_DEST_UNREACH)</span><br><span class="line">        return;</span><br><span class="line">    /* ok due to check 7 lines above */</span><br><span class="line">    len -= sizeof(STRUCT_ICMP);</span><br><span class="line">    // sizeof(struct icmp) is not what we want here</span><br><span class="line"></span><br><span class="line">    if (len &lt; sizeof(struct ip))</span><br><span class="line">        return;</span><br><span class="line"></span><br><span class="line">    orig_ip = (struct ip *) (((char *) pkt) + 8);</span><br><span class="line">    if (len &lt; (unsigned)(orig_ip-&gt;ip_hl &lt;&lt; 2) + 8)</span><br><span class="line">        return;</span><br><span class="line">    /* subtraction ok due to the check above */</span><br><span class="line">    len -= orig_ip-&gt;ip_hl &lt;&lt; 2;</span><br><span class="line">    if ((pkt-&gt;ICMP_CODE &amp; 15) == ICMP_PROT_UNREACH ||</span><br><span class="line">        (pkt-&gt;ICMP_CODE &amp; 15) == ICMP_PORT_UNREACH)</span><br><span class="line">        match_addr = 1;</span><br><span class="line">    else</span><br><span class="line">        match_addr = 0;</span><br><span class="line">    if (pkt-&gt;ICMP_CODE &gt; NR_ICMP_UNREACH)</span><br><span class="line">        return;</span><br><span class="line">    if (match_addr &amp;&amp; (iph-&gt;ip_src.s_addr != orig_ip-&gt;ip_dst.s_addr))</span><br><span class="line">        return;</span><br><span class="line">    if (orig_ip-&gt;ip_p != IPPROTO_TCP)</span><br><span class="line">        return;</span><br><span class="line">    th = (struct tcphdr *) (((char *) orig_ip) + (orig_ip-&gt;ip_hl &lt;&lt; 2));</span><br><span class="line">    if (!(a_tcp = find_stream(th, orig_ip, &amp;from_client)))</span><br><span class="line">        return;</span><br><span class="line">    if (a_tcp-&gt;addr.dest == iph-&gt;ip_dst.s_addr)</span><br><span class="line">        hlf = &amp;a_tcp-&gt;server;</span><br><span class="line">    else</span><br><span class="line">        hlf = &amp;a_tcp-&gt;client;</span><br><span class="line">    if (hlf-&gt;state != TCP_SYN_SENT &amp;&amp; hlf-&gt;state != TCP_SYN_RECV)</span><br><span class="line">        return;</span><br><span class="line">    a_tcp-&gt;nids_state = NIDS_RESET;</span><br><span class="line">    for (i = a_tcp-&gt;listeners; i; i = i-&gt;next)</span><br><span class="line">        (i-&gt;item)(a_tcp, &amp;i-&gt;data);</span><br><span class="line">    nids_free_tcp_stream(a_tcp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>处理目的不可达导致的ICMP报文，为该TCP连接调用潜伏结点并释放。</p>
+<h1 id="github其他关于libnids的注释">github其他关于libnids的注释</h1>
+<p>见<a href="https://github.com/zhyq/Libnids" target="_blank" rel="noopener">zhyq/Libnids</a>，本文部分参考其中tcp.c的注释。。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">Creative Commons BY-NC-SA 4.0 International License</a>.<br/>
+博客采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">知识共享署署名（BY）-非商业性（NC）-相同方式共享（SA）</a>。<br/>
+本文首发于<a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a>，转载请保留出处。</p>
+</div>
+</div>
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Libnids/" rel="tag">#Libnids</a>
+          
+            <a href="/tags/网络/" rel="tag">#网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/02/Libnids-API文档/" rel="next" title="Libnids-1.24 API">
+                <i class="fa fa-chevron-left"></i> Libnids-1.24 API
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/18/Machine-Learning-zhouzhihua/" rel="prev" title="周志华《机器学习》部分习题">
+                周志华《机器学习》部分习题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="漂浮" />
+          <p class="site-author-name" itemprop="name">漂浮</p>
+          <p class="site-description motion-element" itemprop="description">We must know, we will know.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#变量"><span class="nav-number">1.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nids_tcp_timeouts"><span class="nav-number">1.1.</span> <span class="nav-text">nids_tcp_timeouts</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp_latest-tcp_oldest"><span class="nav-number">1.2.</span> <span class="nav-text">tcp_latest, tcp_oldest</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp_stream_table"><span class="nav-number">1.3.</span> <span class="nav-text">tcp_stream_table</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#streams_pool-free_streams"><span class="nav-number">1.4.</span> <span class="nav-text">streams_pool， free_streams</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp_procs"><span class="nav-number">1.5.</span> <span class="nav-text">tcp_procs</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结构体"><span class="nav-number">2.</span> <span class="nav-text">结构体</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#skbuff"><span class="nav-number">2.1.</span> <span class="nav-text">skbuff</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp_stream"><span class="nav-number">2.2.</span> <span class="nav-text">tcp_stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#half_stream"><span class="nav-number">2.3.</span> <span class="nav-text">half_stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lurker_node"><span class="nav-number">2.4.</span> <span class="nav-text">lurker_node</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数"><span class="nav-number">3.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp_init"><span class="nav-number">3.1.</span> <span class="nav-text">tcp_init</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#add_tcp_closing_timeout"><span class="nav-number">3.2.</span> <span class="nav-text">add_tcp_closing_timeout</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#del_tcp_closing_timeout"><span class="nav-number">3.3.</span> <span class="nav-text">del_tcp_closing_timeout</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nids_free_tcp_stream"><span class="nav-number">3.4.</span> <span class="nav-text">nids_free_tcp_stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp_check_timeouts"><span class="nav-number">3.5.</span> <span class="nav-text">tcp_check_timeouts</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get_ts"><span class="nav-number">3.6.</span> <span class="nav-text">get_ts</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get_wscale"><span class="nav-number">3.7.</span> <span class="nav-text">get_wscale</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#add_new_tcp"><span class="nav-number">3.8.</span> <span class="nav-text">add_new_tcp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#add2buf"><span class="nav-number">3.9.</span> <span class="nav-text">add2buf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ride_lurkers"><span class="nav-number">3.10.</span> <span class="nav-text">ride_lurkers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#notify"><span class="nav-number">3.11.</span> <span class="nav-text">notify</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#add_from_skb"><span class="nav-number">3.12.</span> <span class="nav-text">add_from_skb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp_queue"><span class="nav-number">3.13.</span> <span class="nav-text">tcp_queue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#handle_ack"><span class="nav-number">3.14.</span> <span class="nav-text">handle_ack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#find_stream"><span class="nav-number">3.15.</span> <span class="nav-text">find_stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nids_find_tcp_stream"><span class="nav-number">3.16.</span> <span class="nav-text">nids_find_tcp_stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp_exit"><span class="nav-number">3.17.</span> <span class="nav-text">tcp_exit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#process_tcp"><span class="nav-number">3.18.</span> <span class="nav-text">process_tcp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nids_discard"><span class="nav-number">3.19.</span> <span class="nav-text">nids_discard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#process_icmp"><span class="nav-number">3.20.</span> <span class="nav-text">process_icmp</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#github其他关于libnids的注释"><span class="nav-number">4.</span> <span class="nav-text">github其他关于libnids的注释</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">漂浮</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv">访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+</body>
+</html>
