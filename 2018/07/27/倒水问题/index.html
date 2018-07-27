@@ -1,0 +1,714 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="数论," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="对酒当歌，人生几何。 大浪淘尽，数论风流。 ——转自网络  若无特殊说明，本文均在整数范围内进行讨论。 00 序 小学数学中，这类问题很常见：有无穷多的水，有一个容量为 \(a\) 升的桶和 \(b\) 升的桶，如何量出 \(c\) 升的水？">
+<meta name="keywords" content="数论">
+<meta property="og:type" content="article">
+<meta property="og:title" content="倒水问题">
+<meta property="og:url" content="http://yoursite.com/2018/07/27/倒水问题/index.html">
+<meta property="og:site_name" content="Memory">
+<meta property="og:description" content="对酒当歌，人生几何。 大浪淘尽，数论风流。 ——转自网络  若无特殊说明，本文均在整数范围内进行讨论。 00 序 小学数学中，这类问题很常见：有无穷多的水，有一个容量为 \(a\) 升的桶和 \(b\) 升的桶，如何量出 \(c\) 升的水？">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-07-27T15:57:47.875Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="倒水问题">
+<meta name="twitter:description" content="对酒当歌，人生几何。 大浪淘尽，数论风流。 ——转自网络  若无特殊说明，本文均在整数范围内进行讨论。 00 序 小学数学中，这类问题很常见：有无穷多的水，有一个容量为 \(a\) 升的桶和 \(b\) 升的桶，如何量出 \(c\) 升的水？">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/27/倒水问题/"/>
+
+  <title> 倒水问题 | Memory </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Memory</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                倒水问题
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-07-27T23:29:36+08:00" content="2018-07-27">
+              2018-07-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/math/" itemprop="url" rel="index">
+                    <span itemprop="name">数学</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv">本文阅读量
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>对酒当歌，人生几何。 大浪淘尽，数论风流。 ——转自网络</p>
+</blockquote>
+<p>若无特殊说明，本文均在整数范围内进行讨论。</p>
+<h1 id="序">00 序</h1>
+<p>小学数学中，这类问题很常见：有无穷多的水，有一个容量为 <span class="math inline">\(a\)</span> 升的桶和 <span class="math inline">\(b\)</span> 升的桶，如何量出 <span class="math inline">\(c\)</span> 升的水？</p>
+<a id="more"></a>
+<blockquote>
+<p>A.Coble是上个世纪美国的院士，做代数几何，一度很有影响。据称，他有无穷多个博士论文的题目：当你证明了一个2维的情况的时候，他叫下一个博士生去证明3维的情况，然后叫下下个博士生去做4维的。后来有个叫Gerald Huff的博士，不但做了5维的情况，而且对一般的n也解决了。这就让Coble的未来的无穷个博士无所事事了。Coble很怒。 转自 https://www.guokr.com/question/483928/</p>
+</blockquote>
+<p>简单难度：3L桶和5L桶，倒出1L水。可以容易想到，首先3L桶装满倒入5L桶，然后3L桶装满，再将3L桶中的水倒入5L桶使其装满，此时3L桶刚好剩下1L水。</p>
+<p>难度高一点：13L桶和7L桶，倒出4L水。该怎么解？</p>
+<p>进一步，对于任意 <span class="math inline">\(a\)</span> 升桶和 <span class="math inline">\(b\)</span> 升桶，我们能否倒出 <span class="math inline">\(c\)</span> 升水，若能，该怎么倒？</p>
+<p>事实上，不论是从数学角度还是从计算机角度，都已有相关讨论。本文其实没太大意义。</p>
+<h1 id="问题描述">01 问题描述</h1>
+<p>有无穷多的水，有一个容量为 <span class="math inline">\(a\)</span> 升的桶和 <span class="math inline">\(b\)</span> 升的桶，现在要确定能否倒出 <span class="math inline">\(c\)</span> 升水，如果能，找出方案。为方便叙述，将容量为 <span class="math inline">\(a\)</span> 升、<span class="math inline">\(b\)</span> 升的桶记为 <span class="math inline">\(a\)</span> 桶、<span class="math inline">\(b\)</span> 桶。</p>
+<p>在这个问题中，我们有3个基本操作：</p>
+<ol type="1">
+<li>将桶装满水</li>
+<li>将桶中水全部倒出</li>
+<li>将一个桶中的水倒入另一个桶，此时有2个可能：a)全部倒入另一个桶中，自身清空。b)将另一个桶装满，自身还有水。</li>
+</ol>
+<h1 id="分析">02 分析</h1>
+<p>首先给出结论，这个问题有解当且仅当关于 <span class="math inline">\(x,y\)</span> 的方程 <span class="math inline">\(xa + yb = c\)</span> 有解，下面给出证明。</p>
+<p>充分性：当 <span class="math inline">\(xa + yb = c\)</span> 有解时，我们可以根据该方程量出 <span class="math inline">\(c\)</span> 升水，具体步骤在下文给出。</p>
+<p>必要性：当能倒出 <span class="math inline">\(c\)</span> 升水时，由基本操作可知，增加或减少的水量都是 <span class="math inline">\(a\)</span> 升或 <span class="math inline">\(b\)</span> 升，因此最后的结果必然是 <span class="math inline">\(c = xa + yb\)</span> 的形式。</p>
+<p>此外，<span class="math inline">\(xa + yb = c\)</span> 有解也等价于 <span class="math inline">\(\gcd(a,b) | c\)</span>。</p>
+<p>对于 <span class="math inline">\(a,b\)</span>，不妨设 <span class="math inline">\(a,b\)</span> 互素即 <span class="math inline">\(\gcd(a,b) = 1\)</span>，并且 <span class="math inline">\(a &gt; b\)</span>。因为如果不互素，我们在所有的这些操作中，将桶的容量、倒入倒出的水都除以 <span class="math inline">\(\gcd(a,b)\)</span>，除以 <span class="math inline">\(\gcd(a,b)\)</span> 之后两桶的容量便是互素的，并且结果仍然一致。此外如果 <span class="math inline">\(a &lt; b\)</span>，将两个桶互换即可。</p>
+<p>对于 <span class="math inline">\(c\)</span>，显然 <span class="math inline">\(c\)</span> 应该在<span class="math inline">\([1, a)\)</span> 范围内，这个范围之外的 <span class="math inline">\(c\)</span> 是没有意义的。并且我们只需处理 <span class="math inline">\(c \in [1, b)\)</span> 的情况，这是因为得到了 <span class="math inline">\([1, b]\)</span> 内的水，对于 <span class="math inline">\(c &gt; b\)</span>，只需要在 <span class="math inline">\(a\)</span> 桶中量出 <span class="math inline">\(c \mod b\)</span> 升水，再往 <span class="math inline">\(a\)</span> 桶中加 <span class="math inline">\(\dfrac{c}{b}\)</span> 次装满的 <span class="math inline">\(b\)</span> 桶的水即可。</p>
+<p>当我们确定了 <span class="math inline">\(x,y\)</span> 满足 <span class="math inline">\(xa + yb = c\)</span>，可以知道 <span class="math inline">\(x,y\)</span>。于是我们调整符号，使 <span class="math inline">\(xa - yb = c\)</span>，此时 <span class="math inline">\(x,a,y,b,c\)</span> 均为正数（如果 <span class="math inline">\(x &lt; 0\)</span>，将 <span class="math inline">\(a,b\)</span> 两桶互换即可）。</p>
+<p>得到 <span class="math inline">\(xa - yb = c\)</span> 这个等式，答案已经呼之欲出：我们只需要得到 <span class="math inline">\(x\)</span> 个 <span class="math inline">\(a\)</span> 桶的水，并从中去掉 <span class="math inline">\(y\)</span> 个 <span class="math inline">\(b\)</span> 桶的水，即可得到 <span class="math inline">\(c\)</span> 升水。这就证明了我们的结论。</p>
+<h1 id="解法">03 解法</h1>
+<h2 id="操作步骤">03.00 操作步骤</h2>
+<p>具体到如何操作，从 <span class="math inline">\(xa - yb = c\)</span> 等式中我们得到启发：</p>
+<p>第一步，把 <span class="math inline">\(a\)</span> 桶装满。 第二步，不断将 <span class="math inline">\(a\)</span> 桶中的水倒入 <span class="math inline">\(b\)</span> 桶，直到 <span class="math inline">\(a\)</span> 桶没有水。这期间如果 <span class="math inline">\(b\)</span> 桶装满了，将 <span class="math inline">\(b\)</span> 桶中的水全部倒掉。如果某次操作后某个桶中恰好有 <span class="math inline">\(c\)</span> 升水，结束。如果 <span class="math inline">\(b\)</span> 桶倒水的次数达到 <span class="math inline">\(y\)</span> 次且 <span class="math inline">\(a\)</span> 桶装满 <span class="math inline">\(x\)</span> 次，则得到 <span class="math inline">\(c\)</span> 升水，结束。 第三步，继续第一步，重复 <span class="math inline">\(x\)</span> 次。</p>
+<p>第一步和第三步让我们得到了 <span class="math inline">\(x\)</span> 个 <span class="math inline">\(a\)</span> 桶的水，第二步我们总计倒掉了 <span class="math inline">\(y\)</span> 个 <span class="math inline">\(b\)</span> 桶。故最后剩下 <span class="math inline">\(c\)</span> 升水。</p>
+<p>解出 <span class="math inline">\(xa - yb = c\)</span> 的方法很简单：辗转相除法，然后回代，得到 <span class="math inline">\(xa + yb = \gcd(a,b)\)</span>，两边同乘以 <span class="math inline">\(\dfrac{c}{\gcd(a,b)}\)</span>，最后调整符号。或者直接观察。</p>
+<h2 id="举例">03.01 举例</h2>
+<p>回到开始那个问题：7L桶和13L桶，倒出4L水。</p>
+<p>首先有 3 × 13 - 5 × 7 = 4，于是具体操作如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">初始状态:</span><br><span class="line">第0次操作</span><br><span class="line">[当前体积: 0    最大体积:13]    [当前体积: 0    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">水池-----&gt;第1桶</span><br><span class="line">第1次操作</span><br><span class="line">[当前体积: 13   最大体积:13]    [当前体积: 0    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">第1桶-----&gt;第2桶</span><br><span class="line">第2次操作</span><br><span class="line">[当前体积: 6    最大体积:13]    [当前体积: 7    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">第2桶-----&gt;水池</span><br><span class="line">第3次操作</span><br><span class="line">[当前体积: 6    最大体积:13]    [当前体积: 0    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">第1桶-----&gt;第2桶</span><br><span class="line">第4次操作</span><br><span class="line">[当前体积: 0    最大体积:13]    [当前体积: 6    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">水池-----&gt;第1桶</span><br><span class="line">第5次操作</span><br><span class="line">[当前体积: 13   最大体积:13]    [当前体积: 6    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">第1桶-----&gt;第2桶</span><br><span class="line">第6次操作</span><br><span class="line">[当前体积: 12   最大体积:13]    [当前体积: 7    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">第2桶-----&gt;水池</span><br><span class="line">第7次操作</span><br><span class="line">[当前体积: 12   最大体积:13]    [当前体积: 0    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">第1桶-----&gt;第2桶</span><br><span class="line">第8次操作</span><br><span class="line">[当前体积: 5    最大体积:13]    [当前体积: 7    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">第2桶-----&gt;水池</span><br><span class="line">第9次操作</span><br><span class="line">[当前体积: 5    最大体积:13]    [当前体积: 0    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">第1桶-----&gt;第2桶</span><br><span class="line">第10次操作</span><br><span class="line">[当前体积: 0    最大体积:13]    [当前体积: 5    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">水池-----&gt;第1桶</span><br><span class="line">第11次操作</span><br><span class="line">[当前体积: 13   最大体积:13]    [当前体积: 5    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">第1桶-----&gt;第2桶</span><br><span class="line">第12次操作</span><br><span class="line">[当前体积: 11   最大体积:13]    [当前体积: 7    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">第2桶-----&gt;水池</span><br><span class="line">第13次操作</span><br><span class="line">[当前体积: 11   最大体积:13]    [当前体积: 0    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">第1桶-----&gt;第2桶</span><br><span class="line">第14次操作</span><br><span class="line">[当前体积: 4    最大体积:13]    [当前体积: 7    最大体积:7]</span><br><span class="line">一一一一一一一一一一</span><br><span class="line">操作次数: 14</span><br></pre></td></tr></table></figure>
+<h2 id="更进一步">03.02 更进一步</h2>
+<p>事实上，如果使用辗转相除法，我们会得到 2 × 7 - 1 × 13 = 1，进而有 8 × 7 - 4 × 13 = 4，按照该等式仍然可以得到问题的解，但操作次数会更多。由于在 <span class="math inline">\(xa + yb = c\)</span> 有解的情况下，解不唯一，那么问题来了，哪个解可以使操作次数最少呢？</p>
+<p>对于等式 <span class="math inline">\(xa - yb = c\)</span>，其中 <span class="math inline">\(x,y &gt; 0, c &lt; a\)</span>，观察对应操作步骤中的每一步，在第一步到第三步的这一次循环里面，有如下的基本操作：</p>
+<p><span class="math inline">\(a\)</span> 桶装满 -&gt; <span class="math inline">\(a\)</span> 桶倒入 <span class="math inline">\(b\)</span> 桶 -&gt; <span class="math inline">\(b\)</span> 桶倒出 -&gt; <span class="math inline">\(a\)</span> 桶倒入 <span class="math inline">\(b\)</span> 桶 -&gt; <span class="math inline">\(b\)</span> 桶倒出 -&gt; … -&gt;<span class="math inline">\(a\)</span> 桶倒入 <span class="math inline">\(b\)</span> 桶 -&gt; <span class="math inline">\(b\)</span> 桶倒出 -&gt; <span class="math inline">\(a\)</span> 桶倒入 <span class="math inline">\(b\)</span> 桶</p>
+<p>几乎每次循环中，均有 <span class="math inline">\(a\)</span> 桶倒入 <span class="math inline">\(b\)</span> 桶 的次数 = <span class="math inline">\(b\)</span> 桶倒出 的次数 + <span class="math inline">\(1\)</span> = <span class="math inline">\(b\)</span> 桶倒出 的次数 + <span class="math inline">\(a\)</span> 桶装满 的次数。最后一次循环中，最后一次把水从 <span class="math inline">\(b\)</span> 桶中倒出是不必要的，因为这时候已经在 <span class="math inline">\(a\)</span> 桶中得到 <span class="math inline">\(c\)</span> 升水了，并且也不需要再把 <span class="math inline">\(a\)</span> 桶中的 <span class="math inline">\(c\)</span> 升水倒入 <span class="math inline">\(b\)</span> 桶中。</p>
+<p>故总的操作次数为 <span class="math inline">\(2\)</span> × (<span class="math inline">\(b\)</span> 桶倒出 的次数 + <span class="math inline">\(a\)</span> 桶装满 的次数) - <span class="math inline">\(2\)</span>，已知 <span class="math inline">\(a\)</span> 桶装满 的次数 = <span class="math inline">\(x\)</span>，<span class="math inline">\(b\)</span> 桶倒出 的次数 = <span class="math inline">\(y\)</span>，于是总操作次数 = <span class="math inline">\(2(x+y) - 2\)</span>。</p>
+<p>当 <span class="math inline">\(xa - yb = c, c &gt; a\)</span> 时，类似于上面的讨论，但最后必然是在 <span class="math inline">\(b\)</span> 桶中得到 <span class="math inline">\(c\)</span> 升水，因此总的次数 = <span class="math inline">\(2(x+y)\)</span>。</p>
+<p>因此，为使操作次数最少，我们应该最小化 <span class="math inline">\(x + y\)</span>。如何使 <span class="math inline">\(xa - yb = c\)</span> 中的 <span class="math inline">\(x + y\)</span> 最小呢，注意到 <span class="math inline">\(xa - yb = c\)</span> 等价于 <span class="math inline">\((x - kb)a - (y - ka)b = c\)</span>（<span class="math inline">\(k\)</span>为任意常数），对应的系数之和从 <span class="math inline">\(x + y\)</span> 变成了 <span class="math inline">\(x + y - k(a+b)\)</span>，显然我们能调整系数，使得 <span class="math inline">\(x+y\)</span> 不超过 <span class="math inline">\(\dfrac{a+b}{2}\)</span>，并且这也是最小的情况。（如果 <span class="math inline">\(c &gt; a\)</span>，考虑 <span class="math inline">\((a-y)b - (b-x)a = c\)</span> 的情况，取最小值即可）至此我们到了最少操作次数的解。</p>
+<p>另外遍历 <span class="math inline">\(k\)</span> 也就遍历了所有的 <span class="math inline">\((x,y)\)</span>，这是因为如果有 <span class="math inline">\(x_1 a - y_1 b = c\)</span> 和 <span class="math inline">\(x_2 a - y_2 a = c\)</span>，可以得到 <span class="math inline">\((x_1-x_2)a = (y_1-y_2)b\)</span>，设 <span class="math inline">\((x_1-x_2)a = (y_1-y_2)b = kab\)</span> ，易知 <span class="math inline">\((x_1 + y_1) - (x_2 + y_2) = k(a+b)\)</span>，也就是说所有不同的 <span class="math inline">\(x+y\)</span> 均相差 <span class="math inline">\(a+b\)</span> 的倍数。</p>
+<h2 id="结论">03.03 结论</h2>
+<p>容量为 <span class="math inline">\(a\)</span> 升和 <span class="math inline">\(b\)</span> 升的桶能倒出 <span class="math inline">\(c\)</span> 升水（<span class="math inline">\(c \ne a\)</span> 且 <span class="math inline">\(c \ne b\)</span>），当且仅当 <span class="math inline">\(\gcd(a,b) | c\)</span>，并且最少的操作次数为 <span class="math inline">\(2(x+y-1)\)</span> 或 <span class="math inline">\(2(x+y)\)</span>，其中 <span class="math inline">\(x,y &gt; 0\)</span> 满足 <span class="math inline">\(xa - yb = c\)</span> 且 <span class="math inline">\(x+y \le \dfrac{a+b}{2}\)</span>（视情况可交换 <span class="math inline">\(a,b\)</span>）。</p>
+<p>当 <span class="math inline">\(x+y = \lfloor\dfrac{a+b}{2}\rfloor\)</span> 时（<span class="math inline">\(\lfloor x\rfloor\)</span>表示不超过 <span class="math inline">\(x\)</span> 的最大整数），最小操作次数取 <span class="math inline">\(2(x+y-1)\)</span>，其他情况视 <span class="math inline">\(c &lt; a\)</span> 或 <span class="math inline">\(c &gt; a\)</span> 分别取 <span class="math inline">\(2(x+y-1)\)</span> 或 <span class="math inline">\(2(x+y)\)</span>。</p>
+<h1 id="参考文献">05 参考文献</h1>
+<p>[1] 柯召, 孙琦. 数论讲义[M]. 高等教育出版社, 1987</p>
+<h1 id="源码">06 源码</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extended_euclid_algorithm</span><span class="params">(a, b)</span>:</span></span><br><span class="line">  <span class="string">'''xa + yb = gcd(a, b)，返回x, y</span></span><br><span class="line"><span class="string">  '''</span></span><br><span class="line">  x, y = <span class="number">1</span>, <span class="number">1</span></span><br><span class="line">  <span class="keyword">if</span> a &lt; b:</span><br><span class="line">    x, y = extended_euclid_algorithm(b, a)</span><br><span class="line">    <span class="keyword">return</span> y, x</span><br><span class="line">  r = a % b</span><br><span class="line">  <span class="keyword">if</span> r == <span class="number">0</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">  <span class="comment"># 绝对最小剩余</span></span><br><span class="line">  <span class="keyword">if</span> r &lt;= math.floor(b / <span class="number">2</span>):</span><br><span class="line">    x2, y2 = extended_euclid_algorithm(b, r)</span><br><span class="line">    x = y2</span><br><span class="line">    y = x2 - math.floor(a / b) * y2</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    x2, y2 = extended_euclid_algorithm(b, b - r)</span><br><span class="line">    x = -y2</span><br><span class="line">    y = x2 + (math.floor(a / b) + <span class="number">1</span>) * y2</span><br><span class="line">  <span class="keyword">return</span> x, y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bucket</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, c)</span>:</span></span><br><span class="line">    self._max_capacity = c</span><br><span class="line">    self._current_water = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_max_capacity</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> self._max_capacity</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_current_water</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> self._current_water</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get_remain_capacity</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> self._max_capacity \</span><br><span class="line">      - self._current_water</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">fill</span><span class="params">(self)</span>:</span></span><br><span class="line">    self._current_water = self._max_capacity</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">clear</span><span class="params">(self)</span>:</span></span><br><span class="line">    self._current_water = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">pour_bucket</span><span class="params">(self, bucket)</span>:</span></span><br><span class="line">    total = self._current_water \</span><br><span class="line">      + bucket._current_water</span><br><span class="line">    <span class="keyword">if</span> (total &lt;= bucket._max_capacity):</span><br><span class="line">      bucket._current_water = total</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      bucket._current_water = bucket._max_capacity</span><br><span class="line">    self._current_water = total - bucket._current_water</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"[当前体积: %d\t最大体积:%d]"</span> \</span><br><span class="line">      % (self._current_water, self._max_capacity)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">total = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">display_bucket</span><span class="params">(bucket1, bucket2)</span>:</span></span><br><span class="line">  <span class="keyword">global</span> total</span><br><span class="line">  total += <span class="number">1</span></span><br><span class="line">  print(<span class="string">"第%d次操作"</span> % total)</span><br><span class="line">  print(bucket1, bucket2, sep=<span class="string">'\t'</span>)</span><br><span class="line">  print(<span class="string">"=========="</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">solve_problem</span><span class="params">(a, b, x, y, c)</span>:</span></span><br><span class="line">  <span class="keyword">global</span> total</span><br><span class="line">  total = <span class="number">-1</span></span><br><span class="line">  bucket_a = Bucket(a)</span><br><span class="line">  bucket_b = Bucket(b)</span><br><span class="line">  print(<span class="string">"初始状态: "</span>)</span><br><span class="line">  display_bucket(bucket_a, bucket_b)</span><br><span class="line">  <span class="keyword">while</span> x &gt; <span class="number">0</span>:</span><br><span class="line">    print(<span class="string">"水池-----&gt;第1桶"</span>)</span><br><span class="line">    bucket_a.fill()</span><br><span class="line">    display_bucket(bucket_a, bucket_b)</span><br><span class="line">    <span class="keyword">if</span> bucket_a.get_current_water() == c \</span><br><span class="line">        <span class="keyword">or</span> bucket_b.get_current_water() == c:</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">while</span> bucket_a.get_current_water() &gt; <span class="number">0</span>:</span><br><span class="line">      print(<span class="string">"第1桶-----&gt;第2桶"</span>)</span><br><span class="line">      bucket_a.pour_bucket(bucket_b)</span><br><span class="line">      display_bucket(bucket_a, bucket_b)</span><br><span class="line">      <span class="keyword">if</span> bucket_a.get_current_water() == c \</span><br><span class="line">          <span class="keyword">or</span> bucket_b.get_current_water() == c:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      <span class="keyword">if</span> bucket_b.get_remain_capacity() == <span class="number">0</span>:</span><br><span class="line">        print(<span class="string">"第2桶-----&gt;水池"</span>)</span><br><span class="line">        bucket_b.clear()</span><br><span class="line">        display_bucket(bucket_a, bucket_b)</span><br><span class="line">        y -= <span class="number">1</span></span><br><span class="line">      <span class="keyword">if</span> y &lt;= <span class="number">0</span> <span class="keyword">and</span> x &lt;= <span class="number">0</span>:</span><br><span class="line">        total -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    x -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(a, b, c)</span>:</span></span><br><span class="line">  c = min(c, max(a, b))</span><br><span class="line">  d = math.gcd(a, b)</span><br><span class="line">  <span class="keyword">if</span> c % d != <span class="number">0</span>:</span><br><span class="line">    print(<span class="string">"参数错误"</span>)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  temp_x, temp_y = extended_euclid_algorithm(a, b)</span><br><span class="line">  temp_x *= math.floor(c / d)</span><br><span class="line">  temp_y *= math.floor(c / d)</span><br><span class="line">  s = temp_x - temp_y</span><br><span class="line">  s = s <span class="keyword">if</span> s &gt; <span class="number">0</span> <span class="keyword">else</span> -s</span><br><span class="line">  t = a + b</span><br><span class="line">  q = math.floor(s / t)</span><br><span class="line">  r = s % t</span><br><span class="line">  flag = <span class="number">1</span> <span class="keyword">if</span> temp_x &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="number">-1</span></span><br><span class="line">  <span class="keyword">if</span> r &lt; math.floor(t / <span class="number">2</span>):</span><br><span class="line">    temp_x -= q * b * flag</span><br><span class="line">    temp_y += q * a * flag</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    temp_x -= (q + <span class="number">1</span>) * b * flag</span><br><span class="line">    temp_y += (q + <span class="number">1</span>) * a * flag</span><br><span class="line">  x, y = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">  <span class="keyword">if</span> temp_x &lt; <span class="number">0</span>:</span><br><span class="line">    a, b = b, a</span><br><span class="line">    x, y = temp_y, -temp_x</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    x, y = temp_x, -temp_y</span><br><span class="line">  <span class="keyword">if</span> r == math.floor(t / <span class="number">2</span>) <span class="keyword">and</span> c &gt; a:</span><br><span class="line">    x, y = a - y, b - x</span><br><span class="line">    a, b = b, a</span><br><span class="line">  <span class="comment"># 此时 xa - yb = c，其中x,y,a,b均&gt;0</span></span><br><span class="line">  print(<span class="string">"%d × %d - %d × %d = %d"</span> % (x, a, y, b, c))</span><br><span class="line">  solve_problem(a, b, x, y, c)</span><br><span class="line">  print(<span class="string">"操作次数: %d"</span> % total)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">  a, b = <span class="number">5</span>, <span class="number">7</span></span><br><span class="line">  c = <span class="number">3</span></span><br><span class="line">  main(a, b, c)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">Creative Commons BY-NC-SA 4.0 International License</a>.<br/>
+博客采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">知识共享署署名（BY）-非商业性（NC）-相同方式共享（SA）</a>。<br/>
+本文首发于<a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a>，转载请保留出处。</p>
+</div>
+</div>
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数论/" rel="tag">#数论</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/27/某消消乐手游分析/" rel="next" title="某消消乐手游分析">
+                <i class="fa fa-chevron-left"></i> 某消消乐手游分析
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="漂浮" />
+          <p class="site-author-name" itemprop="name">漂浮</p>
+          <p class="site-description motion-element" itemprop="description">We must know, we will know.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序"><span class="nav-number">1.</span> <span class="nav-text">00 序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题描述"><span class="nav-number">2.</span> <span class="nav-text">01 问题描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分析"><span class="nav-number">3.</span> <span class="nav-text">02 分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解法"><span class="nav-number">4.</span> <span class="nav-text">03 解法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#操作步骤"><span class="nav-number">4.1.</span> <span class="nav-text">03.00 操作步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#举例"><span class="nav-number">4.2.</span> <span class="nav-text">03.01 举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更进一步"><span class="nav-number">4.3.</span> <span class="nav-text">03.02 更进一步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结论"><span class="nav-number">4.4.</span> <span class="nav-text">03.03 结论</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">05 参考文献</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-number">6.</span> <span class="nav-text">06 源码</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">漂浮</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv">访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+</body>
+</html>
