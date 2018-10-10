@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="机器学习," />
+  <meta name="keywords" content="Euler - 网易云音乐 - 概率 - Euler乘积公式," />
 
 
 
@@ -84,18 +84,24 @@
 
 
 
-<meta name="description" content="第2章 习题\(2.5\)，证明 \[{\rm AUC} = 1-\ell_{rank}\] 其中， \[{\rm AUC} = \frac{1}{2}\sum_{i=1}^{m-1} (x_{i+1}-x_i)\cdot({y_i+y_{i+1}})\] \[\ell_{rank}=\frac{1}{m^+ m^-}\sum_{ {\boldsymbol x}^+\in D^+}\sum_{">
-<meta name="keywords" content="机器学习">
+<meta name="description" content="网易云音乐听歌排行中，只能看到自己账号的听歌次数，他人的听歌次数并未显示，但我们可以在网页端看到以最多播放次数为基准的条形图，这给了我们通过一定方法计算播放次数的可能。">
+<meta name="keywords" content="Euler - 网易云音乐 - 概率 - Euler乘积公式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="周志华《机器学习》部分习题">
-<meta property="og:url" content="http://yoursite.com/2017/08/18/Machine-Learning-zhouzhihua/index.html">
+<meta property="og:title" content="网易云音乐听歌排行之播放次数">
+<meta property="og:url" content="http://yoursite.com/2018/10/10/网易云音乐听歌排行之播放次数/index.html">
 <meta property="og:site_name" content="Memory">
-<meta property="og:description" content="第2章 习题\(2.5\)，证明 \[{\rm AUC} = 1-\ell_{rank}\] 其中， \[{\rm AUC} = \frac{1}{2}\sum_{i=1}^{m-1} (x_{i+1}-x_i)\cdot({y_i+y_{i+1}})\] \[\ell_{rank}=\frac{1}{m^+ m^-}\sum_{ {\boldsymbol x}^+\in D^+}\sum_{">
+<meta property="og:description" content="网易云音乐听歌排行中，只能看到自己账号的听歌次数，他人的听歌次数并未显示，但我们可以在网页端看到以最多播放次数为基准的条形图，这给了我们通过一定方法计算播放次数的可能。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-07T12:14:03.695Z">
+<meta property="og:image" content="http://yoursite.com/images/cloud_music_rank.png">
+<meta property="og:image" content="http://yoursite.com/images/cloud_music_json_data.png">
+<meta property="og:image" content="http://yoursite.com/images/cloud_music_code.png">
+<meta property="og:image" content="http://yoursite.com/images/cloud_music_play_count.png">
+<meta property="og:image" content="http://yoursite.com/images/cloud_music_plot.png">
+<meta property="og:updated_time" content="2018-10-10T06:29:39.575Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="周志华《机器学习》部分习题">
-<meta name="twitter:description" content="第2章 习题\(2.5\)，证明 \[{\rm AUC} = 1-\ell_{rank}\] 其中， \[{\rm AUC} = \frac{1}{2}\sum_{i=1}^{m-1} (x_{i+1}-x_i)\cdot({y_i+y_{i+1}})\] \[\ell_{rank}=\frac{1}{m^+ m^-}\sum_{ {\boldsymbol x}^+\in D^+}\sum_{">
+<meta name="twitter:title" content="网易云音乐听歌排行之播放次数">
+<meta name="twitter:description" content="网易云音乐听歌排行中，只能看到自己账号的听歌次数，他人的听歌次数并未显示，但我们可以在网页端看到以最多播放次数为基准的条形图，这给了我们通过一定方法计算播放次数的可能。">
+<meta name="twitter:image" content="http://yoursite.com/images/cloud_music_rank.png">
 
 
 
@@ -116,9 +122,9 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/08/18/Machine-Learning-zhouzhihua/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/10/10/网易云音乐听歌排行之播放次数/"/>
 
-  <title> 周志华《机器学习》部分习题 | Memory </title>
+  <title> 网易云音乐听歌排行之播放次数 | Memory </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -248,7 +254,7 @@
             
             
               
-                周志华《机器学习》部分习题
+                网易云音乐听歌排行之播放次数
               
             
           </h1>
@@ -260,8 +266,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-08-18T15:43:04+08:00" content="2017-08-18">
-              2017-08-18
+            <time itemprop="dateCreated" datetime="2018-10-10T09:15:42+08:00" content="2018-10-10">
+              2018-10-10
             </time>
           </span>
 
@@ -274,8 +280,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/cs/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机</span>
+                  <a href="/categories/math/" itemprop="url" rel="index">
+                    <span itemprop="name">数学</span>
                   </a>
                 </span>
 
@@ -312,22 +318,33 @@
       
 
       
-        <h1 id="第2章">第2章</h1>
-<p>习题<span class="math inline">\(2.5\)</span>，证明 <span class="math display">\[{\rm AUC} = 1-\ell_{rank}\]</span> 其中， <span class="math display">\[{\rm AUC} = \frac{1}{2}\sum_{i=1}^{m-1} (x_{i+1}-x_i)\cdot({y_i+y_{i+1}})\]</span> <span class="math display">\[\ell_{rank}=\frac{1}{m^+ m^-}\sum_{ {\boldsymbol x}^+\in D^+}\sum_{ {\boldsymbol x}^-\in D^-}\left( {\mathbb I}(f({\boldsymbol x}^+) &lt; f({\boldsymbol x}^-)) + \frac{1}{2}{\mathbb I}(f({\boldsymbol x}^+) = f({\boldsymbol x}^-))\right)\]</span> <span class="math inline">\(m^+,m^-\)</span>分别为正例与反例个数，<span class="math inline">\(D^+,D^-\)</span>为正、反例集合。 <a id="more"></a> 根据上文，设排序后，将样例<span class="math inline">\({\boldsymbol x}_i\)</span>作为正例（即预测值<span class="math inline">\(f({\boldsymbol x}_i)\)</span>作为分类阈值）时对应点 <span class="math inline">\((x_i,y_i)\)</span> <span class="math display">\[(x_{i+1}-x_i)\cdot({y_i+y_{i+1}})=
-\begin{cases}
-0, &amp; {\boldsymbol x}_{i+1}\in D^+ \\
-\frac{2y_{i+1}}{m^-},&amp; {\boldsymbol x}_{i+1}\in D^-
-\end{cases}\]</span></p>
-<p>而</p>
-<p><span class="math display">\[y_{i+1}={\rm TPR}_{i+1}=\frac{TP_{i+1}}{TP+FN}=\frac{TP_{i+1}}{m^+}\]</span></p>
-<p>根据相关定义，</p>
-<p><span class="math display">\[TP_{i+1}=\sum_{ {\boldsymbol x}\in D^+} {\mathbb I}(f({\boldsymbol x})&gt; f({\boldsymbol x}_{i+1}))\]</span></p>
-<p>于是 <span class="math display">\[\begin{split}
-{\rm AUC}
-&amp;= \frac{1}{m^+m^-}\sum_{ {\boldsymbol x}_{i+1} \in D^-}\sum_{ {\boldsymbol x}\in D^+} {\mathbb I}(f({\boldsymbol x})&gt; f({\boldsymbol x}_{i+1})) \\
-&amp;= \frac{1}{m^+m^-}\sum_{ {\boldsymbol x}^- \in D^- \setminus \{ {\boldsymbol x}_1\} }\sum_{ {\boldsymbol x}^+\in D^+} {\mathbb I}(f({\boldsymbol x}^+)&gt; f({\boldsymbol x}^-))
-\end{split} \]</span></p>
-<p>由于排序后<span class="math inline">\(f({\boldsymbol x}_1)\)</span>为最大，因此<span class="math inline">\(\forall {\boldsymbol x}\in D^+\cup D^-, {\mathbb I}(f({\boldsymbol x})&gt; f({\boldsymbol x}_1)) = 0\)</span>，且这里<span class="math inline">\(\sum\)</span>与次序无关，所以 <span class="math display">\[{\rm AUC} = \frac{1}{m^+m^-} \sum_{ {\boldsymbol x}^+\in D^+} \sum_{ {\boldsymbol x}^- \in D^-} {\mathbb I}(f({\boldsymbol x}^+)&gt; f({\boldsymbol x}^-))\]</span></p>
+        <p>网易云音乐听歌排行中，只能看到自己账号的听歌次数，他人的听歌次数并未显示，但我们可以在网页端看到以最多播放次数为基准的条形图，这给了我们通过一定方法计算播放次数的可能。</p>
+<a id="more"></a>
+<p>以首页随机点击的一个ID为例：</p>
+<p><img src="/images/cloud_music_rank.png"></p>
+<p>尽管条形图的数值并未直接显示在网页上，但通过查看网络中的HTTP包（url为https://music.163.com/weapi/v1/play/record的POST请求），可以看到：</p>
+<p><img src="/images/cloud_music_json_data.png"></p>
+<p>playCount 是实际的播放次数，由于非本人账号登录，所以显示为0。score 则是条形图中对应的数值，可以猜到是该歌曲播放次数占最多播放次数的百分比，第一首是自然100，另外通过验证可以知道这个百分比是向下取整而非四舍五入。</p>
+<p>通过 score 可以尝试还原出 playCount，记</p>
+<p><span class="math display">\[c=(c_0,c_1, \cdots, c_{n-1})\]</span></p>
+<p>为听歌排行中所有<span class="math inline">\(n\)</span>首歌对应的播放次数，定义</p>
+<p><span class="math display">\[f(n) = \lfloor\frac{100 n}{c_0}\rfloor\]</span></p>
+<p>初始化<span class="math inline">\(c=(1,1,\cdots, 1)\)</span>，随后计算<span class="math inline">\(f(c_1)\)</span>与<span class="math inline">\(score_1\)</span>是否相等，相等则继续计算<span class="math inline">\(f(c_2)\)</span>，不相等则将<span class="math inline">\(c_1\)</span>自增1，直到两者相等或<span class="math inline">\(c_1\)</span>超过<span class="math inline">\(c_0\)</span>。如果最后<span class="math inline">\(c_1&gt;c_0\)</span>，说明<span class="math inline">\(c_0\)</span>太小，需要将<span class="math inline">\(c_0\)</span>自增1，然后继续遍历<span class="math inline">\(c_1,c_2,\cdots,c_{n-1}\)</span>使其满足条件：<span class="math inline">\(f(c_i)=score_i\)</span>，遍历过程中还可以采取一些简单的办法缩小范围。一段简单的代码如下：</p>
+<p><img src="/images/cloud_music_code.png"></p>
+<p>通过遍历，总能找到一组（最小的）解<span class="math inline">\(c^*=(c_0,c_1,\cdots,c_{n-1})\)</span>满足</p>
+<p><span class="math display">\[\forall i \in [0,n),f(c_i) = score_i\]</span></p>
+<p>以文中的数据为例，遍历得到</p>
+<p><img src="/images/cloud_music_play_count.png"></p>
+<p>但由于 score 是播放次数相除得到，因此<span class="math inline">\(\forall k \in N^+, kc^*=(kc_0,kc_1,\cdots,kc_{n-1})\)</span>也满足上述等式。仅通过所有的 score，计算出准确的播放次数是不可能的，但可以尝试估计这组最小解恰好是真实播放次数的概率。</p>
+<p>最小解是真实播放次数等价于<span class="math inline">\(n\)</span>首歌的真实播放次数不存在大于<span class="math inline">\(1\)</span>的公因子。对于素数<span class="math inline">\(p\)</span>，任取一个整数能被<span class="math inline">\(p\)</span>整除的概率是<span class="math inline">\(\frac{1}{p}\)</span>。假定<span class="math inline">\(n\)</span>首歌的播放次数互相独立且均匀分布在正整数上，则<span class="math inline">\(n\)</span>个数都被素数<span class="math inline">\(p\)</span>整除的概率是<span class="math inline">\(\frac{1}{p^n}\)</span>，因此播放次数不都被<span class="math inline">\(p\)</span>整除的概率为<span class="math inline">\(1-\frac{1}{p^n}\)</span>，当真实播放次数不能都被任一素数<span class="math inline">\(p\)</span>整除时，最小解即为真实解，其概率为</p>
+<p><span class="math display">\[\prod_p \left(1-\frac{1}{p^n}\right)\]</span></p>
+<p>这里<span class="math inline">\(p\)</span>取遍所有素数。</p>
+<p>由欧拉乘积公式可以得到，当<span class="math inline">\(n\ge 2\)</span>时</p>
+<p><span class="math display">\[\prod_p \left(1-\frac{1}{p^n}\right) = \frac{1}{\sum\limits_{i=1}^\infty \frac{1}{i^n}}=\frac{1}{\zeta(n)}\]</span></p>
+<p>当<span class="math inline">\(n=1\)</span>时只能得到<span class="math inline">\(c^*=(1)\)</span>，为真实播放次数的概率为0。</p>
+<p><span class="math inline">\(n&gt;1\)</span>时，对应的概率图像如下：</p>
+<p><img src="/images/cloud_music_plot.png"></p>
+<p><span class="math inline">\(\frac{1}{\zeta(n)}\)</span>在<span class="math inline">\(n=1,2,\cdots,10\)</span>的取值依次为<span class="math inline">\(0, 0.607927, 0.831907, 0.923938, 0.964387, 0.982953, 0.99172, 0.995939, 0.997996, 0.999006\)</span>，当<span class="math inline">\(n\ge 7\)</span>时，我们有<span class="math inline">\(99%\)</span>的把握认为最小解就是真实的播放次数。</p>
 
       
     </div>
@@ -369,7 +386,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/机器学习/" rel="tag">#机器学习</a>
+            <a href="/tags/Euler-网易云音乐-概率-Euler乘积公式/" rel="tag">#Euler - 网易云音乐 - 概率 - Euler乘积公式</a>
           
         </div>
       
@@ -378,17 +395,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/03/Libnids中TCP相关实现/" rel="next" title="Libnids中TCP相关实现">
-                <i class="fa fa-chevron-left"></i> Libnids中TCP相关实现
+              <a href="/2018/07/27/倒水问题/" rel="next" title="倒水问题">
+                <i class="fa fa-chevron-left"></i> 倒水问题
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/01/03/Xposed/" rel="prev" title="Xposed">
-                Xposed <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -508,7 +521,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第2章"><span class="nav-number">1.</span> <span class="nav-text">第2章</span></a></li></ol></div>
+              <p class="post-toc-empty">此文章未包含目录</p>
             
           </div>
         </section>

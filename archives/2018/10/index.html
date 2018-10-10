@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="机器学习," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -84,18 +84,16 @@
 
 
 
-<meta name="description" content="第2章 习题\(2.5\)，证明 \[{\rm AUC} = 1-\ell_{rank}\] 其中， \[{\rm AUC} = \frac{1}{2}\sum_{i=1}^{m-1} (x_{i+1}-x_i)\cdot({y_i+y_{i+1}})\] \[\ell_{rank}=\frac{1}{m^+ m^-}\sum_{ {\boldsymbol x}^+\in D^+}\sum_{">
-<meta name="keywords" content="机器学习">
-<meta property="og:type" content="article">
-<meta property="og:title" content="周志华《机器学习》部分习题">
-<meta property="og:url" content="http://yoursite.com/2017/08/18/Machine-Learning-zhouzhihua/index.html">
+<meta name="description" content="We must know, we will know.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Memory">
+<meta property="og:url" content="http://yoursite.com/archives/2018/10/index.html">
 <meta property="og:site_name" content="Memory">
-<meta property="og:description" content="第2章 习题\(2.5\)，证明 \[{\rm AUC} = 1-\ell_{rank}\] 其中， \[{\rm AUC} = \frac{1}{2}\sum_{i=1}^{m-1} (x_{i+1}-x_i)\cdot({y_i+y_{i+1}})\] \[\ell_{rank}=\frac{1}{m^+ m^-}\sum_{ {\boldsymbol x}^+\in D^+}\sum_{">
+<meta property="og:description" content="We must know, we will know.">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-07T12:14:03.695Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="周志华《机器学习》部分习题">
-<meta name="twitter:description" content="第2章 习题\(2.5\)，证明 \[{\rm AUC} = 1-\ell_{rank}\] 其中， \[{\rm AUC} = \frac{1}{2}\sum_{i=1}^{m-1} (x_{i+1}-x_i)\cdot({y_i+y_{i+1}})\] \[\ell_{rank}=\frac{1}{m^+ m^-}\sum_{ {\boldsymbol x}^+\in D^+}\sum_{">
+<meta name="twitter:title" content="Memory">
+<meta name="twitter:description" content="We must know, we will know.">
 
 
 
@@ -116,9 +114,9 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/08/18/Machine-Learning-zhouzhihua/"/>
+  <link rel="canonical" href="http://yoursite.com/archives/2018/10/"/>
 
-  <title> 周志华《机器学习》部分习题 | Memory </title>
+  <title> 归档 | Memory </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -139,7 +137,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <div class="container one-collumn sidebar-position-left  page-archive  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -227,184 +225,66 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-collapse">
+    <span class="archive-move-on"></span>
+
+    <span class="archive-page-counter">
+      
+      
+      
+        
+      
+      嗯..! 目前共计 11 篇日志。 继续努力。
+    </span>
+
     
 
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                周志华《机器学习》部分习题
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-08-18T15:43:04+08:00" content="2017-08-18">
-              2017-08-18
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/cs/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-              &nbsp; | &nbsp;
-              <span class="page-pv">本文阅读量
-              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
-              </span>
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
-      
-        <h1 id="第2章">第2章</h1>
-<p>习题<span class="math inline">\(2.5\)</span>，证明 <span class="math display">\[{\rm AUC} = 1-\ell_{rank}\]</span> 其中， <span class="math display">\[{\rm AUC} = \frac{1}{2}\sum_{i=1}^{m-1} (x_{i+1}-x_i)\cdot({y_i+y_{i+1}})\]</span> <span class="math display">\[\ell_{rank}=\frac{1}{m^+ m^-}\sum_{ {\boldsymbol x}^+\in D^+}\sum_{ {\boldsymbol x}^-\in D^-}\left( {\mathbb I}(f({\boldsymbol x}^+) &lt; f({\boldsymbol x}^-)) + \frac{1}{2}{\mathbb I}(f({\boldsymbol x}^+) = f({\boldsymbol x}^-))\right)\]</span> <span class="math inline">\(m^+,m^-\)</span>分别为正例与反例个数，<span class="math inline">\(D^+,D^-\)</span>为正、反例集合。 <a id="more"></a> 根据上文，设排序后，将样例<span class="math inline">\({\boldsymbol x}_i\)</span>作为正例（即预测值<span class="math inline">\(f({\boldsymbol x}_i)\)</span>作为分类阈值）时对应点 <span class="math inline">\((x_i,y_i)\)</span> <span class="math display">\[(x_{i+1}-x_i)\cdot({y_i+y_{i+1}})=
-\begin{cases}
-0, &amp; {\boldsymbol x}_{i+1}\in D^+ \\
-\frac{2y_{i+1}}{m^-},&amp; {\boldsymbol x}_{i+1}\in D^-
-\end{cases}\]</span></p>
-<p>而</p>
-<p><span class="math display">\[y_{i+1}={\rm TPR}_{i+1}=\frac{TP_{i+1}}{TP+FN}=\frac{TP_{i+1}}{m^+}\]</span></p>
-<p>根据相关定义，</p>
-<p><span class="math display">\[TP_{i+1}=\sum_{ {\boldsymbol x}\in D^+} {\mathbb I}(f({\boldsymbol x})&gt; f({\boldsymbol x}_{i+1}))\]</span></p>
-<p>于是 <span class="math display">\[\begin{split}
-{\rm AUC}
-&amp;= \frac{1}{m^+m^-}\sum_{ {\boldsymbol x}_{i+1} \in D^-}\sum_{ {\boldsymbol x}\in D^+} {\mathbb I}(f({\boldsymbol x})&gt; f({\boldsymbol x}_{i+1})) \\
-&amp;= \frac{1}{m^+m^-}\sum_{ {\boldsymbol x}^- \in D^- \setminus \{ {\boldsymbol x}_1\} }\sum_{ {\boldsymbol x}^+\in D^+} {\mathbb I}(f({\boldsymbol x}^+)&gt; f({\boldsymbol x}^-))
-\end{split} \]</span></p>
-<p>由于排序后<span class="math inline">\(f({\boldsymbol x}_1)\)</span>为最大，因此<span class="math inline">\(\forall {\boldsymbol x}\in D^+\cup D^-, {\mathbb I}(f({\boldsymbol x})&gt; f({\boldsymbol x}_1)) = 0\)</span>，且这里<span class="math inline">\(\sum\)</span>与次序无关，所以 <span class="math display">\[{\rm AUC} = \frac{1}{m^+m^-} \sum_{ {\boldsymbol x}^+\in D^+} \sum_{ {\boldsymbol x}^- \in D^-} {\mathbb I}(f({\boldsymbol x}^+)&gt; f({\boldsymbol x}^-))\]</span></p>
-
-      
-    </div>
-
-    <div>
       
         
-
-      
-    </div>
-
-    <div>
-      
-        
-
-      
-    </div>
-    
-    <div>
-      
-        
-<div style="text-align:center;color: #ccc;font-size:14px;">
------- 本文结束 ------</div>
-<br/>
-<div style="border: 1px solid black">
-<div style="margin-left:10px">
-<span style="font-weight:blod">版权声明</span>
-<br/>
-<p style="font-size: 10px;line-height: 30px"><a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">Creative Commons BY-NC-SA 4.0 International License</a>.<br/>
-博客采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">知识共享署署名（BY）-非商业性（NC）-相同方式共享（SA）</a>。<br/>
-本文首发于<a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a>，转载请保留出处。</p>
-</div>
-</div>
-
-      
-    </div>
-    
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/机器学习/" rel="tag">#机器学习</a>
-          
+        <div class="collection-title">
+          <h2 class="archive-year motion-element" id="archive-year-2018">2018</h2>
         </div>
       
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2017/03/03/Libnids中TCP相关实现/" rel="next" title="Libnids中TCP相关实现">
-                <i class="fa fa-chevron-left"></i> Libnids中TCP相关实现
-              </a>
-            
-          </div>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/01/03/Xposed/" rel="prev" title="Xposed">
-                Xposed <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
       
 
       
-      
-    </footer>
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h1 class="post-title">
+        
+            <a class="post-title-link" href="/2018/10/10/网易云音乐听歌排行之播放次数/" itemprop="url">
+              
+                <span itemprop="name">网易云音乐听歌排行之播放次数</span>
+              
+            </a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2018-10-10T09:15:42+08:00"
+              content="2018-10-10" >
+          10-10
+        </time>
+      </div>
+
+    </header>
   </article>
 
 
 
-    <div class="post-spread">
-      
-    </div>
-  </div>
+    
+
+  </section>
+
+  
+
 
 
           </div>
@@ -412,10 +292,6 @@
 
 
           
-  <div class="comments" id="comments">
-    
-  </div>
-
 
         </div>
         
@@ -435,17 +311,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel ">
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -501,17 +368,6 @@
 
       </section>
 
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-            
-              
-            
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第2章"><span class="nav-number">1.</span> <span class="nav-text">第2章</span></a></li></ol></div>
-            
-          </div>
-        </section>
       
 
     </div>
@@ -623,9 +479,11 @@
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
-
+  
+    <script type="text/javascript" id="motion.page.archive">
+      $('.archive-year').velocity('transition.slideLeftIn');
+    </script>
+  
 
 
   
