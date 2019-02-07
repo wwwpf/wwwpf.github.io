@@ -1,0 +1,724 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="爬虫," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="随国内版权意识逐渐增强，各大音乐平台已要求付费下载歌曲，但大部分歌曲可以在线播放，播放时会把歌曲的相关信息获取到本地。网上已有很多相关 API 的分析及根据 API 写好的工具，本文主要对网页端判断歌曲能否播放的代码进行了简单分析，仅作学习研究使用。">
+<meta name="keywords" content="爬虫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="判断网页端QQ音乐及网易云音乐歌曲能否播放">
+<meta property="og:url" content="http://yoursite.com/2019/02/07/判断网页端QQ音乐及网易云音乐歌曲能否播放/index.html">
+<meta property="og:site_name" content="Memory">
+<meta property="og:description" content="随国内版权意识逐渐增强，各大音乐平台已要求付费下载歌曲，但大部分歌曲可以在线播放，播放时会把歌曲的相关信息获取到本地。网上已有很多相关 API 的分析及根据 API 写好的工具，本文主要对网页端判断歌曲能否播放的代码进行了简单分析，仅作学习研究使用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/qqmusic_url.png">
+<meta property="og:image" content="http://yoursite.com/images/qqmusic_lyric.png">
+<meta property="og:image" content="http://yoursite.com/images/qqmusic_url_resp.png">
+<meta property="og:image" content="http://yoursite.com/images/qqmusic_data.png">
+<meta property="og:image" content="http://yoursite.com/images/qqmusic_test0.png">
+<meta property="og:image" content="http://yoursite.com/images/qqmusic_test1.png">
+<meta property="og:image" content="http://yoursite.com/images/qqmusic_test2.png">
+<meta property="og:image" content="http://yoursite.com/images/qqmusic_test3.png">
+<meta property="og:image" content="http://yoursite.com/images/qqmusic_test4.png">
+<meta property="og:image" content="http://yoursite.com/images/netease_query_jay.png">
+<meta property="og:image" content="http://yoursite.com/images/netease_play.png">
+<meta property="og:image" content="http://yoursite.com/images/netease_source1.png">
+<meta property="og:image" content="http://yoursite.com/images/netease_playlist.png">
+<meta property="og:updated_time" content="2019-02-07T15:52:57.679Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="判断网页端QQ音乐及网易云音乐歌曲能否播放">
+<meta name="twitter:description" content="随国内版权意识逐渐增强，各大音乐平台已要求付费下载歌曲，但大部分歌曲可以在线播放，播放时会把歌曲的相关信息获取到本地。网上已有很多相关 API 的分析及根据 API 写好的工具，本文主要对网页端判断歌曲能否播放的代码进行了简单分析，仅作学习研究使用。">
+<meta name="twitter:image" content="http://yoursite.com/images/qqmusic_url.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/07/判断网页端QQ音乐及网易云音乐歌曲能否播放/"/>
+
+  <title> 判断网页端QQ音乐及网易云音乐歌曲能否播放 | Memory </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Memory</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                判断网页端QQ音乐及网易云音乐歌曲能否播放
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2019-02-07T15:40:43+08:00" content="2019-02-07">
+              2019-02-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/cs/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv">本文阅读量
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>随国内版权意识逐渐增强，各大音乐平台已要求付费下载歌曲，但大部分歌曲可以在线播放，播放时会把歌曲的相关信息获取到本地。网上已有很多相关 API 的分析及根据 API 写好的工具，本文主要对网页端判断歌曲能否播放的代码进行了简单分析，仅作学习研究使用。</p>
+<a id="more"></a>
+<h1 id="qq音乐">QQ音乐</h1>
+<p>点击播放按钮，弹出新标签页，查看网络请求，发现：</p>
+<p><img src="/images/qqmusic_url.png"></p>
+<p>可以验证这就是 m4a 格式的歌曲文件。</p>
+<h2 id="歌词">歌词</h2>
+<p>继续查看之前的几个请求，可以发现获取歌词的请求 <code>https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg</code>，返回的歌词经过了 Base64 编码：</p>
+<p><img src="/images/qqmusic_lyric.png"></p>
+<h2 id="url">URL</h2>
+<p>获取 URL 的请求是 <code>https://u.y.qq.com/cgi-bin/musicu.fcg</code>：</p>
+<p><img src="/images/qqmusic_url_resp.png"></p>
+<p>GET 请求需要 data 参数，经过搜索，在此处断点：</p>
+<p><img src="/images/qqmusic_data.png"></p>
+<p>相关参数如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> _getGuid(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (_guid.length &gt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> _guid;</span><br><span class="line">    <span class="keyword">var</span> e = MUSIC.cookie.get(<span class="string">"pgv_pvid"</span>);</span><br><span class="line">    <span class="keyword">if</span> (e &amp;&amp; e.length &gt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> _guid = e;</span><br><span class="line">    <span class="keyword">var</span> t = (<span class="keyword">new</span> <span class="built_in">Date</span>).getUTCMilliseconds();</span><br><span class="line">    <span class="keyword">return</span> _guid = <span class="built_in">Math</span>.round(<span class="number">2147483647</span> * <span class="built_in">Math</span>.random()) * t % <span class="number">1e10</span>,</span><br><span class="line">    <span class="built_in">document</span>.cookie = <span class="string">"pgv_pvid="</span> + _guid + <span class="string">"; Expires=Sun, 18 Jan 2038 00:00:00 GMT; PATH=/; DOMAIN=qq.com;"</span>,</span><br><span class="line">    _guid</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> i = &#123;</span><br><span class="line">    guid: <span class="string">""</span> + _getGuid(),</span><br><span class="line">    songmid: r,</span><br><span class="line">    songtype: n,</span><br><span class="line">    uin: g_user.getUin() + <span class="string">""</span>,</span><br><span class="line">    loginflag: <span class="number">1</span>,</span><br><span class="line">    platform: <span class="string">"20"</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> e = &#123;</span><br><span class="line">    req: &#123;</span><br><span class="line">        <span class="built_in">module</span>: <span class="string">"CDN.SrfCdnDispatchServer"</span>,</span><br><span class="line">        method: <span class="string">"GetCdnDispatch"</span>,</span><br><span class="line">        param: &#123;</span><br><span class="line">            guid: <span class="string">""</span> + _getGuid(),</span><br><span class="line">            calltype: <span class="number">0</span>,</span><br><span class="line">            userip: <span class="string">""</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    req_0: &#123;</span><br><span class="line">        <span class="built_in">module</span>: <span class="string">"vkey.GetVkeyServer"</span>,</span><br><span class="line">        method: <span class="string">"CgiGetVkey"</span>,</span><br><span class="line">        param: i</span><br><span class="line">    &#125;,</span><br><span class="line">    comm: &#123;</span><br><span class="line">        uin: g_user.getUin(),</span><br><span class="line">        format: <span class="string">"json"</span>,</span><br><span class="line">        ct: <span class="number">24</span>,</span><br><span class="line">        cv: <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>观察到 guid 为 [0, 1e10) 的随机数，不登录时 uin 为 0。最终的 URL 由 CDN 与 purl 拼接而成。</p>
+<h2 id="歌曲能否播放">歌曲能否播放</h2>
+<p>有些歌曲由于版权原因不能播放，因此基本不能通过这些方法获取歌曲文件，需先进行过滤。无法播放的歌曲在网页端显示为灰色，点击播放，弹框提示，直接搜索字符串，未找到相关代码：</p>
+<p><img src="/images/qqmusic_test0.png"></p>
+<p>分析播放按钮的响应函数，添加断点：</p>
+<p><img src="/images/qqmusic_test1.png"></p>
+<p>调试发现在此处弹框：</p>
+<p><img src="/images/qqmusic_test2.png"></p>
+<p>继续调试，发现 play 函数：</p>
+<p><img src="/images/qqmusic_test3.png"></p>
+<p>执行流程与 <code>s[0].action.play</code> 有关，搜索 <code>action.play</code>，</p>
+<p><img src="/images/qqmusic_test4.png"></p>
+<p>添加断点进行验证，代码执行到此处，于是最终判断歌曲能否播放的代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">e[<span class="string">"switch"</span>] || (e[<span class="string">"switch"</span>] = <span class="number">403</span>);</span><br><span class="line"><span class="keyword">var</span> o = e[<span class="string">"switch"</span>].toString(<span class="number">2</span>).split(<span class="string">""</span>);</span><br><span class="line">o.pop(),</span><br><span class="line">o.reverse();</span><br><span class="line"><span class="keyword">var</span> a = [<span class="string">"play_lq"</span>, <span class="string">"play_hq"</span>, <span class="string">"play_sq"</span>, <span class="string">"down_lq"</span>, <span class="string">"down_hq"</span>, <span class="string">"down_sq"</span>, <span class="string">"soso"</span>, <span class="string">"fav"</span>, <span class="string">"share"</span>, <span class="string">"bgm"</span>, <span class="string">"ring"</span>, <span class="string">"sing"</span>, <span class="string">"radio"</span>, <span class="string">"try"</span>, <span class="string">"give"</span>];</span><br><span class="line">e.action = &#123;&#125;;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> s = <span class="number">0</span>; s &lt; a.length; s++)</span><br><span class="line">    e.action[a[s]] = <span class="built_in">parseInt</span>(o[s], <span class="number">10</span>) || <span class="number">0</span>;</span><br><span class="line">e.pay = e.pay || &#123;&#125;,</span><br><span class="line">e.preview = e.preview || &#123;&#125;,</span><br><span class="line">e.playTime = makePlayTime(e.interval),</span><br><span class="line">e.action.play = <span class="number">0</span>,</span><br><span class="line">(e.action.play_lq || e.action.play_hq || e.action.play_sq) &amp;&amp; (e.action.play = <span class="number">1</span>),</span><br></pre></td></tr></table></figure>
+<p>e 是歌曲的详细数据：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"songurl"</span>: <span class="string">"http://stream7.qqmusic.qq.com/16830286.wma"</span>,</span><br><span class="line">    <span class="attr">"songid"</span>: <span class="number">4830286</span>,</span><br><span class="line">    <span class="attr">"songmid"</span>: <span class="string">"0033P66R0qEtlT"</span>,</span><br><span class="line">    <span class="attr">"songname"</span>: <span class="string">"知足"</span>,</span><br><span class="line">    <span class="attr">"singer"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"id"</span>: <span class="number">74</span>,</span><br><span class="line">            <span class="attr">"mid"</span>: <span class="string">"000Sp0Bz4JXH0o"</span>,</span><br><span class="line">            <span class="attr">"name"</span>: <span class="string">"五月天"</span>,</span><br><span class="line">            <span class="attr">"title"</span>: <span class="string">"五月天"</span>,</span><br><span class="line">            <span class="attr">"type"</span>: <span class="number">2</span>,</span><br><span class="line">            <span class="attr">"uin"</span>: <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"album"</span>: &#123;</span><br><span class="line">        <span class="attr">"id"</span>: <span class="number">96397</span>,</span><br><span class="line">        <span class="attr">"mid"</span>: <span class="string">"003PIMo40rxcAn"</span>,</span><br><span class="line">        <span class="attr">"name"</span>: <span class="string">"知足 最真杰作选"</span>,</span><br><span class="line">        <span class="attr">"subtitle"</span>: <span class="string">"《后来的我们》电影插曲"</span>,</span><br><span class="line">        <span class="attr">"time_public"</span>: <span class="string">"2005-08-26"</span>,</span><br><span class="line">        <span class="attr">"title"</span>: <span class="string">"知足 最真杰作选"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"switch"</span>: <span class="number">65537</span>,</span><br><span class="line">    // ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="网易云音乐">网易云音乐</h1>
+<p>网易云音乐的 HTTP 请求都经过了 AES 加密，具体的 POST 数据可以通过断点获得，url、搜索等 API 已有很多相关帖子。</p>
+<h2 id="歌曲能否播放-1">歌曲能否播放</h2>
+<p>无法播放的歌曲显示为灰色：</p>
+<p><img src="/images/netease_query_jay.png"></p>
+<p>点击播放，出现：</p>
+<p><img src="/images/netease_play.png"></p>
+<p>尝试搜索字符串，下断点：</p>
+<p><img src="/images/netease_source1.png"></p>
+<p>相关代码如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">cnp9g</span>(<span class="params">d5i</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> j5o = [pf0x.eR7K(d5i.id)]</span><br><span class="line">      , bm5r = j5o[<span class="number">0</span>]</span><br><span class="line">      , sg1x = l5q.qy0x(bm5r)</span><br><span class="line">      , tX1x = bm5r.privilege || &#123;&#125;;</span><br><span class="line">    <span class="keyword">if</span> (sg1x == <span class="number">10</span>) &#123;</span><br><span class="line">        l5q.wJ2x(tX1x.fee || bm5r.fee, bm5r.id, <span class="string">"song"</span>, <span class="literal">null</span>, tX1x)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sg1x == <span class="number">100</span>) &#123;</span><br><span class="line">        l5q.iM8E(<span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">true</span>, bm5r)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sg1x == <span class="number">11</span>) &#123;</span><br><span class="line">        l5q.bWj5o(bm5r.id, <span class="number">18</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        bgW3x(j5o, d5i.ext)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">l5q.iM8E = <span class="function"><span class="keyword">function</span>(<span class="params">bG5L, D5I, u5z, czT2x, bm5r</span>) </span>&#123;</span><br><span class="line">    bG5L = bG5L || <span class="string">"由于版权保护，您所在的地区暂时无法使用。"</span>;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">l5q.wJ2x = <span class="function"><span class="keyword">function</span>(<span class="params">oC0x, tu1x, u5z, du6o, nw0x</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> bT5Y, pN0x = <span class="string">"m-popup-info"</span>, bxI8A = <span class="string">"单首购买"</span>, bxK8C = <span class="string">"马上去开通"</span>, cV6P = <span class="string">"唱片公司要求，当前歌曲须付费使用。"</span>, bWk5p = <span class="literal">true</span>;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">l5q.bWj5o = <span class="function"><span class="keyword">function</span>(<span class="params">hM8E, gv8n</span>) </span>&#123;</span><br><span class="line">    l5q.hH8z(&#123;</span><br><span class="line">        title: <span class="string">"提示"</span>,</span><br><span class="line">        message: <span class="string">"版权方要求，该歌曲须下载后播放"</span>,</span><br><span class="line">        btnok: <span class="string">"下载"</span>,</span><br><span class="line">        btncc: <span class="string">"取消"</span>,</span><br><span class="line">        okstyle: <span class="string">"u-btn2-w1"</span>,</span><br><span class="line">        ccstyle: <span class="string">"u-btn2-w1"</span>,</span><br><span class="line">        action: <span class="function"><span class="keyword">function</span>(<span class="params">u5z</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (u5z == <span class="string">"ok"</span>) &#123;</span><br><span class="line">                l5q.Mc6W(&#123;</span><br><span class="line">                    id: hM8E,</span><br><span class="line">                    type: gv8n</span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>猜测当 <code>sg1x</code> 等于 <code>10, 100, 11</code> 时歌曲无法播放。在 <code>bgW3x</code> 处断点，可以发现歌曲能播放时会进入到该分支。<code>sg1x</code> 由 <code>l5q.qy0x</code> 返回：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">l5q.qy0x = <span class="function"><span class="keyword">function</span>(<span class="params">bm5r</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!bm5r)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">var</span> fC7v = bm5r.privilege;</span><br><span class="line">    <span class="keyword">if</span> (bm5r.program)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">window</span>.GAbroad)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">if</span> (fC7v) &#123;</span><br><span class="line">        <span class="keyword">if</span> (fC7v.st != <span class="literal">null</span> &amp;&amp; fC7v.st &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">100</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (fC7v.fee &gt; <span class="number">0</span> &amp;&amp; fC7v.fee != <span class="number">8</span> &amp;&amp; fC7v.payed == <span class="number">0</span> &amp;&amp; fC7v.pl &lt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">10</span>;</span><br><span class="line">        <span class="keyword">if</span> (fC7v.fee == <span class="number">16</span> || fC7v.fee == <span class="number">4</span> &amp;&amp; fC7v.flag &amp; <span class="number">2048</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">11</span>;</span><br><span class="line">        <span class="keyword">if</span> ((fC7v.fee == <span class="number">0</span> || fC7v.payed) &amp;&amp; fC7v.pl &gt; <span class="number">0</span> &amp;&amp; fC7v.dl == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1e3</span>;</span><br><span class="line">        <span class="keyword">if</span> (fC7v.pl == <span class="number">0</span> &amp;&amp; fC7v.dl == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">100</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> eA7t = bm5r.status != <span class="literal">null</span> ? bm5r.status : bm5r.st != <span class="literal">null</span> ? bm5r.st : <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (bm5r.status &gt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (bm5r.fee &gt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">10</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">100</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>bm5r</code> 是在搜索“周杰伦”时返回的相关歌曲信息：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"屋顶"</span>,</span><br><span class="line">    <span class="attr">"ringtone"</span>: <span class="string">"600902000009484210"</span>,</span><br><span class="line">    <span class="attr">"rtUrl"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"status"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"pstatus"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"fee"</span>: <span class="number">8</span>,</span><br><span class="line">    <span class="attr">"version"</span>: <span class="number">19</span>,</span><br><span class="line">    <span class="attr">"songType"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"mst"</span>: <span class="number">9</span>,</span><br><span class="line">    <span class="attr">"ftype"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"privilege"</span>: &#123;</span><br><span class="line">        <span class="attr">"id"</span>: <span class="number">298317</span>,</span><br><span class="line">        <span class="attr">"fee"</span>: <span class="number">8</span>,</span><br><span class="line">        <span class="attr">"payed"</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="attr">"st"</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="attr">"pl"</span>: <span class="number">128000</span>,</span><br><span class="line">        <span class="attr">"dl"</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="attr">"sp"</span>: <span class="number">7</span>,</span><br><span class="line">        <span class="attr">"cp"</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="attr">"subp"</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="attr">"cs"</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="attr">"maxbr"</span>: <span class="number">320000</span>,</span><br><span class="line">        <span class="attr">"fl"</span>: <span class="number">128000</span>,</span><br><span class="line">        <span class="attr">"toast"</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="attr">"flag"</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="attr">"preSell"</span>: <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    // ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="歌单详情">歌单详情</h2>
+<p>歌单数据在返回的响应中能看到歌名，更详细的信息在网页中以密文的形式隐藏了：</p>
+<p><img src="/images/netease_playlist.png"></p>
+<p>解密的方法参考<a href="https://blog.csdn.net/Deadeyehui/article/details/80708625" target="_blank" rel="noopener">网易云音乐歌单详情列表爬虫破解</a></p>
+<h1 id="python-实现">Python 实现</h1>
+<p><a href="https://github.com/wwwpf/MusicDownloader" target="_blank" rel="noopener">音乐下载工具</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">Creative Commons BY-NC-SA 4.0 International License</a>.<br/>
+博客采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">知识共享署署名（BY）-非商业性（NC）-相同方式共享（SA）</a>。<br/>
+本文首发于<a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a>，转载请保留出处。</p>
+</div>
+</div>
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/爬虫/" rel="tag">#爬虫</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/27/倒水问题/" rel="next" title="倒水问题">
+                <i class="fa fa-chevron-left"></i> 倒水问题
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="漂浮" />
+          <p class="site-author-name" itemprop="name">漂浮</p>
+          <p class="site-description motion-element" itemprop="description">We must know, we will know.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#qq音乐"><span class="nav-number">1.</span> <span class="nav-text">QQ音乐</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#歌词"><span class="nav-number">1.1.</span> <span class="nav-text">歌词</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#url"><span class="nav-number">1.2.</span> <span class="nav-text">URL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#歌曲能否播放"><span class="nav-number">1.3.</span> <span class="nav-text">歌曲能否播放</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网易云音乐"><span class="nav-number">2.</span> <span class="nav-text">网易云音乐</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#歌曲能否播放-1"><span class="nav-number">2.1.</span> <span class="nav-text">歌曲能否播放</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#歌单详情"><span class="nav-number">2.2.</span> <span class="nav-text">歌单详情</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python-实现"><span class="nav-number">3.</span> <span class="nav-text">Python 实现</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">漂浮</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv">访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+</body>
+</html>
