@@ -1,0 +1,1372 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MODBUS," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="MODBUS 协议初步 MODBUS 协议是工业领域中常见的通信协议，用于采集与控制各种设备的数据。最初基于串口通信，后支持 TCP 模式。 MODBUS 可工作在以下标准中：  MODBUS 通信栈  一个网络架构的示例如下：  MODBUS 网络架构  通过网关，不同类型的总线或网络可以使用 MODBUS 协议进行通信。">
+<meta name="keywords" content="MODBUS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MODBUS 协议初步">
+<meta property="og:url" content="http://yoursite.com/2020/09/06/modbus初步/index.html">
+<meta property="og:site_name" content="Memory">
+<meta property="og:description" content="MODBUS 协议初步 MODBUS 协议是工业领域中常见的通信协议，用于采集与控制各种设备的数据。最初基于串口通信，后支持 TCP 模式。 MODBUS 可工作在以下标准中：  MODBUS 通信栈  一个网络架构的示例如下：  MODBUS 网络架构  通过网关，不同类型的总线或网络可以使用 MODBUS 协议进行通信。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/modbus/communication_stack.png">
+<meta property="og:image" content="http://yoursite.com/images/modbus/network_arch.png">
+<meta property="og:image" content="http://yoursite.com/images/modbus/modbus_layer2.png">
+<meta property="og:image" content="http://yoursite.com/images/modbus/master_state.png">
+<meta property="og:image" content="http://yoursite.com/images/modbus/slave_state.png">
+<meta property="og:image" content="http://yoursite.com/images/modbus/protocol_pm0.png">
+<meta property="og:image" content="http://yoursite.com/images/modbus/protocol_pm1.png">
+<meta property="og:image" content="http://yoursite.com/images/modbus/protocol_ats.png">
+<meta property="og:image" content="http://yoursite.com/images/modbus/protocol_inv.png">
+<meta property="og:image" content="http://yoursite.com/images/modbus/protocol_temphum.png">
+<meta property="og:image" content="http://yoursite.com/images/modbus/protocol_dcpdu.png">
+<meta property="og:updated_time" content="2020-09-06T14:06:13.161Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MODBUS 协议初步">
+<meta name="twitter:description" content="MODBUS 协议初步 MODBUS 协议是工业领域中常见的通信协议，用于采集与控制各种设备的数据。最初基于串口通信，后支持 TCP 模式。 MODBUS 可工作在以下标准中：  MODBUS 通信栈  一个网络架构的示例如下：  MODBUS 网络架构  通过网关，不同类型的总线或网络可以使用 MODBUS 协议进行通信。">
+<meta name="twitter:image" content="http://yoursite.com/images/modbus/communication_stack.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/06/modbus初步/"/>
+
+  <title> MODBUS 协议初步 | Memory </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Memory</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                MODBUS 协议初步
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2020-09-06T21:41:10+08:00" content="2020-09-06">
+              2020-09-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/cs/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv">本文阅读量
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="modbus-协议初步">MODBUS 协议初步</h1>
+<p>MODBUS 协议是工业领域中常见的通信协议，用于采集与控制各种设备的数据。最初基于串口通信，后支持 TCP 模式。</p>
+<p>MODBUS 可工作在以下标准中：</p>
+<figure>
+<img src="/images/modbus/communication_stack.png" alt="MODBUS 通信栈"><figcaption>MODBUS 通信栈</figcaption>
+</figure>
+<p>一个网络架构的示例如下：</p>
+<figure>
+<img src="/images/modbus/network_arch.png" alt="MODBUS 网络架构"><figcaption>MODBUS 网络架构</figcaption>
+</figure>
+<p>通过网关，不同类型的总线或网络可以使用 MODBUS 协议进行通信。</p>
+<a id="more"></a>
+<h2 id="字节序">字节序</h2>
+<p>尽管 MODBUS 协议规定使用高尾端字节序，但在实际应用中，随厂商与设备型号的不同，数据存储的字节序也不同。</p>
+<p>十六进制数字 0xaabbccdd 在不同字节序下内存的排列如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th>字节序</th>
+<th>内存低地址 -&gt; 内存高地址</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>big endian</td>
+<td>aa bb cc dd</td>
+<td>高尾端，高字节在低地址</td>
+</tr>
+<tr class="even">
+<td>big endian byte swap</td>
+<td>bb aa dd cc</td>
+<td>每 2 字节使用高尾端，2 字节内部使用低尾端</td>
+</tr>
+<tr class="odd">
+<td>little endian</td>
+<td>dd cc bb aa</td>
+<td>低尾端，低字节在低地址</td>
+</tr>
+<tr class="even">
+<td>little endian byte swap</td>
+<td>cc dd aa bb</td>
+<td>每 2 字节使用低尾端，2 字节内部使用高尾端</td>
+</tr>
+</tbody>
+</table>
+<h2 id="modbus-应用层协议">MODBUS 应用层协议</h2>
+<table>
+<thead>
+<tr class="header">
+<th>缩写</th>
+<th>全称</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MB</td>
+<td>MODBUS Protocol</td>
+<td>MODBUS 协议</td>
+</tr>
+<tr class="even">
+<td>ADU</td>
+<td>Application Data Unit</td>
+<td>应用数据单元</td>
+</tr>
+<tr class="odd">
+<td>PDU</td>
+<td>Protocol Data Unit</td>
+<td>协议数据单元</td>
+</tr>
+<tr class="even">
+<td>MBAP</td>
+<td>MODBUS Application Protocol</td>
+<td>MODBUS 应用协议</td>
+</tr>
+</tbody>
+</table>
+<h3 id="协议描述">协议描述</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">|&lt;-------------------------ADU------------------------&gt;|</span><br><span class="line">Addition address || Function code || Data || Error check</span><br><span class="line">                  |&lt;--------PDU----------&gt;|</span><br></pre></td></tr></table></figure>
+<p>一个 MODBUS ADU 由发起请求的客户端构建，功能码(function code) 指明了服务端要执行的操作，功能码占 1 字节，有效范围为 [1, 255]，其中 [128, 255] 是为错误响应保留的值。</p>
+<p>如果 client 发送的请求能被 server 正常处理，响应中的功能码与请求的功能码一致，data 字段包含了请求的数据，如果发生了错误，响应中的功能码等于请求功能码最高位值 1，即+128，data 字段指明了出错的原因。</p>
+<p>由于首次基于串行线路实现的 MODBUS 协议的 ADU 最长为 256 字节，因此 PDU 最长为 253 字节（ADU 最大长度减去 1 字节 slave 地址和 2 字节校验字段）。</p>
+<p>TCP ADU 最长 = 253 字节 + ADU 首部 7 字节 = 260 字节</p>
+<p>MODBUS 协议定义了 3 种类型的 PDU</p>
+<h4 id="request-pdu">Request PDU</h4>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>大小（字节）</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>function code</td>
+<td>1</td>
+<td>功能码</td>
+</tr>
+<tr class="even">
+<td>request data</td>
+<td>n</td>
+<td>具体意义与功能码相关</td>
+</tr>
+</tbody>
+</table>
+<h4 id="response-pdu">Response PDU</h4>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>大小（字节）</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>function code</td>
+<td>1</td>
+<td>功能码</td>
+</tr>
+<tr class="even">
+<td>response data</td>
+<td>n</td>
+<td>具体意义与功能码相关</td>
+</tr>
+</tbody>
+</table>
+<h4 id="exception-response-pdu">Exception Response PDU</h4>
+<table>
+<colgroup>
+<col style="width: 17%">
+<col style="width: 9%">
+<col style="width: 73%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>大小（字节）</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>exception-function code</td>
+<td>1</td>
+<td>相应功能码+0x80（对于一个异常响应，server 返回的代码等于原始请求 PDU 中的功能码的最高有效位置为 1</td>
+</tr>
+<tr class="even">
+<td>exception code</td>
+<td>1</td>
+<td>协议定义的异常码</td>
+</tr>
+</tbody>
+</table>
+<h3 id="数据模型">数据模型</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Primary tables</th>
+<th>对象类型</th>
+<th>能否读写</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Discretes Input</td>
+<td>1 bit</td>
+<td>只读</td>
+</tr>
+<tr class="even">
+<td>Coils</td>
+<td>1 bit</td>
+<td>读写</td>
+</tr>
+<tr class="odd">
+<td>Input Registers</td>
+<td>16 bit</td>
+<td>只读</td>
+</tr>
+<tr class="even">
+<td>Holding Registers</td>
+<td>16 bit</td>
+<td>读写</td>
+</tr>
+</tbody>
+</table>
+<p>在 MODBUS PDU 中，每个数据寻址范围是 0 到 65535。 在 MODBUS 数据模型中，数据块的每个元素从 1 到 65536 编号。 MODBUS 数据模型到设备应用程序的映射取决于供应商设备的规范。</p>
+<p>编号为 x 的 MODBUS 数据通过 MODBUS PDU x - 1 寻址。</p>
+<h3 id="常见功能码">常见功能码</h3>
+<h4 id="x01-read-coils">0x01 Read Coils</h4>
+<p>读取远程设备中线圈的 1 到 2000 个连续状态，请求 PDU 指定起始地址与线圈数量。PDU 线圈地址从 0 开始。</p>
+<h5 id="request">Request</h5>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>长度</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Function code</td>
+<td>1 byte</td>
+<td>0x01</td>
+</tr>
+<tr class="even">
+<td>Starting Address</td>
+<td>2 bytes</td>
+<td>[0, 0xffff]</td>
+</tr>
+<tr class="odd">
+<td>Quantity of coils</td>
+<td>2 bytes</td>
+<td>[1, 0x7d0], 2000=0x7d0</td>
+</tr>
+</tbody>
+</table>
+<h5 id="response">Response</h5>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>长度</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Function code</td>
+<td>1 byte</td>
+<td>0x01</td>
+</tr>
+<tr class="even">
+<td>Byte count</td>
+<td>1 byte</td>
+<td>N = ceil(线圈数/8)</td>
+</tr>
+<tr class="odd">
+<td>Coil Status</td>
+<td>n bytes</td>
+<td>n = N</td>
+</tr>
+</tbody>
+</table>
+<h5 id="error">Error</h5>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>长度</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Error code</td>
+<td>1 byte</td>
+<td>0x81</td>
+</tr>
+<tr class="even">
+<td>Exception code</td>
+<td>1 byte</td>
+<td>01 or 02 or 03 or 04</td>
+</tr>
+</tbody>
+</table>
+<h5 id="example">example</h5>
+<table>
+<thead>
+<tr class="header">
+<th>请求字段</th>
+<th>请求值</th>
+<th>响应字段</th>
+<th>响应值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Function</td>
+<td>01</td>
+<td>Function</td>
+<td>01</td>
+</tr>
+<tr class="even">
+<td>起始地址高字节</td>
+<td>00</td>
+<td>字节数</td>
+<td>03</td>
+</tr>
+<tr class="odd">
+<td>起始地址低字节</td>
+<td>13</td>
+<td>输出状态 27-20</td>
+<td>CD，二进制 1100 1101，最高位为线圈 27 的状态，最低位为 20 的状态</td>
+</tr>
+<tr class="even">
+<td>输出数量高字节</td>
+<td>00</td>
+<td>输出状态 35-28</td>
+<td>6B</td>
+</tr>
+<tr class="odd">
+<td>输出数量低字节</td>
+<td>13</td>
+<td>输出状态 38-36</td>
+<td>05</td>
+</tr>
+</tbody>
+</table>
+<h4 id="x02-read-discrete-inputs">0x02 Read Discrete Inputs</h4>
+<h5 id="request-1">Request</h5>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>长度</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Function code</td>
+<td>1 byte</td>
+<td>0x02</td>
+</tr>
+<tr class="even">
+<td>Starting Address</td>
+<td>2 bytes</td>
+<td>[0, 0xffff]</td>
+</tr>
+<tr class="odd">
+<td>Quantity of Inputs</td>
+<td>2 bytes</td>
+<td>[1, 0x7d0]</td>
+</tr>
+</tbody>
+</table>
+<h5 id="response-1">Response</h5>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>长度</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Function code</td>
+<td>1 byte</td>
+<td>0x02</td>
+</tr>
+<tr class="even">
+<td>Byte count</td>
+<td>1 byte</td>
+<td>N = ceil(Inputs 数/8)</td>
+</tr>
+<tr class="odd">
+<td>Input Status</td>
+<td>n bytes</td>
+<td>n = N</td>
+</tr>
+</tbody>
+</table>
+<h5 id="error-1">Error</h5>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>长度</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Error code</td>
+<td>1 byte</td>
+<td>0x82</td>
+</tr>
+<tr class="even">
+<td>Exception code</td>
+<td>1 byte</td>
+<td>01 or 02 or 03 or 04</td>
+</tr>
+</tbody>
+</table>
+<h4 id="x03-read-holding-registers">0x03 Read Holding Registers</h4>
+<h5 id="request-2">Request</h5>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>长度</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Function code</td>
+<td>1 byte</td>
+<td>0x03</td>
+</tr>
+<tr class="even">
+<td>Starting Address</td>
+<td>2 bytes</td>
+<td>[0, 0xffff]</td>
+</tr>
+<tr class="odd">
+<td>Quantity of Registers</td>
+<td>2 bytes</td>
+<td>[1, 0x7d], 125=0x7d</td>
+</tr>
+</tbody>
+</table>
+<h5 id="response-2">Response</h5>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>长度</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Function code</td>
+<td>1 byte</td>
+<td>0x03</td>
+</tr>
+<tr class="even">
+<td>Byte count</td>
+<td>1 byte</td>
+<td>N = 2 * 寄存器数</td>
+</tr>
+<tr class="odd">
+<td>Register Value</td>
+<td>n bytes</td>
+<td>n = N</td>
+</tr>
+</tbody>
+</table>
+<h5 id="error-2">Error</h5>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>长度</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Error code</td>
+<td>1 byte</td>
+<td>0x83</td>
+</tr>
+<tr class="even">
+<td>Exception code</td>
+<td>1 byte</td>
+<td>01 or 02 or 03 or 04</td>
+</tr>
+</tbody>
+</table>
+<h4 id="x04-read-input-registers">0x04 Read Input Registers</h4>
+<h5 id="request-3">Request</h5>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>长度</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Function code</td>
+<td>1 byte</td>
+<td>0x04</td>
+</tr>
+<tr class="even">
+<td>Starting Address</td>
+<td>2 bytes</td>
+<td>[0, 0xffff]</td>
+</tr>
+<tr class="odd">
+<td>Quantity of Input Registers</td>
+<td>2 bytes</td>
+<td>[1, 0x7d]</td>
+</tr>
+</tbody>
+</table>
+<h5 id="response-3">Response</h5>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>长度</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Function code</td>
+<td>1 byte</td>
+<td>0x04</td>
+</tr>
+<tr class="even">
+<td>Byte count</td>
+<td>1 byte</td>
+<td>N = 2 * 寄存器数</td>
+</tr>
+<tr class="odd">
+<td>Input Registers</td>
+<td>n bytes</td>
+<td>n = N</td>
+</tr>
+</tbody>
+</table>
+<h5 id="error-3">Error</h5>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>长度</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Error code</td>
+<td>1 byte</td>
+<td>0x84</td>
+</tr>
+<tr class="even">
+<td>Exception code</td>
+<td>1 byte</td>
+<td>01 or 02 or 03 or 04</td>
+</tr>
+</tbody>
+</table>
+<h2 id="modbus-串行线路协议">MODBUS 串行线路协议</h2>
+<p><img src="/images/modbus/modbus_layer2.png"></p>
+<p>主从模式协议，有且仅有一个 master 连接到总线，一个或多个（最多 247）slave 节点连接到该总线，一次 MODBUS 通信总由 master 发起，slave 仅在收到 master 请求的情况下传输数据，slave 节点之间不会相互通信，master 节点在同一时间只会发起一次 MODBUS 事务。master, slave 分别对应于应用层协议的 client, server。</p>
+<p>MODBUS 请求分为单播模式与广播模式。在单播模式中，master 向一个特定的 slave 发起请求，该 slave 接受并处理请求，返回一个响应消息。地址为 0 代表广播模式，在广播模式中，master 不会收到任何响应，广播模式请求必须是写入命令，所有的设备必须接受该广播。</p>
+<h3 id="地址规则">地址规则</h3>
+<p>master 没有具体的地址，但 salve 节点必须有在该串行总线中唯一的地址。0 用于广播，1-247 用于分配 slave 的地址，248-255 保留。</p>
+<h3 id="帧描述">帧描述</h3>
+<table>
+<thead>
+<tr class="header">
+<th>偏移</th>
+<th>长度(字节)</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>1</td>
+<td>slave 地址</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>1</td>
+<td>功能码</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>[0, 252]</td>
+<td>数据长度 n</td>
+</tr>
+<tr class="even">
+<td>n + 2</td>
+<td>2</td>
+<td>CRC or LRC</td>
+</tr>
+</tbody>
+</table>
+<p>其中，帧尾的错误校验算法使用 CRC 或 LRC 取决于传输模式使用 RTU 还是 ASCII。</p>
+<h3 id="状态图">状态图</h3>
+<figure>
+<img src="/images/modbus/master_state.png" alt="master_state"><figcaption>master_state</figcaption>
+</figure>
+<figure>
+<img src="/images/modbus/slave_state.png" alt="slave_state"><figcaption>slave_state</figcaption>
+</figure>
+<h3 id="串行传输模式">串行传输模式</h3>
+<p>串行传输模式分为 RTU 与 ASCII 两种，MODBUS 设备必须支持 RTU 模式，ACSII 可选。用户可以决定设备使用的传输模式，但默认必须为 RTU。同一串行总线上的所有设备，其传输模式与串口参数必须保持一致。</p>
+<h4 id="rturemote-terminal-unit-传输模式">RTU（Remote Terminal Unit） 传输模式</h4>
+<p>每个 8-bit 字节包含 2 个 4-bit 十六进制字符，优点是在相同波特下比 ASCII 模式拥有更大数据吞吐量。每个消息必须通过连续的字符流传输。</p>
+<p>RTU 模式中每个字节的格式为 11 bit，包括</p>
+<ul>
+<li>编码系统 8-bit 二进制</li>
+<li>字节中的每个 bit 1 开始 bit 8 数据 bit，先发送最低有效位 1 bit 用于奇偶校验 1 停止 bit</li>
+</ul>
+<p>奇偶校验默认使用偶校验，也可选择奇校验、无校验，无校验要求使用 2 个停止位。</p>
+<p>实际中常使用 9600 波特，8 数据位，无校验，1 停止位，读写数据时只考虑数据位，其他位（开始、停止、校验）由串口 API 负责。</p>
+<p>波特：每秒传输符号的个数。在串口通信中，1 个符号表示 1 bit。</p>
+<h5 id="crc-校验">CRC 校验</h5>
+<p>使用 CRC16 进行对整条消息进行校验，最终将校验值添加到帧尾，规定校验值的低字节放在高字节之前。</p>
+<h4 id="ascii-传输模式">ASCII 传输模式</h4>
+<p>当物理通信链路或设备不满足 RTU 计时器管理的要求时，使用 ASCII 模式，在该模式下，每个字节被编码为两个 ASCII 字符，如 0x12 编码为 0x31(=‘1’), 0x32(=‘2’)。该模式不常用，不再赘述。</p>
+<h2 id="modbus-on-tcp">MODBUS on TCP</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">|&lt;-------MODBUS TCP/IP ADU----------&gt;|</span><br><span class="line">| MBAP Header | Function code | Data |</span><br><span class="line">              |&lt;--------PDU---------&gt;|</span><br></pre></td></tr></table></figure>
+<p>MBAP Header 大小为 7 字节</p>
+<table>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 5%">
+<col style="width: 38%">
+<col style="width: 16%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Fields</th>
+<th>Length</th>
+<th>Description</th>
+<th>Client</th>
+<th>Server</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Transaction Identifier</td>
+<td>2 Bytes</td>
+<td>用于标识一个特定的 MODBUS 请求/响应</td>
+<td>由 client 初始化</td>
+<td>server 直接从收到的请求中复制过来</td>
+</tr>
+<tr class="even">
+<td>Protocol Identifier</td>
+<td>2 Bytes</td>
+<td>0 = MODBUS 协议</td>
+<td>由 client 初始化</td>
+<td>server 直接从收到的请求中复制过来</td>
+</tr>
+<tr class="odd">
+<td>Length</td>
+<td>2 Bytes</td>
+<td>后续字节的数量，包括 Unit Identifier 和数据部分</td>
+<td>请求中由 client 初始化</td>
+<td>响应中由 server 初始化</td>
+</tr>
+<tr class="even">
+<td>Unit Identifier</td>
+<td>1 Byte</td>
+<td>标识一个特定的连接在串行线路或其他总线上的远程 slave,</td>
+<td>由 client 初始化</td>
+<td>server 直接从收到的请求中复制过来</td>
+</tr>
+</tbody>
+</table>
+<p>默认端口为 502，使用高尾端编码。</p>
+<h2 id="modbus-采集实例">MODBUS 采集实例</h2>
+<p>在诸多厂商的 MODBUS 实现中，字节序、地址、数据类型的格式千奇百怪，甚至没有给出说明，需要根据特定文档以及运行时调试来决定 MODBUS 采集指令和解析方式。</p>
+<p>此外，采集数据时，某些测点为模拟量，比如温度，而 MODBUS 设备可能用一个 int16 的数据来表示，这种情况下就需要乘以一个缩放因子得到真实值，比如设备返回数据为 275，而实际温度为 275 * 0.1 = 27.5 摄氏度。</p>
+<p>以某电表的协议文档为例，地址未说明进制，测点的数据类型不统一：</p>
+<figure>
+<img src="/images/modbus/protocol_pm0.png" alt="pm"><figcaption>pm</figcaption>
+</figure>
+<figure>
+<img src="/images/modbus/protocol_pm1.png" alt="pm"><figcaption>pm</figcaption>
+</figure>
+<p>寄存器地址为 4xxxx 格式，实际的寄存器为 10 进制的 xxxx - 1，不同寄存器又出现了 高尾端 与 交换的低尾端 两种字节序。</p>
+<p>一个寄存器存放多个状态量 &amp; 一个寄存器存放一个状态量：</p>
+<figure>
+<img src="/images/modbus/protocol_ats.png" alt="ats"><figcaption>ats</figcaption>
+</figure>
+<p>一次读多个寄存器与一次读单个寄存器，测点的地址不同：</p>
+<figure>
+<img src="/images/modbus/protocol_inv.png" alt="inv"><figcaption>inv</figcaption>
+</figure>
+<p>十进制寄存器地址，未指明字节序：</p>
+<figure>
+<img src="/images/modbus/protocol_temphum.png" alt="temphum"><figcaption>temphum</figcaption>
+</figure>
+<p>两个测点间隔一个寄存器，32bit 的有功电能分布在 0x10 ~ 0x12 三个寄存器：</p>
+<figure>
+<img src="/images/modbus/protocol_dcpdu.png" alt="dcpdu"><figcaption>dcpdu</figcaption>
+</figure>
+<p>某些设备甚至没有协议文档，可以通过监听 master 发出的指令，手动发送指令观察其返回格式来分析协议。比如监听到 master 向某一串温湿度设备发送的指令为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">01 04 00 00 00 04 F1 C9</span><br></pre></td></tr></table></figure>
+<p>可以推测该温湿度串使用 MODBUS 通信，master 请求了地址为 1 的 slave 从 0 开始的 4 个寄存器，断开 master 与温湿度串的连接，手动向温湿度设备发送该指令，收到的响应为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">01 04 08 00 00 00 01 00 F2 03 E0 B9 46</span><br></pre></td></tr></table></figure>
+<p>其中一个温湿度设备显示当前的温度为 26.3 摄氏度，湿度为 99.9%，可以推测温湿度分别位于 2, 3 号寄存器，使用高尾端字节序（0x00F2 = 242, 0x03E0=992），缩放因子为 0.1。由于 master 在采集多个温湿度数据，所以 slave 地址为 1 返回的温湿度与显示温度 26.3 的温湿度设备不一致是可以正常的。</p>
+<p>串行线路的 MODBUS 通信还与该串口的波特相关，设备的协议文档不一定会指明使用波特或者使用的波特已被修改过。假如 master 波特与 slave 设置的波特不一致，收发的数据也会“乱码”，某个 slave 使用 9600 波特，master 使用 4800 波特收到的响应：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">2020-06-30 09:41:46 recv: E5</span><br><span class="line">2020-06-30 09:41:47 recv: E5 04 04 E4 E4</span><br><span class="line">2020-06-30 09:41:48 recv: 26 26 A6 A6</span><br><span class="line">2020-06-30 09:41:49 recv: E7 E7</span><br><span class="line">2020-06-30 09:41:51 recv:</span><br><span class="line">2020-06-30 09:41:52 recv: 25</span><br><span class="line">2020-06-30 09:41:53 recv: 25 E5 E5 04</span><br><span class="line">2020-06-30 09:41:54 recv: 04 E4 E4 26 26</span><br><span class="line">2020-06-30 09:41:55 recv: A6 A6</span><br></pre></td></tr></table></figure>
+<p>使用 19200 波特：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">2020-06-30 09:43:40 recv: FE FE 9E</span><br><span class="line">2020-06-30 09:43:41 recv: FE FE 9E FE FE 9E</span><br><span class="line">2020-06-30 09:43:42 recv: 98 80</span><br><span class="line">2020-06-30 09:43:43 recv: E0 98 FE FE 98 80 E0 98 FE FE F8 86 9E F8 86 9E 80 86 FE</span><br><span class="line">2020-06-30 09:43:44 recv: 80 86 FE E6 98 E6 98 E0 9E FE E0 9E FE 98 E0 FE</span><br><span class="line">2020-06-30 09:43:45 recv: 98 E0 FE FE 98 80 FE 98 80 98 FE 98 9E F8 98 FE 98 9E F8 F8 98 F8 F8 98 F8</span><br><span class="line">2020-06-30 09:43:46 recv: F8 9E F8 98 FE F8 9E F8 98 FE 80 FE E6 80 FE E6</span><br></pre></td></tr></table></figure>
+<p>使用 9600 波特：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">2020-06-30 09:42:35 recv: 0A 04 00 00 00 11 31 7D</span><br><span class="line">2020-06-30 09:42:36 recv: 0A 04 00 00 00 11 31 7D 14 04 00 00 00 11 32 C3 14 04 00 00 00 11 32 C3 1E 04 00 00 00 11 32 69 1E 04 00 00 00 11 32 69 28 04 00 00 00 11 37 FF</span><br><span class="line">2020-06-30 09:42:37 recv: 28 04 00 00 00 11 37 FF 32 04 00 00 00 11 35 C5 32 04 00 00 00 11 35 C5 3C 04 00 00 00 11 34 EB 3C 04 00 00 00 11 34 EB 46 04 00 00 00 11 3F 71 46 04 00 00 00 11 3F 71</span><br><span class="line">2020-06-30 09:42:38 recv: 50 04 00 00 00 11 3D 87 50 04 00 00 00 11 3D 87 5A 04 00 00 00 11 3D 2D 5A 04 00 00 00 11 3D 2D 64 04 00 00 00 11 39 F3 64 04 00 00 00 11 39 F3</span><br><span class="line">2020-06-30 09:42:39 recv: 6E 04 00 00 00 11 39 59 6E 04 00 00 00 11 39 59 78 04 00 00 00 11 3B AF 78 04 00 00 00 11 3B AF</span><br></pre></td></tr></table></figure>
+<p>常用的波特为 9600，其次是 115200，在 master 发送指令后接受不到 slave 的响应时，可以考虑波特是否与 slave 一致。</p>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li>MODBUS APPLICATION PROTOCOL SPECIFICATION V1.1b3</li>
+<li>MODBUS over Serial Line Specification and Implementation Guide V1.02</li>
+<li>MODBUS MESSAGING ON TCP/IP IMPLEMENTATION GUIDE V1.0b</li>
+<li>各种厂商协议文档</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">Creative Commons BY-NC-SA 4.0 International License</a>.<br/>
+博客采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">知识共享署署名（BY）-非商业性（NC）-相同方式共享（SA）</a>。<br/>
+本文首发于<a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a>，转载请保留出处。</p>
+</div>
+</div>
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MODBUS/" rel="tag">#MODBUS</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/21/安卓手游[我的奇幻世界]逆向/" rel="next" title="安卓手游[我的奇幻世界]逆向">
+                <i class="fa fa-chevron-left"></i> 安卓手游[我的奇幻世界]逆向
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="漂浮" />
+          <p class="site-author-name" itemprop="name">漂浮</p>
+          <p class="site-description motion-element" itemprop="description">We must know, we will know.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#modbus-协议初步"><span class="nav-number">1.</span> <span class="nav-text">MODBUS 协议初步</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#字节序"><span class="nav-number">1.1.</span> <span class="nav-text">字节序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#modbus-应用层协议"><span class="nav-number">1.2.</span> <span class="nav-text">MODBUS 应用层协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#协议描述"><span class="nav-number">1.2.1.</span> <span class="nav-text">协议描述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#request-pdu"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">Request PDU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#response-pdu"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">Response PDU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exception-response-pdu"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">Exception Response PDU</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据模型"><span class="nav-number">1.2.2.</span> <span class="nav-text">数据模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见功能码"><span class="nav-number">1.2.3.</span> <span class="nav-text">常见功能码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#x01-read-coils"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">0x01 Read Coils</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#request"><span class="nav-number">1.2.3.1.1.</span> <span class="nav-text">Request</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#response"><span class="nav-number">1.2.3.1.2.</span> <span class="nav-text">Response</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#error"><span class="nav-number">1.2.3.1.3.</span> <span class="nav-text">Error</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#example"><span class="nav-number">1.2.3.1.4.</span> <span class="nav-text">example</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#x02-read-discrete-inputs"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">0x02 Read Discrete Inputs</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#request-1"><span class="nav-number">1.2.3.2.1.</span> <span class="nav-text">Request</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#response-1"><span class="nav-number">1.2.3.2.2.</span> <span class="nav-text">Response</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#error-1"><span class="nav-number">1.2.3.2.3.</span> <span class="nav-text">Error</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#x03-read-holding-registers"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">0x03 Read Holding Registers</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#request-2"><span class="nav-number">1.2.3.3.1.</span> <span class="nav-text">Request</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#response-2"><span class="nav-number">1.2.3.3.2.</span> <span class="nav-text">Response</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#error-2"><span class="nav-number">1.2.3.3.3.</span> <span class="nav-text">Error</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#x04-read-input-registers"><span class="nav-number">1.2.3.4.</span> <span class="nav-text">0x04 Read Input Registers</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#request-3"><span class="nav-number">1.2.3.4.1.</span> <span class="nav-text">Request</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#response-3"><span class="nav-number">1.2.3.4.2.</span> <span class="nav-text">Response</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#error-3"><span class="nav-number">1.2.3.4.3.</span> <span class="nav-text">Error</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#modbus-串行线路协议"><span class="nav-number">1.3.</span> <span class="nav-text">MODBUS 串行线路协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#地址规则"><span class="nav-number">1.3.1.</span> <span class="nav-text">地址规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#帧描述"><span class="nav-number">1.3.2.</span> <span class="nav-text">帧描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态图"><span class="nav-number">1.3.3.</span> <span class="nav-text">状态图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#串行传输模式"><span class="nav-number">1.3.4.</span> <span class="nav-text">串行传输模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rturemote-terminal-unit-传输模式"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">RTU（Remote Terminal Unit） 传输模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#crc-校验"><span class="nav-number">1.3.4.1.1.</span> <span class="nav-text">CRC 校验</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ascii-传输模式"><span class="nav-number">1.3.4.2.</span> <span class="nav-text">ASCII 传输模式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#modbus-on-tcp"><span class="nav-number">1.4.</span> <span class="nav-text">MODBUS on TCP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#modbus-采集实例"><span class="nav-number">1.5.</span> <span class="nav-text">MODBUS 采集实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">1.6.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">漂浮</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv">访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+</body>
+</html>
