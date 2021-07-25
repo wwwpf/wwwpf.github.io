@@ -1,0 +1,745 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MODBUS," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="记录基于 MODBUS 协议采集设备数据时遇到的各种坑。 MODBUS 协议是工业领域常用的通信协议，master 通过请求-响应的方式获取 slave 的数据。数据中心使用了大量基于 MODBUS 协议进行通信的设备，包括温湿度、交直流电表、电池仪、HVDC、逆变器、UPS 等。在采集数据中心的物理环境数据时，相当一部分工作量在调试使用 MODBUS 协议的设备。还有一些设备使用基于 UPD">
+<meta name="keywords" content="MODBUS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MODBUS采集数据的常见问题">
+<meta property="og:url" content="http://yoursite.com/2021/07/25/MODBUS采集数据的常见问题/index.html">
+<meta property="og:site_name" content="Memory">
+<meta property="og:description" content="记录基于 MODBUS 协议采集设备数据时遇到的各种坑。 MODBUS 协议是工业领域常用的通信协议，master 通过请求-响应的方式获取 slave 的数据。数据中心使用了大量基于 MODBUS 协议进行通信的设备，包括温湿度、交直流电表、电池仪、HVDC、逆变器、UPS 等。在采集数据中心的物理环境数据时，相当一部分工作量在调试使用 MODBUS 协议的设备。还有一些设备使用基于 UPD">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-07-25T13:39:35.767Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MODBUS采集数据的常见问题">
+<meta name="twitter:description" content="记录基于 MODBUS 协议采集设备数据时遇到的各种坑。 MODBUS 协议是工业领域常用的通信协议，master 通过请求-响应的方式获取 slave 的数据。数据中心使用了大量基于 MODBUS 协议进行通信的设备，包括温湿度、交直流电表、电池仪、HVDC、逆变器、UPS 等。在采集数据中心的物理环境数据时，相当一部分工作量在调试使用 MODBUS 协议的设备。还有一些设备使用基于 UPD">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/07/25/MODBUS采集数据的常见问题/"/>
+
+  <title> MODBUS采集数据的常见问题 | Memory </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Memory</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                MODBUS采集数据的常见问题
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2021-07-25T21:31:01+08:00" content="2021-07-25">
+              2021-07-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/cs/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv">本文阅读量
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>记录基于 <code>MODBUS</code> 协议采集设备数据时遇到的各种坑。</p>
+<p><code>MODBUS</code> 协议是工业领域常用的通信协议，master 通过请求-响应的方式获取 slave 的数据。数据中心使用了大量基于 <code>MODBUS</code> 协议进行通信的设备，包括温湿度、交直流电表、电池仪、HVDC、逆变器、UPS 等。在采集数据中心的物理环境数据时，相当一部分工作量在调试使用 <code>MODBUS</code> 协议的设备。还有一些设备使用基于 <code>UPD</code> 的 <code>SNMP</code> 通信，这些设备调试起来会比较快。</p>
+<p>常用的 <code>MODBUS</code> 协议还分为 <code>RTU</code> 及 <code>TCP</code>，前者基于串口通信，后者基于 <code>TCP</code> 协议通信，<code>MODBUS TCP</code> 通信只需要网络正常即可，<code>MODBUS RTU</code> 通信则涉及到硬件线缆、读写参数等问题，设备无响应数据的问题主要存在于 <code>MODBUS RTU</code> 中，数据异常的问题在两种模式下均可遇到。</p>
+<a id="more"></a>
+<h2 id="硬件">硬件</h2>
+<p>硬件上的问题，单从软件上看不出来，大部分情况下只能观察到 <code>master</code> 已经发送请求，但收不到任何响应。遇到过的问题如下：</p>
+<h3 id="线序">线序</h3>
+<p>采集器通过双绞线与设备连接起来，如果设备端引脚使用的线序与采集器引脚线序一致，那么一切都顺利，调试时不用考虑线序的问题，只需要关注数据是否正确。然而，现实却并非如此。</p>
+<h4 id="现象">现象</h4>
+<p>当线序存在问题时，采集器能成功发出请求，但设备无任何响应，某些情况下，设备——比如温湿度传感器——需要采集器通过双绞线供电，使用线序错误的双绞线连接设备后，设备本身便会停止工作。</p>
+<h4 id="解决方法">解决方法</h4>
+<p>使用 <code>USB</code> 转 <code>RS485</code> 的转换器，双绞线一端连接设备，另一端剥开，将双绞线里的数据线与电源线连接至转换器，比如<code>蓝</code>接<code>485+</code>，<code>蓝白</code>接<code>485-</code>等，尝试不同的排列（注意安全），观察向设备发送数据后是否有数据返回。</p>
+<p>不同设备使用的线序也不一定相同，有的使用<code>蓝</code>和<code>蓝白</code>收发数据，有的使用<code>绿</code>和<code>绿白</code>收发数据，也不能排除有的设备使用<code>蓝</code>和<code>绿白</code>收发数据。有的需要接入电源线，有的不能接入电源线。</p>
+<p>线序的问题取决于厂商的实现，只能在现场调试确认。</p>
+<p>某机房的所有串口设备共使用了 8 种线序。</p>
+<h3 id="电压不足">电压不足</h3>
+<p>采集器可能因质量缺陷或设计本身导致了引脚电压带不动连接的设备</p>
+<h4 id="现象-1">现象</h4>
+<p>设备无法正常上报测点数据，例子：漏水模块接到电压不够的 <code>DI</code> 口，当发生漏水时，采集器 <code>DI</code> 口的数据没有变化。</p>
+<h4 id="解决方法-1">解决方法</h4>
+<p>想办法增加给设备的电压。</p>
+<h3 id="串口未供电">串口未供电</h3>
+<p>采集器的某些串口在设计时未加入供电功能。</p>
+<h4 id="现象-2">现象</h4>
+<p>需要供电的设备在连接到未供电的串口后，无法工作。</p>
+<h4 id="解决方法-2">解决方法</h4>
+<p>将设备连接到可以供电的串口。</p>
+<h3 id="设备关机">设备关机</h3>
+<h4 id="现象-3">现象</h4>
+<p>同一串口下接了多个设备，其中某几个设备一直没有响应。</p>
+<h4 id="解决方法-3">解决方法</h4>
+<p>调试时需要和现场人员确认设备是否开机。</p>
+<h3 id="数据异常">数据异常</h3>
+<h4 id="现象-4">现象</h4>
+<p>单个测点数据异常，其他测点数据正常。</p>
+<h4 id="原因">原因</h4>
+<p>可能是设备传感器等故障。</p>
+<h4 id="解决方法-4">解决方法</h4>
+<p>更换设备元器件。</p>
+<h3 id="设备性能">设备性能</h3>
+<p>某些设备出于性能等原因，限制了向它请求的 <code>master</code> 个数，当多个 <code>master</code> 同时向它请求数据时，可能只处理第一个 <code>master</code> 的请求，不响应后续 <code>master</code> 请求。或者所有 <code>master</code> 发出的请求均间断失去响应。</p>
+<h4 id="现象-5">现象</h4>
+<ul>
+<li>设备无任何数据返回，但另一个 <code>master</code> 可以正常采集到数据</li>
+<li>设备间断无响应，其他 <code>master</code> 也间断地请求不到数据</li>
+</ul>
+<h4 id="解决方法-5">解决方法</h4>
+<p>重启设备或考虑减少 <code>master</code> 数量，避免多采。</p>
+<h2 id="软件">软件</h2>
+<p>除硬件问题外，软件层面的设置也会影响数据的读取，大部分情况下是数据异常，也存在设备无数据返回的情况。</p>
+<h3 id="slave-地址"><code>slave</code> 地址</h3>
+<h4 id="现象-6">现象</h4>
+<p>已成功发出请求，设备无任何响应。</p>
+<h4 id="解决方法-6">解决方法</h4>
+<p>确认 <code>slave</code> 地址填写无误。</p>
+<h3 id="串口参数">串口参数</h3>
+<p>波特、数据位、停止位、校验位 都会影响数据的传输。</p>
+<h4 id="现象-7">现象</h4>
+<p>从设备接收到的数据明显是乱码或者根本接收不到数据。</p>
+<h4 id="解决方法-7">解决方法</h4>
+<p>首先考虑调整波特，最常用的是 <code>9600</code>，其次是 <code>19200</code>。其次尝试修改其他参数，大部分情况下，数据位为 <code>8</code>，停止位为 <code>1</code>，校验位为 <code>N</code>。</p>
+<h3 id="请求频率">请求频率</h3>
+<p>某些设备性能不够，请求频率过高时无响应。</p>
+<h4 id="现象-8">现象</h4>
+<ul>
+<li>挂在同一串口下的多个设备，有些正常返回数据，有些无任何数据返回</li>
+<li>某个地址（串口或者IP+Port）下的单个设备，间断出现无响应的情况</li>
+</ul>
+<h4 id="解决方法-8">解决方法</h4>
+<p>降低请求频率。</p>
+<h3 id="数据异常-1">数据异常</h3>
+<h4 id="现象-9">现象</h4>
+<p>能接收到数据，但解析后的测点值明显错误。</p>
+<h4 id="解决方法-9">解决方法</h4>
+<p>可能是设备本身的 <code>bug</code>，原本请求地址为 <code>1</code> 的数据，响应报文中的地址却是 <code>2</code>，也就是数据错乱。这种情况下，最好关闭串口并重新打开，同时，在收到响应后，对返回的 <code>slave</code> 地址、功能码、<code>CRC</code> 校验码进行验证。</p>
+<h3 id="协议文档">协议文档</h3>
+<p>厂商提供的文档质量千奇百怪参差不齐，这也是调试过程中遇到的主要问题。</p>
+<h4 id="现象-10">现象</h4>
+<p>数据错误。</p>
+<h4 id="解决方法-10">解决方法</h4>
+<p>只能尝试。</p>
+<p>极端情况下，文档中只会指出某个测点的寄存器号为 <code>3xxxx</code>，请求该测点的功能码可能是 <code>03</code>，也可能是<code>04</code>，据说有条潜规则是 <code>3xxxx</code> 的功能码是 <code>04</code>，<code>4xxxx</code> 的功能码是 <code>03</code>，很奇怪，想不通。</p>
+<p>说完功能码，再说寄存器地址，文档中的 <code>3xxxx</code>，它实际的地址可能是 <code>xxxx</code>，也可能是 <code>xxxx-1</code>，也可能就只是 <code>3xxxx</code>，还有可能是 <code>3xxxx - 1</code>，还有可能要除以 <code>2</code>。可能是十进制下的数值，也可能是十六进制下的数值。</p>
+<p>再就是字节序，<code>MODBUS</code> 协议规范中指明使用高尾端，但规范是规范，厂家的实现相对随意，高尾端、低尾端、高尾端字序+字交换、低尾端字序+字交换，4 种字节序都是可能的。</p>
+<p>然后是数据类型，<code>MODBUS</code> 存储的单位是寄存器，2个字节，一般是 <code>int16</code>，也可能是 <code>uint16</code>，占据 2 个寄存器的测点可能用 <code>float</code> 存储。</p>
+<p>还有的设备有隐含规则，比如需要使用的测点的寄存器地址范围是 <code>[1, N]</code>，但是如果只请求 <code>[1, N]</code> 范围的寄存器数据，那么设备响应的数据会发生错乱，厂商给的反馈是，一定要请求 <code>[0, N]</code> 范围的寄存器，即使 <code>0</code> 号寄存器不需要，也要请求。再比如有的设备使用功能码 <code>01</code> 请求数据，根据 <code>MODBUS</code> 协议规范，请求 <code>N</code> 个线圈，返回的数据部分是 <code>ceil(N/8)</code> 个字节，但设备实际上返回了 <code>2N</code> 个字节。遇到这些违背规范的情况，也只能去兼容设备。</p>
+<p>一般通信地址是 <code>IP</code> 的设备，使用的是 <code>MODBUS TCP</code> 协议，但也不能排除某些使用了串口服务器的设备，实际使用的是 <code>MODBUS RTU on TCP</code>，也就是基于 <code>TCP</code> 的 <code>MODBUS RTU</code> 协议，这种情况只能抓包排查。</p>
+<p>一份好的协议文档，应该清楚地说明各个测点所在的寄存器地址、使用的功能码、测点存储的数据类型、字节序，但很多厂商提供的文档，或多或少都缺少一些内容，给实际调试设备时增加了一定的工作量。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">Creative Commons BY-NC-SA 4.0 International License</a>.<br/>
+博客采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color:#258FC6">知识共享署署名（BY）-非商业性（NC）-相同方式共享（SA）</a>。<br/>
+本文首发于<a href="https://wwwpf.github.io" style="color:#258FC6">Memory</a>，转载请保留出处。</p>
+</div>
+</div>
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MODBUS/" rel="tag">#MODBUS</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/06/modbus初步/" rel="next" title="MODBUS 协议初步">
+                <i class="fa fa-chevron-left"></i> MODBUS 协议初步
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="漂浮" />
+          <p class="site-author-name" itemprop="name">漂浮</p>
+          <p class="site-description motion-element" itemprop="description">We must know, we will know.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件"><span class="nav-number">1.</span> <span class="nav-text">硬件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#线序"><span class="nav-number">1.1.</span> <span class="nav-text">线序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#现象"><span class="nav-number">1.1.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法"><span class="nav-number">1.1.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#电压不足"><span class="nav-number">1.2.</span> <span class="nav-text">电压不足</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#现象-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#串口未供电"><span class="nav-number">1.3.</span> <span class="nav-text">串口未供电</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#现象-2"><span class="nav-number">1.3.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-2"><span class="nav-number">1.3.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设备关机"><span class="nav-number">1.4.</span> <span class="nav-text">设备关机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#现象-3"><span class="nav-number">1.4.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-3"><span class="nav-number">1.4.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据异常"><span class="nav-number">1.5.</span> <span class="nav-text">数据异常</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#现象-4"><span class="nav-number">1.5.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原因"><span class="nav-number">1.5.2.</span> <span class="nav-text">原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-4"><span class="nav-number">1.5.3.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设备性能"><span class="nav-number">1.6.</span> <span class="nav-text">设备性能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#现象-5"><span class="nav-number">1.6.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-5"><span class="nav-number">1.6.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件"><span class="nav-number">2.</span> <span class="nav-text">软件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#slave-地址"><span class="nav-number">2.1.</span> <span class="nav-text">slave 地址</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#现象-6"><span class="nav-number">2.1.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-6"><span class="nav-number">2.1.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#串口参数"><span class="nav-number">2.2.</span> <span class="nav-text">串口参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#现象-7"><span class="nav-number">2.2.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-7"><span class="nav-number">2.2.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求频率"><span class="nav-number">2.3.</span> <span class="nav-text">请求频率</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#现象-8"><span class="nav-number">2.3.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-8"><span class="nav-number">2.3.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据异常-1"><span class="nav-number">2.4.</span> <span class="nav-text">数据异常</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#现象-9"><span class="nav-number">2.4.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-9"><span class="nav-number">2.4.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协议文档"><span class="nav-number">2.5.</span> <span class="nav-text">协议文档</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#现象-10"><span class="nav-number">2.5.1.</span> <span class="nav-text">现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法-10"><span class="nav-number">2.5.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">漂浮</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv">访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+</body>
+</html>
