@@ -249,6 +249,128 @@
             
               
                 
+                <a class="post-title-link" href="/2022/07/30/SNMP采集数据的常见问题/" itemprop="url">
+                  SNMP采集数据的常见问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2022-07-30T08:40:33+08:00" content="2022-07-30">
+              2022-07-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/cs/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>记录基于 SNMP 协议采集设备数据时遇到的各种坑。</p>
+<p><code>SNMP</code> 是基于 <code>UDP</code> 的请求-响应方式的协议，服务端（agent）是常见的各种设备，客户端（network management station）向 agent 请求该设备上的数据。数据中心各设备使用的通信协议中，除 <code>MODBUS</code> 外，<code>SNMP</code> 占比最多。</p>
+<p>从网络上看，相比 <code>MODBUS RTU</code>，<code>SNMP</code> 不要求采集器与设备直接连接；从工具上看，相比于仅可运行在 <code>Windows</code> 平台的 <code>Modbus Poll</code>，<code>snmpget</code> 在 <code>linux/mac</code> 可以很方便地安装运行，在 <code>Windows</code> 上也有编译好的二进制版本。因此 <code>SNMP</code> 的调试非常方便。</p>
+<p>由于厂商实现参差不齐，通过 <code>SNMP</code> 请求采集器的数据时，也会出现各种问题。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2022/07/30/SNMP采集数据的常见问题/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+    
+    <div>
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2021/07/25/MODBUS采集数据的常见问题/" itemprop="url">
                   MODBUS采集数据的常见问题
                 </a>
@@ -1330,126 +1452,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/18/Machine-Learning-zhouzhihua/" itemprop="url">
-                  周志华《机器学习》部分习题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-08-18T15:43:04+08:00" content="2017-08-18">
-              2017-08-18
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/cs/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="第2章">第2章</h1>
-<p>习题<span class="math inline">\(2.5\)</span>，证明 <span class="math display">\[{\rm AUC} = 1-\ell_{rank}\]</span> 其中， <span class="math display">\[{\rm AUC} = \frac{1}{2}\sum_{i=1}^{m-1} (x_{i+1}-x_i)\cdot({y_i+y_{i+1}})\]</span> <span class="math display">\[\ell_{rank}=\frac{1}{m^+ m^-}\sum_{ {\boldsymbol x}^+\in D^+}\sum_{ {\boldsymbol x}^-\in D^-}\left( {\mathbb I}(f({\boldsymbol x}^+) &lt; f({\boldsymbol x}^-)) + \frac{1}{2}{\mathbb I}(f({\boldsymbol x}^+) = f({\boldsymbol x}^-))\right)\]</span> <span class="math inline">\(m^+,m^-\)</span>分别为正例与反例个数，<span class="math inline">\(D^+,D^-\)</span>为正、反例集合。
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/08/18/Machine-Learning-zhouzhihua/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-    
-    <div>
-      
-    </div>
-    
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1495,7 +1497,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1512,7 +1514,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1555,7 +1557,7 @@
         <div class="copyright" >
   
   &copy;  2016 - 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
